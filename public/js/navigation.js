@@ -17,7 +17,7 @@ export function createNavigationController({
         }
 
         const gridContainer = document.getElementById('wallpaperGridContainer');
-        const studioContainer = document.getElementById('gradientStudioContainer');
+        const studioContainer = document.getElementById('gradientStudioMount');
         const tiktokContainer = document.getElementById('tiktokDownloaderContainer');
         const categoryNav = document.getElementById('categoryNav');
         const searchBarContainer = document.getElementById('searchBarContainer');
@@ -42,10 +42,6 @@ export function createNavigationController({
         tiktokContainer.classList.add('hidden');
 
         if (tab === 'studio') {
-            if (!window.wallzyGradientStudioReady) {
-                try { window.initGradientStudio?.(); } catch (e) {}
-                window.wallzyGradientStudioReady = true;
-            }
             studioContainer.classList.remove('hidden');
             categoryNav.classList.add('hidden');
             searchBarContainer.classList.add('hidden');
