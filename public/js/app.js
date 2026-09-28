@@ -88,8 +88,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             currentCategory = state.category || 'all';
             searchQuery = String(state.search || '');
 
-            const input = document.getElementById('searchInput');
-            if (input) input.value = searchQuery;
+            window.__wallzySetSearchValue?.(searchQuery);
 
             displayedCount = Number(state.displayedCount) || displayedCount;
             invalidUrlActive = false;
