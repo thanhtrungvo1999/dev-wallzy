@@ -23,8 +23,7 @@ window.saveCustomGradient = async () => {
     });
 };
 
-window.downloadCustomGradient = () => {
-    const state = getGradientState();
+function downloadGradientData(state, filename = 'wallzy-gradient.png') {
     const canvas = document.createElement('canvas');
     canvas.width = 1080;
     canvas.height = 1920;
@@ -34,31 +33,41 @@ window.downloadCustomGradient = () => {
     const gradient = state.type === 'circle'
         ? ctx.createRadialGradient(540, 960, 0, 540, 960, 960)
         : ctx.createLinearGradient(
-            state.type === 'to right' ? 0 : state.type === 'to bottom right' ? 0 : 0,
+            state.type === 'to right' ? 0 : 0,
             state.type === 'to bottom' ? 0 : 0,
-            state.type === 'to right' ? 1080 : 1080,
+            1080,
             state.type === 'to bottom' ? 1920 : 1920
         );
 
-    gradient.addColorStop(0, state.color1);
-    gradient.addColorStop(1, state.color2);
+    gradient.addColorStop(0, state.color1 || '#111111');
+    gradient.addColorStop(1, state.color2 || '#ffffff');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     canvas.toBlob(blob => {
-        if (!blob) {
-            window.__wallzyShowMessage?.('Unable to create gradient.');
-            return;
-        }
+        if (!blob) return;
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'wallzy-gradient.png';
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         link.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, 'image/png');
+}
+
+window.downloadCustomGradient = () => {
+    downloadGradientData(getGradientState());
+};
+
+window.__wallzyDownloadGradient = gradient => {
+    if (!gradient) return;
+    downloadGradientData({
+        color1: gradient.color1,
+        color2: gradient.color2,
+        type: gradient.type
+    }, 'wallzy-gradient.png');
 };
 
 window.renderSavedGradients = function renderSavedGradients() {};
