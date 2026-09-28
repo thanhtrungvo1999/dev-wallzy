@@ -253,7 +253,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
           </div>
           <div id="loggedInView" className="space-y-3 pt-2 hidden">
             <div className="flex items-center space-x-3 bg-[#000000] p-3 rounded-2xl border border-white/10 text-left">
-              <img id="userAvatar" src="" alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
+              <img id="userAvatar" src={undefined} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
               <div className="overflow-hidden">
                 <div id="userName" className="text-xs font-bold text-white truncate">User Name</div>
                 <div id="userEmail" className="text-[10px] text-gray-400 truncate">email@domain.com</div>
