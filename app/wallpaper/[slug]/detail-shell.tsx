@@ -24,7 +24,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const [imageReady, setImageReady] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const [imageSrc, setImageSrc] = useState(image || null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);const adSlotRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,24 +48,6 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   useEffect(() => {
     if (!adOpen) return;
 
-    // Inject the ad only after the modal is open. Keeping third-party
-    // ad markup out of the initial server HTML avoids hydration problems
-    // on the standalone detail route.
-    const slot = document.getElementById("detailAdSlot");
-    if (slot) {
-      slot.innerHTML = "";
-      const iframe = document.createElement("iframe");
-      iframe.title = "Advertisement";
-      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups");
-      iframe.style.width = "300px";
-      iframe.style.height = "250px";
-      iframe.style.border = "0";
-      iframe.style.overflow = "hidden";
-      iframe.scrolling = "no";
-      iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}</style></head><body><script async="async" data-cfasync="false" src="https://pl31467882.profitableratecpmnetwork.com/d57e1d0e6497dfaa47e074d39d673693/invoke.js"></script><div id="container-d57e1d0e6497dfaa47e074d39d673693"></div></body></html>`;
-      slot.appendChild(iframe);
-    }
-
     if (timerRef.current) clearInterval(timerRef.current);
     setSeconds(5);
     timerRef.current = setInterval(() => {
@@ -82,6 +64,27 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
       timerRef.current = null;
+    };
+  }, [adOpen]);
+
+  useEffect(() => {
+    if (!adOpen || !adSlotRef.current) return;
+    const slot = adSlotRef.current;
+    slot.replaceChildren();
+
+    const iframe = document.createElement("iframe");
+    iframe.title = "Advertisement";
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups");
+    iframe.style.width = "300px";
+    iframe.style.height = "250px";
+    iframe.style.border = "0";
+    iframe.style.overflow = "hidden";
+    iframe.scrolling = "no";
+    iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;background:transparent;overflow:hidden}</style></head><body><script async="async" data-cfasync="false" src="https://pl31467882.profitableratecpmnetwork.com/d57e1d0e6497dfaa47e074d39d673693/invoke.js"></script><div id="container-d57e1d0e6497dfaa47e074d39d673693"></div></body></html>`;
+    slot.appendChild(iframe);
+
+    return () => {
+      slot.replaceChildren();
     };
   }, [adOpen]);
 
@@ -205,7 +208,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
               <span className="text-[10px] font-semibold text-white/70">{seconds > 0 ? `${seconds}s` : "Ready"}</span>
             </div>
             <div className="w-[300px] max-w-full h-[250px] mx-auto flex items-center justify-center overflow-hidden rounded-2xl">
-              <div id="detailAdSlot" className="w-[300px] h-[250px] flex items-center justify-center" />
+              <div ref={adSlotRef} className="w-[300px] h-[250px] flex items-center justify-center" />
             </div>
             <div className="text-center pt-3 pb-1 text-[10px] leading-4 text-white/40">Please watch the advertisement for 5 seconds to continue.</div>
             <div className="text-center pt-2 pb-1 text-[10px] text-white/40">{seconds > 0 ? "Please wait..." : "You can continue"}</div>
