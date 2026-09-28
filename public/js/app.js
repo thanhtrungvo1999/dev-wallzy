@@ -289,6 +289,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 });
                 app = backend.app; db = backend.db; auth = backend.auth; appId = backend.appId;
                 getImageByIdFromBackend = backend.getImageById; window.__wallzySaveGradient = async gradient => { if (!userId || !backend.saveGradient) { showMessage("Please sign in first."); return null; } try { const items = await backend.saveGradient(gradient); cloudCustomGradients = items || []; window.__wallzySetGradients?.(cloudCustomGradients); return items; } catch (error) { console.error("[Wallzy] Gradient save failed:", error); showMessage("Unable to save gradient. Please try again."); return null; } };
+        window.__wallzyDeleteGradient = async gradientId => { if (!userId || !backend.deleteGradient) { showMessage("Please sign in first."); return null; } try { const items = await backend.deleteGradient(gradientId); cloudCustomGradients = items || []; window.__wallzySetGradients?.(cloudCustomGradients); return items; } catch (error) { console.error("[Wallzy] Gradient delete failed:", error); showMessage("Unable to delete gradient."); return null; } };
                 searchWallpapersFromBackend = backend.searchWallpapers;
                 authController = createAuthController({ getAuth: backend.auth });
 
