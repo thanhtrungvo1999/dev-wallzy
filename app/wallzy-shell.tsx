@@ -9,42 +9,54 @@ function WallpaperGrid({view}:{view:any}){const favSet=useMemo(()=>new Set((view
 
 function SearchBar({value,onChange,onClear}:{value:string;onChange:(value:string)=>void;onClear:()=>void}){return <div id="searchBarContainer" className="px-5 pt-3 pb-1 bg-transparent"><div className="relative flex items-center"><i className="fa-solid fa-magnifying-glass absolute left-3.5 text-gray-400 text-xs pointer-events-none"></i><input type="text" id="searchInput" value={value} onChange={e=>onChange(e.target.value)} placeholder="Search keywords, categories, tags..." className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-2.5 pl-10 pr-9 text-[16px] sm:text-xs text-white placeholder-gray-500 focus:outline-none focus:border-white/30 transition shadow-inner"/><button id="clearSearchBtn" onClick={onClear} className={"absolute right-3 text-gray-400 hover:text-white text-xs "+(value?"":"hidden")+" cursor-pointer"}><i className="fa-solid fa-xmark"></i></button></div></div>}
 function escapeHtml(value:string){return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/\x27/g,"&#39;")}export default function WallzyShell(){const router=useRouter();const pathname=usePathname();const booted=useRef(false);const [isRouteLoading,setIsRouteLoading]=useState(false);const [searchValue,setSearchValue]=useState("");const [categoryOptions,setCategoryOptions]=useState<string[]>([]);const [activeCategory,setActiveCategory]=useState("all");const [categoryLoading,setCategoryLoading]=useState(true);const [messageModal,setMessageModal]=useState<string|null>(null);const [installModal,setInstallModal]=useState(false);const [authModal,setAuthModal]=useState(false);const [authUser,setAuthUser]=useState<any>(null);const [mounted,setMounted]=useState(false);const [wallpaperView,setWallpaperView]=useState<any>({mode:"explore",items:[],favorites:[],category:"all",search:"",displayedCount:20,hasMore:false,loading:true,loadingMore:false});const config=useMemo(()=>({url:process.env.NEXT_PUBLIC_SUPABASE_URL||"",key:process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||""}),[]);const r2PublicUrl=useMemo(()=>process.env.NEXT_PUBLIC_R2_PUBLIC_URL||"",[]);useEffect(()=>{setIsRouteLoading(false)},[pathname]);useEffect(()=>{setMounted(true);return()=>setMounted(false)},[]);useEffect(()=>{window.__wallzyShowMessage=(msg:string)=>setMessageModal(String(msg||""));window.__wallzyCloseMessage=()=>setMessageModal(null);window.__wallzyOpenInstallModal=()=>setInstallModal(true);window.__wallzyCloseInstallModal=()=>setInstallModal(false);window.__wallzyOpenAuthModal=()=>setAuthModal(true);window.__wallzyCloseAuthModal=()=>setAuthModal(false);window.__wallzySetAuthUser=(user:any)=>setAuthUser(user||null);return()=>{delete window.__wallzyShowMessage;delete window.__wallzyCloseMessage;delete window.__wallzyOpenInstallModal;delete window.__wallzyCloseInstallModal;delete window.__wallzyOpenAuthModal;delete window.__wallzyCloseAuthModal;delete window.__wallzySetAuthUser}},[]);useEffect(()=>{window.__wallzySetWallpaperView=(view:any)=>setWallpaperView(view||{});window.__wallzySetSearchValue=(value:string)=>setSearchValue(value);window.__wallzySetCategoryOptions=(values:string[])=>setCategoryOptions(Array.isArray(values)?values:[]);window.__wallzySetActiveCategory=(value:string)=>setActiveCategory(value||"all");window.__wallzySetCategoryLoading=(value:boolean)=>setCategoryLoading(Boolean(value));window.__wallzySupabaseConfig=config;window.__wallzyR2PublicUrl=r2PublicUrl;window.__wallzyNavigateToWallpaper=(wallpaper:any)=>{const id=encodeURIComponent(String(wallpaper?.id||""));if(id){window.__wallzyPrepareDetailNavigation?.();setIsRouteLoading(true);router.push("/wallpaper/"+id)}};if(booted.current)return;booted.current=true;const load=(src:string,type="text/javascript"):Promise<void>=>new Promise<void>((resolve,reject)=>{const old=document.querySelector('script[data-wallzy-src="'+src+'"]');if(old){resolve();return}const sc=document.createElement("script");sc.src=src;sc.type=type;sc.dataset.wallzySrc=src;sc.onload=()=>resolve();sc.onerror=()=>reject(new Error("Failed to load "+src));document.body.appendChild(sc)});(async()=>{try{await load("/js/ripple.js");await load("/js/ads.js");await load("/js/app.js","module")}catch(e){console.error("[Wallzy] bootstrap failed:",e)}})()},[config,r2PublicUrl,router,pathname]);const isDetail=pathname?.startsWith("/wallpaper/");
+  const rootsRef=useRef<Record<string,ReturnType<typeof createRoot>>>({});
+
   useEffect(()=>{
     if(!mounted||isDetail)return;
-    const roots:Array<{el:HTMLElement;root:ReturnType<typeof createRoot>}>=[];
 
-    const mount=(id:string,node:React.ReactNode)=>{
+    const mount=(id:string)=>{
       const el=document.getElementById(id);
-      if(!el)return;
-      const root=createRoot(el);
-      root.render(node);
-      roots.push({el,root});
+      if(!el||rootsRef.current[id])return;
+      rootsRef.current[id]=createRoot(el);
     };
 
-    mount("topControlsMount",
+    mount("topControlsMount");
+    mount("wallpaperGridMount");
+    mount("gradientStudioMount");
+    mount("tiktokDownloaderMount");
+    mount("msgModalMount");
+    mount("installModalMount");
+    mount("authModalMount");
+
+    return()=>{
+      Object.values(rootsRef.current).forEach(root=>root.unmount());
+      rootsRef.current={};
+    };
+  },[mounted,isDetail]);
+
+  useEffect(()=>{
+    if(!mounted||isDetail)return;
+
+    rootsRef.current["topControlsMount"]?.render(
       <div id="topControlsWrapper" className="absolute left-0 right-0 z-[35] bg-[#000000]/90 backdrop-blur-xl transition-[top,transform] duration-300 ease-in-out">
         <SearchBar value={searchValue} onChange={value=>{setSearchValue(value);window.handleSearchInput?.(value)}} onClear={()=>{setSearchValue("");window.clearSearch?.()}}/>
         <CategoryNav categories={categoryOptions} activeCategory={activeCategory} loading={categoryLoading} onSelect={value=>window.filterCategory?.(value)}/>
       </div>
     );
 
-    mount("wallpaperGridMount",<WallpaperGrid view={wallpaperView}/>);
-    mount("gradientStudioMount",<GradientStudio/>);
-    mount("tiktokDownloaderMount",<TikTokDownloader/>);
+    rootsRef.current["wallpaperGridMount"]?.render(<WallpaperGrid view={wallpaperView}/>);
+    rootsRef.current["gradientStudioMount"]?.render(<GradientStudio/>);
+    rootsRef.current["tiktokDownloaderMount"]?.render(<TikTokDownloader/>);
 
-    if(messageModal){
-      mount("msgModalMount",<MessageModal message={messageModal} onClose={()=>setMessageModal(null)}/>);
-    }
-    if(installModal){
-      mount("installModalMount",<InstallModal onClose={()=>setInstallModal(false)}/>);
-    }
-    if(authModal){
-      mount("authModalMount",<AuthModal user={authUser} onClose={()=>setAuthModal(false)}/>);
-    }
-
-    return()=>{
-      roots.forEach(({root})=>root.unmount());
-    };
+    rootsRef.current["msgModalMount"]?.render(
+      messageModal?<MessageModal message={messageModal} onClose={()=>setMessageModal(null)}/>:null
+    );
+    rootsRef.current["installModalMount"]?.render(
+      installModal?<InstallModal onClose={()=>setInstallModal(false)}/>:null
+    );
+    rootsRef.current["authModalMount"]?.render(
+      authModal?<AuthModal user={authUser} onClose={()=>setAuthModal(false)}/>:null
+    );
   },[mounted,isDetail,searchValue,categoryOptions,activeCategory,categoryLoading,wallpaperView,messageModal,installModal,authModal]);
 
   return <><div id="routeLoadingOverlay" className={`fixed inset-0 z-[200000] items-center justify-center bg-black/45 backdrop-blur-[3px] ${isRouteLoading?"flex":"hidden"}`} aria-hidden={!isRouteLoading}><div className="w-12 h-12 rounded-2xl bg-white/[0.08] border border-white/15 flex items-center justify-center shadow-2xl"><div className="w-5 h-5 rounded-full border-2 border-white/25 border-t-white animate-spin"></div></div></div><div className={isDetail?"hidden":""}><div dangerouslySetInnerHTML={{__html:BODY_HTML}}/></div></>
