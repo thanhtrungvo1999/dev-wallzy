@@ -7,24 +7,20 @@ function getGradientState() {
     };
 }
 
-window.saveCustomGradient = () => {
+window.saveCustomGradient = async () => {
     const state = getGradientState();
-    try {
-        const key = 'wallzy_local_gradients';
-        const existing = JSON.parse(localStorage.getItem(key) || '[]');
-        const gradients = Array.isArray(existing) ? existing : [];
-        gradients.unshift({
-            id: Date.now(),
-            color1: state.color1,
-            color2: state.color2,
-            type: state.type
-        });
-        localStorage.setItem(key, JSON.stringify(gradients.slice(0, 50)));
-        window.__wallzyShowMessage?.('Saved local gradient!');
-    } catch (error) {
-        console.error('[Wallzy] Save gradient failed:', error);
-        window.__wallzyShowMessage?.('Unable to save gradient.');
+    const save = window.__wallzySaveGradient;
+    if (!save) {
+        window.__wallzyShowMessage?.('Please sign in first.');
+        return;
     }
+    await save({
+        id: Date.now(),
+        color1: state.color1,
+        color2: state.color2,
+        type: state.type,
+        created_at: new Date().toISOString()
+    });
 };
 
 window.downloadCustomGradient = () => {
