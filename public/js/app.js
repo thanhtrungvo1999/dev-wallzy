@@ -319,12 +319,29 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initWallzyApp, { once: true });
         else initWallzyApp();
 
-        window.showMessage = msg => { document.getElementById('msgText').innerText = msg; document.getElementById('msgModal').classList.remove('hidden'); };
-        window.closeMsgModal = () => document.getElementById('msgModal').classList.add('hidden');
-        window.openInstallModal = () => document.getElementById('installModal').classList.remove('hidden');
-        window.closeInstallModal = () => document.getElementById('installModal').classList.add('hidden');
-        window.openAuthModal = () => { const modals = document.querySelectorAll('[id="authModal"]'); const modal = window.location.pathname.startsWith('/wallpaper/') ? modals[modals.length - 1] : modals[0]; modal?.classList.remove('hidden'); };
-        window.closeAuthModal = () => { const modals = document.querySelectorAll('[id="authModal"]'); const modal = window.location.pathname.startsWith('/wallpaper/') ? modals[modals.length - 1] : modals[0]; modal?.classList.add('hidden'); };
+        window.showMessage = msg => {
+            if (window.__wallzyShowMessage) return window.__wallzyShowMessage(String(msg || ''));
+            const text = document.getElementById('msgText');
+            const modal = document.getElementById('msgModal');
+            if (text && modal) {
+                text.innerText = String(msg || '');
+                modal.classList.remove('hidden');
+            }
+        };
+        window.closeMsgModal = () => {
+            if (window.__wallzyCloseMessage) return window.__wallzyCloseMessage();
+            document.getElementById('msgModal')?.classList.add('hidden');
+        };
+        window.openInstallModal = () => {
+            if (window.__wallzyOpenInstallModal) return window.__wallzyOpenInstallModal();
+            document.getElementById('installModal')?.classList.remove('hidden');
+        };
+        window.closeInstallModal = () => {
+            if (window.__wallzyCloseInstallModal) return window.__wallzyCloseInstallModal();
+            document.getElementById('installModal')?.classList.add('hidden');
+        };
+        window.openAuthModal = () => window.__wallzyOpenAuthModal?.();
+        window.closeAuthModal = () => window.__wallzyCloseAuthModal?.();
 
         function categorySlug(category) {
             return String(category || 'all').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'all';
