@@ -98,14 +98,13 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
     setDownloading(true);
     const filename = `wallzy-${wallpaper.id}.jpg`;
     try {
-      const response = await fetch(image, {
-        mode: "cors",
-        credentials: "omit",
-        cache: "force-cache",
-      });
+      const downloadUrl = `/api/download?url=${encodeURIComponent(image)}&name=${encodeURIComponent(filename)}`;
+      const response = await fetch(downloadUrl, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const blob = await response.blob();
-      if (!blob.size) throw new Error("Empty image");
+      if (!blob.size) throw new Error("Empty download");
+
       const type = blob.type || "image/jpeg";
       const extension = type.includes("png") ? "png" : type.includes("webp") ? "webp" : type.includes("avif") ? "avif" : "jpg";
       const blobUrl = URL.createObjectURL(blob);
@@ -118,15 +117,9 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
       link.remove();
       setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
     } catch (error) {
-      console.warn("[Wallzy] Direct detail download failed:", error);
+      console.warn("[Wallzy] Download API failed:", error);
       const fallbackUrl = `/api/download?url=${encodeURIComponent(image)}&name=${encodeURIComponent(filename)}`;
-      const link = document.createElement("a");
-      link.href = fallbackUrl;
-      link.download = filename;
-      link.rel = "noopener";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      window.location.assign(fallbackUrl);
     } finally {
       setDownloading(false);
     }
