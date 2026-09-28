@@ -153,21 +153,11 @@ export function createWallpaperRenderer({
         categoryTag.className = 'absolute bottom-2 left-2 z-20 max-w-[calc(100%-3.5rem)] px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md border border-white/15 text-[9px] font-semibold uppercase tracking-[0.08em] text-white/90 shadow-lg truncate pointer-events-none';
         categoryTag.textContent = '#' + categoryLabel;
 
-        const favButton = document.createElement('button');
-        favButton.type = 'button';
-        favButton.className = 'absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-xs text-white hover:bg-black/80 transition border border-white/20';
-        favButton.setAttribute('aria-label', isFav ? 'Remove from favorites' : 'Add to favorites');
-        favButton.addEventListener('click', event => {
-            event.stopPropagation();
-            window.toggleFavorite?.(w.id);
-        });
-
-        const icon = document.createElement('i');
-        icon.dataset.favoriteId = w.id;
-        icon.className = isFav ? 'fa-solid text-white fa-heart' : 'fa-regular text-white fa-heart';
-        favButton.appendChild(icon);
-
-        card.append(skeleton, img, categoryTag, favButton);
+        const favMount = document.createElement('div');
+        favMount.className = 'absolute inset-0 z-20 pointer-events-none';
+        favMount.dataset.wallzyFavoriteMount = '1';
+        favMount.dataset.favoriteId = String(w.id);
+        card.append(skeleton, img, categoryTag, favMount);
         return card;
     }
 
