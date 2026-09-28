@@ -25,22 +25,24 @@ function escapeHtml(value:string){return String(value??"").replace(/&/g,"&amp;")
     </Fragment>)}
   </footer>
 }
-export default function WallzyShell(){const router=useRouter();const pathname=usePathname();const booted=useRef(false);const [isRouteLoading,setIsRouteLoading]=useState(false);const [currentTab,setCurrentTab]=useState("explore");const [searchValue,setSearchValue]=useState("");const [categoryOptions,setCategoryOptions]=useState<string[]>([]);const [activeCategory,setActiveCategory]=useState("all");const [categoryLoading,setCategoryLoading]=useState(true);const [messageModal,setMessageModal]=useState<string|null>(null);const [installModal,setInstallModal]=useState(false);const [authModal,setAuthModal]=useState(false);const [authUser,setAuthUser]=useState<any>(null);const [mounted,setMounted]=useState(false);const [wallpaperView,setWallpaperView]=useState<any>({mode:"explore",items:[],favorites:[],category:"all",search:"",displayedCount:20,hasMore:false,loading:true,loadingMore:false});const config=useMemo(()=>({url:process.env.NEXT_PUBLIC_SUPABASE_URL||"",key:process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||""}),[]);const r2PublicUrl=useMemo(()=>process.env.NEXT_PUBLIC_R2_PUBLIC_URL||"",[]);useEffect(()=>{setIsRouteLoading(false)},[pathname]);useEffect(()=>{setMounted(true);return()=>setMounted(false)},[]);useEffect(()=>{window.__wallzyShowMessage=(msg:string)=>setMessageModal(String(msg||""));window.__wallzyCloseMessage=()=>setMessageModal(null);window.__wallzyOpenInstallModal=()=>setInstallModal(true);window.__wallzyCloseInstallModal=()=>setInstallModal(false);window.__wallzyOpenAuthModal=()=>setAuthModal(true);window.__wallzyCloseAuthModal=()=>setAuthModal(false);window.__wallzySetAuthUser=(user:any)=>setAuthUser(user||null);return()=>{delete window.__wallzyShowMessage;delete window.__wallzyCloseMessage;delete window.__wallzyOpenInstallModal;delete window.__wallzyCloseInstallModal;delete window.__wallzyOpenAuthModal;delete window.__wallzyCloseAuthModal;delete window.__wallzySetAuthUser}},[]);useEffect(()=>{window.__wallzySwitchMainTab=(tab:string)=>setCurrentTab(tab||"explore");window.__wallzySetWallpaperView=(view:any)=>setWallpaperView(view||{});window.__wallzySetSearchValue=(value:string)=>setSearchValue(value);window.__wallzySetCategoryOptions=(values:string[])=>setCategoryOptions(Array.isArray(values)?values:[]);window.__wallzySetActiveCategory=(value:string)=>setActiveCategory(value||"all");window.__wallzySetCategoryLoading=(value:boolean)=>setCategoryLoading(Boolean(value));window.__wallzySupabaseConfig=config;window.__wallzyR2PublicUrl=r2PublicUrl;window.__wallzyNavigateToWallpaper=(wallpaper:any)=>{const id=encodeURIComponent(String(wallpaper?.id||""));if(id){window.__wallzyPrepareDetailNavigation?.();setIsRouteLoading(true);router.push("/wallpaper/"+id)}};if(booted.current)return;booted.current=true;const load=(src:string,type="text/javascript"):Promise<void>=>new Promise<void>((resolve,reject)=>{const old=document.querySelector('script[data-wallzy-src="'+src+'"]');if(old){resolve();return}const sc=document.createElement("script");sc.src=src;sc.type=type;sc.dataset.wallzySrc=src;sc.onload=()=>resolve();sc.onerror=()=>reject(new Error("Failed to load "+src));document.body.appendChild(sc)});(async()=>{try{await load("/js/ripple.js");await load("/js/ads.js");await load("/js/app.js","module")}catch(e){console.error("[Wallzy] bootstrap failed:",e)}})()},[config,r2PublicUrl,router,pathname]);const isDetail=pathname?.startsWith("/wallpaper/");
+export default function WallzyShell(){const router=useRouter();const pathname=usePathname();const booted=useRef(false);const [isRouteLoading,setIsRouteLoading]=useState(false);const [currentTab,setCurrentTab]=useState("explore");const [searchValue,setSearchValue]=useState("");const [categoryOptions,setCategoryOptions]=useState<string[]>([]);const [activeCategory,setActiveCategory]=useState("all");const [categoryLoading,setCategoryLoading]=useState(true);const [messageModal,setMessageModal]=useState<string|null>(null);const [installModal,setInstallModal]=useState(false);const [authModal,setAuthModal]=useState(false);const [authUser,setAuthUser]=useState<any>(null);const [mounted,setMounted]=useState(false);const [wallpaperView,setWallpaperView]=useState<any>({mode:"explore",items:[],favorites:[],category:"all",search:"",displayedCount:20,hasMore:false,loading:true,loadingMore:false});const config=useMemo(()=>({url:process.env.NEXT_PUBLIC_SUPABASE_URL||"",key:process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY||""}),[]);const r2PublicUrl=useMemo(()=>process.env.NEXT_PUBLIC_R2_PUBLIC_URL||"",[]);useEffect(()=>{setIsRouteLoading(false)},[pathname]);useEffect(()=>{window.__wallzyShowMessage=(msg:string)=>setMessageModal(String(msg||""));window.__wallzyCloseMessage=()=>setMessageModal(null);window.__wallzyOpenInstallModal=()=>setInstallModal(true);window.__wallzyCloseInstallModal=()=>setInstallModal(false);window.__wallzyOpenAuthModal=()=>setAuthModal(true);window.__wallzyCloseAuthModal=()=>setAuthModal(false);window.__wallzySetAuthUser=(user:any)=>setAuthUser(user||null);return()=>{delete window.__wallzyShowMessage;delete window.__wallzyCloseMessage;delete window.__wallzyOpenInstallModal;delete window.__wallzyCloseInstallModal;delete window.__wallzyOpenAuthModal;delete window.__wallzyCloseAuthModal;delete window.__wallzySetAuthUser}},[]);useEffect(()=>{window.__wallzySwitchMainTab=(tab:string)=>setCurrentTab(tab||"explore");window.__wallzySetWallpaperView=(view:any)=>setWallpaperView(view||{});window.__wallzySetSearchValue=(value:string)=>setSearchValue(value);window.__wallzySetCategoryOptions=(values:string[])=>setCategoryOptions(Array.isArray(values)?values:[]);window.__wallzySetActiveCategory=(value:string)=>setActiveCategory(value||"all");window.__wallzySetCategoryLoading=(value:boolean)=>setCategoryLoading(Boolean(value));window.__wallzySupabaseConfig=config;window.__wallzyR2PublicUrl=r2PublicUrl;window.__wallzyNavigateToWallpaper=(wallpaper:any)=>{const id=encodeURIComponent(String(wallpaper?.id||""));if(id){window.__wallzyPrepareDetailNavigation?.();setIsRouteLoading(true);router.push("/wallpaper/"+id)}};if(booted.current)return;booted.current=true;const load=(src:string,type="text/javascript"):Promise<void>=>new Promise<void>((resolve,reject)=>{const old=document.querySelector('script[data-wallzy-src="'+src+'"]');if(old){resolve();return}const sc=document.createElement("script");sc.src=src;sc.type=type;sc.dataset.wallzySrc=src;sc.onload=()=>resolve();sc.onerror=()=>reject(new Error("Failed to load "+src));document.body.appendChild(sc)});(async()=>{try{await load("/js/ripple.js");await load("/js/ads.js");await load("/js/app.js","module")}catch(e){console.error("[Wallzy] bootstrap failed:",e)}})()},[config,r2PublicUrl,router,pathname]);const isDetail=pathname?.startsWith("/wallpaper/");
   const shellHostRef=useRef<HTMLDivElement|null>(null);
   const rootsRef=useRef<Record<string,ReturnType<typeof createRoot>>>({});
 
   useLayoutEffect(()=>{
     const host=shellHostRef.current;
     if(!host)return;
-    host.innerHTML=BODY_HTML;
-    setMounted(true);
-  },[]);
 
-  useLayoutEffect(()=>{
-    if(!mounted)return;
+    // The legacy shell lives outside React's child reconciliation. Guard this
+    // injection so StrictMode/Fast Refresh never replaces DOM that React roots
+    // are already managing.
+    if(host.dataset.wallzyInjected!=="1"){
+      host.innerHTML=BODY_HTML;
+      host.dataset.wallzyInjected="1";
+    }
 
     const mount=(id:string)=>{
-      const el=document.getElementById(id);
+      const el=host.querySelector("#"+id);
       if(!el||rootsRef.current[id])return;
       rootsRef.current[id]=createRoot(el);
     };
@@ -55,13 +57,15 @@ export default function WallzyShell(){const router=useRouter();const pathname=us
     mount("authModalMount");
 
     return()=>{
-      Object.values(rootsRef.current).forEach(root=>root.unmount());
+      Object.values(rootsRef.current).forEach(root=>{
+        try{root.unmount()}catch(error){console.warn("[Wallzy] React root cleanup failed:",error)}
+      });
       rootsRef.current={};
     };
-  },[mounted]);
+  },[]);
 
   useEffect(()=>{
-    if(!mounted)return;
+    if(!Object.keys(rootsRef.current).length)return;
 
     rootsRef.current["bottomNavMount"]?.render(
       <BottomNav activeTab={currentTab} onSelect={tab=>{
