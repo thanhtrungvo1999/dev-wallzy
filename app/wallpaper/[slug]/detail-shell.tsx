@@ -14,7 +14,7 @@ declare global {
 
 export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpaper }) {
   const router = useRouter();
-  const image = wallpaperImageUrl(wallpaper);
+  const image = wallpaperImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
   const title = wallpaperTitle(wallpaper);
   const category = wallpaper.category || "Wallpaper";
   const [favorite, setFavorite] = useState(false);
@@ -23,7 +23,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const [downloading, setDownloading] = useState(false);
   const [imageReady, setImageReady] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
-  const [imageSrc, setImageSrc] = useState(image);
+  const [imageSrc, setImageSrc] = useState(image || null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -169,22 +169,25 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
         <section className="flex-1 min-h-0 flex items-center justify-center py-5">
           <div className="relative h-full max-h-full max-w-full flex items-center justify-center">
             {!imageReady && !imageFailed && <div className="absolute inset-0 rounded-2xl skeleton-wave" />}
-            <img
-              src={imageSrc}
-              alt={title}
-              onLoad={() => setImageReady(true)}
-              onError={() => {
-                if (imageSrc !== wallpaper.public_url && wallpaper.public_url) {
-                  setImageSrc(wallpaper.public_url);
-                  setImageFailed(false);
-                  return;
-                }
-                setImageFailed(true);
-              }}
-              className={`relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl transition-opacity duration-300 ${imageReady ? "opacity-100" : "opacity-100"}`}
-              decoding="async"
-              draggable={false}
-            />
+            {imageSrc ? (
+              <img
+                src={imageSrc}
+                alt={title}
+                onLoad={() => setImageReady(true)}
+                onError={() => {
+                  if (imageSrc !== wallpaper.public_url && wallpaper.public_url) {
+                    setImageSrc(wallpaper.public_url);
+                    setImageFailed(false);
+                    return;
+                  }
+                  setImageFailed(true);
+                  setImageSrc(null);
+                }}
+                className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl transition-opacity duration-300 opacity-100"
+                decoding="async"
+                draggable={false}
+              />
+            ) : null}
             {imageFailed && <div className="absolute inset-0 rounded-2xl bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
           </div>
         </section>
