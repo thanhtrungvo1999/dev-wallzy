@@ -4,7 +4,6 @@ import "./scroll.js";
 import { getThumbnailUrl } from "./image-utils.js";
 import "./ui-modals.js";
 import { requireLogin, setLoginUser } from "./login-check.js";
-import { createSearchController } from "./search.js";
 import { createNavigationController } from "./navigation.js";
 import { createCategoryController } from "./category.js";
 
@@ -518,10 +517,7 @@ import { createCategoryController } from "./category.js";
             }
         }
 
-        createSearchController({
-            onSearch: runDatabaseSearch,
-            onClear: () => runDatabaseSearch('')
-        });
+        window.__wallzySearch = runDatabaseSearch;
 
         createNavigationController({
             getCurrentTab: () => currentTab,
