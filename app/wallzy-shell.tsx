@@ -56,12 +56,11 @@ export default function WallzyShell(){const router=useRouter();const pathname=us
     mount("installModalMount");
     mount("authModalMount");
 
-    return()=>{
-      Object.values(rootsRef.current).forEach(root=>{
-        try{root.unmount()}catch(error){console.warn("[Wallzy] React root cleanup failed:",error)}
-      });
-      rootsRef.current={};
-    };
+    // Do not synchronously unmount these independent roots here.
+    // In React StrictMode/Fast Refresh the effect cleanup can run while a
+    // root is still processing its current render, which triggers:
+    // "Attempted to synchronously unmount a root while React was already
+    // rendering." The shell host is persistent for the lifetime of this app.
   },[]);
 
   useEffect(()=>{
