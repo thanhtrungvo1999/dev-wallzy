@@ -142,8 +142,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 displayedCount = Number(state.displayedCount) || cloudUploadedImages.length || 20;
                 hasMoreCloudImages = Boolean(state.hasMore);
                 allHasMoreCloudImages = Boolean(state.allHasMore);
-                const input = document.getElementById('searchInput');
-                if (input) input.value = searchQuery;
+                window.__wallzySetSearchValue?.(searchQuery);
                 categoryController.renderCategoryNav();
                 updateWallpapersList();
                 requestAnimationFrame(() => {
