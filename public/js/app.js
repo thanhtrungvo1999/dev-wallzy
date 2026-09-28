@@ -269,12 +269,13 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                         if (user) {
                             userId = user.id; setLoginUser(user); authController?.updateAuthUIState(user);
                         } else {
-                            userId = null; setLoginUser(null); authController?.updateAuthUIState(null); cloudFavorites = []; loadLocalGradients();
+                            userId = null; setLoginUser(null); authController?.updateAuthUIState(null); cloudFavorites = []; window.__wallzySetFavoriteIds?.([]); loadLocalGradients();
                             if (currentTab !== 'tiktok') refreshCurrentView();
                         }
                     },
                     onFavorites: items => {
                         cloudFavorites = items;
+                        window.__wallzySetFavoriteIds?.((items || []).map(item => String(item?.id || '')).filter(Boolean));
                         if (currentTab !== 'tiktok') refreshCurrentView();
                     },
                     onGradients: d => {
@@ -968,14 +969,13 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             if (!requireLogin()) return;
             const wallpaper = wallpapers.find(w => w.id === id); if (!wallpaper) return;
             let updated = [...cloudFavorites]; const idx = updated.findIndex(f => f.id === id);
-            idx > -1 ? updated.splice(idx, 1) : updated.push(wallpaper); cloudFavorites = updated;
+            idx > -1 ? updated.splice(idx, 1) : updated.push(wallpaper); cloudFavorites = updated; window.__wallzySetFavoriteIds?.(cloudFavorites.map(item => String(item?.id || '')).filter(Boolean));
             if (userId && db) {
                 db.from('favorites').upsert({ user_id: userId, items: cloudFavorites }, { onConflict: 'user_id' })
                     .then(({ error }) => { if (error) console.error('[Wallzy] Favorite sync failed:', error); })
                     .catch(error => console.error('[Wallzy] Favorite sync failed:', error));
             }
             if (currentTab === 'favorites') wallpaperRenderer.renderFavoritesView();
-            else document.querySelectorAll('[data-favorite-id]').forEach(icon => { if (icon.dataset.favoriteId === id) icon.className = idx > -1 ? 'fa-solid text-white fa-heart' : 'fa-regular text-white fa-heart'; });
         };
 
         window.__wallzyIsFavorite = id => !!cloudFavorites.some(item => String(item?.id) === String(id));
@@ -997,6 +997,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 return null;
             }
             cloudFavorites = updated;
+            window.__wallzySetFavoriteIds?.(cloudFavorites.map(item => String(item?.id || '')).filter(Boolean));
             if (currentTab === 'favorites') wallpaperRenderer.renderFavoritesView();
             return idx === -1;
         };
