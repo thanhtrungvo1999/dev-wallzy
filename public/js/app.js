@@ -855,8 +855,6 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 invalidUrlActive = false;
                 document.getElementById('invalidUrlScreen')?.classList.add('hidden');
                 currentTab = 'explore';
-                refreshCurrentView();
-                openModal(wallpaper, false);
                 window.__wallzyApplyingRoute = false;
                 return;
             }
