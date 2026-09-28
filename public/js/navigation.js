@@ -53,8 +53,9 @@ export function createNavigationController({
             if (tab === 'explore') {
                 // Switching back from Favorites/Studio/TikTok must not leave
                 // the previous view's DOM nodes or rendered-id cache behind.
+                // Wallpaper grid is now owned by React.
+                // Do not mutate or clear its DOM from the legacy navigation layer.
                 window.resetWallpaperRenderer?.();
-                document.getElementById('wallpaperGrid')?.replaceChildren();
             }
             gridContainer.classList.remove('hidden');
             categoryNav.classList.remove('hidden');
