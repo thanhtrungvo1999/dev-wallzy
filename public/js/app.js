@@ -269,7 +269,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                         if (user) {
                             userId = user.id; setLoginUser(user); authController?.updateAuthUIState(user);
                         } else {
-                            userId = null; setLoginUser(null); authController?.updateAuthUIState(null); cloudFavorites = []; window.__wallzySetFavoriteIds?.([]); loadLocalGradients();
+                            userId = null; setLoginUser(null); authController?.updateAuthUIState(null); cloudFavorites = []; cloudCustomGradients = []; window.__wallzySetFavoriteIds?.([]);
                             if (currentTab !== 'tiktok') refreshCurrentView();
                         }
                     },
@@ -280,7 +280,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                     },
                     onGradients: d => {
                         if (d.exists() && d.data().items) cloudCustomGradients = d.data().items;
-                        else loadLocalGradients();
+                        else cloudCustomGradients = [];
                         if (currentTab === 'studio') window.renderSavedGradients?.();
                     },
                     onLoadMoreReady: loader => {
@@ -289,7 +289,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                     }
                 });
                 app = backend.app; db = backend.db; auth = backend.auth; appId = backend.appId;
-                getImageByIdFromBackend = backend.getImageById;
+                getImageByIdFromBackend = backend.getImageById; window.__wallzySaveGradient = async gradient => { if (!userId || !backend.saveGradient) { showMessage("Please sign in first."); return null; } try { const items = await backend.saveGradient(gradient); cloudCustomGradients = items || []; return items; } catch (error) { console.error("[Wallzy] Gradient save failed:", error); showMessage("Unable to save gradient. Please try again."); return null; } };
                 searchWallpapersFromBackend = backend.searchWallpapers;
                 authController = createAuthController({ getAuth: backend.auth });
 
