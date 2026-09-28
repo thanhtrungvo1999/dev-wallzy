@@ -518,6 +518,7 @@ import { createCategoryController } from "./category.js";
         }
 
         window.__wallzySearch = runDatabaseSearch;
+        window.__wallzyClearSearch = () => runDatabaseSearch("");
 
         createNavigationController({
             getCurrentTab: () => currentTab,
@@ -741,6 +742,8 @@ import { createCategoryController } from "./category.js";
                 refreshCurrentView();
             }
         };
+
+        window.__wallzyFilterCategory = window.filterCategory;
 
         function updateWallpapersList() {
             wallpapers = [...cloudUploadedImages];
