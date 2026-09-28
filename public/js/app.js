@@ -5,7 +5,6 @@ import { getThumbnailUrl } from "./image-utils.js";
 import "./ui-modals.js";
 import { requireLogin, setLoginUser } from "./login-check.js";
 import { createNavigationController } from "./navigation.js";
-import { createCategoryController } from "./category.js";
 
         let app, db, auth, appId, userId = null;
         let wallpapers = [], cloudFavorites = [], cloudCustomGradients = [], cloudUploadedImages = [];
@@ -530,20 +529,55 @@ import { createCategoryController } from "./category.js";
         });
 
 
-        const categoryController = createCategoryController({
-            getWallpapers: () => wallpapers,
-            getCloudUploadedImages: () => cloudUploadedImages,
-            getCloudCategories: () => cloudCategories,
-            getCurrentCategory: () => currentCategory,
-            setCurrentCategory: value => { currentCategory = value; },
-            resetDisplayedCount: () => { displayedCount = 20; },
-            refreshCurrentView: () => refreshCurrentView(),
-            setCategorySEO,
-            setAppRoute,
-            categoryPath,
-            isSkeletonActive: () => isSkeletonActive,
-            isCategoryLoading: () => isCategoryLoading
-        });
+        const categoryController = {
+            renderCategoryNav() {
+                if (isSkeletonActive) {
+                    window.__wallzySetCategoryLoading?.(true);
+                    window.__wallzySetCategoryOptions?.([]);
+                    return;
+                }
+
+                const wallpaperSource = [
+                    ...wallpapers,
+                    ...cloudUploadedImages
+                ];
+
+                let categories = Array.from(new Set([
+                    ...cloudCategories,
+                    ...wallpaperSource.map(w => w.category?.trim()).filter(Boolean)
+                ]));
+
+                categories.sort((a, b) => a.localeCompare(b));
+
+                const otherIndex = categories.findIndex(c => c.toLowerCase() === 'other');
+                if (otherIndex > -1) categories.push(categories.splice(otherIndex, 1)[0]);
+
+                window.__wallzySetCategoryLoading?.(false);
+                window.__wallzySetCategoryOptions?.(categories);
+                window.__wallzySetActiveCategory?.(currentCategory);
+
+                window.refreshTopControlsHeight?.();
+                requestAnimationFrame(() => {
+                    window.refreshTopControlsHeight?.();
+                    requestAnimationFrame(() => window.refreshTopControlsHeight?.());
+                });
+            }
+        };
+
+        window.filterCategory = (cat) => {
+            currentCategory = cat;
+            window.__wallzySetActiveCategory?.(cat);
+            displayedCount = 20;
+
+            const scrollArea = document.getElementById('mainScrollArea');
+            if (scrollArea) scrollArea.scrollTo({ top: 0, behavior: 'instant' });
+
+            const route = categoryPath(cat);
+            if (window.location.pathname !== route) setAppRoute(route);
+
+            setCategorySEO(cat);
+            refreshCurrentView();
+        };
 
         // Each category keeps its own paginated state in memory.
         // The "all" view reuses the main feed cache so Home, Explore and
