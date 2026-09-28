@@ -157,9 +157,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             }
         }
 
-        const loadLocalGradients = () => { try { const data = JSON.parse(localStorage.getItem('wallzy_local_gradients') || '[]'); cloudCustomGradients = Array.isArray(data) ? data : []; } catch (e) { cloudCustomGradients = []; } };
-
-
+        
         setTimeout(() => {
             if (!isWallpaperDataReady) {
                 isSkeletonActive = false; isWallpaperDataReady = true;
@@ -310,7 +308,6 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             try { markCurrentExploreHistoryState(); } catch (e) {}
             const splashScreen = document.getElementById('splashScreen');
             const body = document.getElementById('bodyElement');
-            try { loadLocalGradients(); } catch (e) {}
             try { updateWallpapersList(); } catch (e) {}
             try { initTopControlsHideOnScroll(); } catch (e) {}
             bootstrapBackend();
