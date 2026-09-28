@@ -48,3 +48,4 @@ function escapeHtml(value:string){return String(value??"").replace(/&/g,"&amp;")
   },[mounted,isDetail,searchValue,categoryOptions,activeCategory,categoryLoading,wallpaperView,messageModal,installModal,authModal]);
 
   return <><div id="routeLoadingOverlay" className={`fixed inset-0 z-[200000] items-center justify-center bg-black/45 backdrop-blur-[3px] ${isRouteLoading?"flex":"hidden"}`} aria-hidden={!isRouteLoading}><div className="w-12 h-12 rounded-2xl bg-white/[0.08] border border-white/15 flex items-center justify-center shadow-2xl"><div className="w-5 h-5 rounded-full border-2 border-white/25 border-t-white animate-spin"></div></div></div><div className={isDetail?"hidden":""}><div dangerouslySetInnerHTML={{__html:BODY_HTML}}/></div></>
+}
