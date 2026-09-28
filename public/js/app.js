@@ -7,7 +7,6 @@ import { requireLogin, setLoginUser } from "./login-check.js";
 import { createSearchController } from "./search.js";
 import { createNavigationController } from "./navigation.js";
 import { createCategoryController } from "./category.js";
-import { createWallpaperRenderer } from "./wallpaper-renderer.js";
 
         let app, db, auth, appId, userId = null;
         let wallpapers = [], cloudFavorites = [], cloudCustomGradients = [], cloudUploadedImages = [];
@@ -463,13 +462,13 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 wallpapers = [...cloudUploadedImages];
                 hasMoreCloudImages = Boolean(allHasMoreCloudImages);
                 loadMoreImagesFromBackend = allLoadMoreImagesFromBackend;
-                wallpaperRenderer.resetRenderState();
+                
                 refreshCurrentView();
                 return;
             }
 
             if (currentTab !== 'explore') {
-                wallpaperRenderer.resetRenderState();
+                
                 refreshCurrentView();
                 return;
             }
@@ -479,7 +478,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             wallpapers = [];
             hasMoreCloudImages = false;
             loadMoreImagesFromBackend = null;
-            wallpaperRenderer.resetRenderState();
+            
             refreshCurrentView();
 
             const categoryAtStart = currentCategory;
@@ -533,19 +532,6 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             renderSavedGradients: () => window.renderSavedGradients?.(),
         });
 
-
-        const wallpaperRenderer = createWallpaperRenderer({            getWallpapers: () => wallpapers,
-            getCloudFavorites: () => cloudFavorites,
-            getCurrentCategory: () => currentCategory,
-            getSearchQuery: () => searchQuery,
-            getDisplayedCount: () => displayedCount,
-            getHasMoreCloudImages: () => hasMoreCloudImages,
-            isSkeletonActive: () => isSkeletonActive,
-            isCategoryLoading: () => isCategoryLoading,
-            getThumbnailUrl,
-            refreshCurrentView: () => refreshCurrentView()
-        });
-        window.resetWallpaperRenderer = () => wallpaperRenderer.resetRenderState();
 
         const categoryController = createCategoryController({
             getWallpapers: () => wallpapers,
@@ -614,7 +600,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 displayedCount = cached.images.length;
                 hasMoreCloudImages = cached.hasMore;
                 loadMoreImagesFromBackend = cached.loadMore;
-                wallpaperRenderer.renderWallpapers(categoryName);
+                refreshCurrentView();
                 return;
             }
 
@@ -629,7 +615,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 displayedCount = allCategoryCache.images.length;
                 hasMoreCloudImages = allCategoryCache.hasMore;
                 loadMoreImagesFromBackend = allCategoryCache.loadMore;
-                wallpaperRenderer.renderWallpapers('all');
+                refreshCurrentView();
                 return;
             }
 
@@ -731,7 +717,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 wallpapers = [];
                 hasMoreCloudImages = false;
                 loadMoreImagesFromBackend = loadCategoryPage;
-                wallpaperRenderer.renderWallpapers(categoryName);
+                refreshCurrentView();
 
                 if (state.images.length === 0) {
                     // Let the browser paint the loading state first. Without
@@ -750,13 +736,13 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 hasMoreCloudImages = state.hasMore;
                 loadMoreImagesFromBackend = loadCategoryPage;
                 isCategoryLoading = false;
-                wallpaperRenderer.renderWallpapers(categoryName);
+                refreshCurrentView();
             } catch (error) {
                 isCategoryLoading = false;
                 categoryPagesCache.delete(categoryKey);
                 console.error('[Wallzy] Category load failed:', error);
                 showMessage('Unable to load this category. Please try again.');
-                wallpaperRenderer.renderWallpapers(categoryName);
+                refreshCurrentView();
             }
         };
 
@@ -767,8 +753,17 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
         }
 
         function refreshCurrentView() {
-            if (currentTab === 'explore') wallpaperRenderer.renderWallpapers(currentCategory);
-            else if (currentTab === 'favorites') wallpaperRenderer.renderFavoritesView();
+            window.__wallzySetWallpaperView?.({
+                mode: currentTab === 'favorites' ? 'favorites' : 'explore',
+                items: currentTab === 'favorites' ? [...cloudFavorites] : [...wallpapers],
+                favorites: [...cloudFavorites],
+                category: currentCategory,
+                search: searchQuery,
+                displayedCount,
+                hasMore: currentTab === 'explore' && hasMoreCloudImages,
+                loading: Boolean(isSkeletonActive || isCategoryLoading),
+                loadingMore: Boolean(isLoadingMoreCloudImages)
+            });
         }
 
         window.loadMoreWallpapers = async () => {
@@ -787,27 +782,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             }
 
             isLoadingMoreCloudImages = true;
-            const button = document.getElementById('loadMoreBtn');
-            const grid = document.getElementById('wallpaperGrid');
-            const loadMoreSkeletons = [];
-
-            // Show a small wave skeleton at the end of the existing grid while
-            // the next 20 wallpapers are being fetched.
-            if (grid) {
-                for (let i = 0; i < 4; i++) {
-                    const skeleton = document.createElement('div');
-                    skeleton.dataset.loadMoreSkeleton = '1';
-                    skeleton.className = 'relative rounded-3xl overflow-hidden aspect-[9/16] bg-[#0a0a0c] skeleton-wave border border-white/10';
-                    grid.appendChild(skeleton);
-                    loadMoreSkeletons.push(skeleton);
-                }
-            }
-
-            if (button) {
-                button.disabled = true;
-                button.innerHTML = '<span class="inline-flex items-center justify-center gap-2"><span class="w-3.5 h-3.5 rounded-full border-2 border-current border-t-transparent animate-spin"></span><span>Loading...</span></span>';
-                button.classList.add('opacity-70', 'cursor-wait');
-            }
+            refreshCurrentView();
 
             try {
                 const page = await loader();
@@ -840,12 +815,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                 showMessage('Unable to load more wallpapers. Please try again.');
             } finally {
                 isLoadingMoreCloudImages = false;
-                loadMoreSkeletons.forEach(skeleton => skeleton.remove());
-                if (button) {
-                    button.disabled = false;
-                    button.textContent = 'Load more';
-                    button.classList.remove('opacity-70', 'cursor-wait');
-                }
+                refreshCurrentView();
             }
         };
 
@@ -988,7 +958,7 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
                     .then(({ error }) => { if (error) console.error('[Wallzy] Favorite sync failed:', error); })
                     .catch(error => console.error('[Wallzy] Favorite sync failed:', error));
             }
-            if (currentTab === 'favorites') wallpaperRenderer.renderFavoritesView();
+            if (currentTab === 'favorites') refreshCurrentView();
         };
 
         window.__wallzyIsFavorite = id => !!cloudFavorites.some(item => String(item?.id) === String(id));
@@ -1011,6 +981,6 @@ import { createWallpaperRenderer } from "./wallpaper-renderer.js";
             }
             cloudFavorites = updated;
             window.__wallzySetFavoriteIds?.(cloudFavorites.map(item => String(item?.id || '')).filter(Boolean));
-            if (currentTab === 'favorites') wallpaperRenderer.renderFavoritesView();
+            if (currentTab === 'favorites') refreshCurrentView();
             return idx === -1;
         };
