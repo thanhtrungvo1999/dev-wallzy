@@ -1,6 +1,5 @@
 import "./download.js";
 import "./studio.js";
-import "./tiktok.js";
 import "./scroll.js";
 import { getThumbnailUrl } from "./image-utils.js";
 import "./ui-modals.js";
