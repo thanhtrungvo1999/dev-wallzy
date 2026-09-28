@@ -45,7 +45,6 @@ export function createNavigationController({
             studioContainer.classList.remove('hidden');
             categoryNav.classList.add('hidden');
             searchBarContainer.classList.add('hidden');
-            renderSavedGradients?.();
         } else if (tab === 'tiktok') {
             tiktokContainer.classList.remove('hidden');
             categoryNav.classList.add('hidden');
