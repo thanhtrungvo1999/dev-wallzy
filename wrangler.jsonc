@@ -1,0 +1,1 @@
+{"$schema":"./node_modules/wrangler/config-schema.json","name":"wallzy","main":".open-next/worker.js","compatibility_date":"2026-09-24","compatibility_flags":["nodejs_compat"],"assets":{"directory":".open-next/assets","binding":"ASSETS"},"r2_buckets":[{"binding":"WALLPAPERS_BUCKET","bucket_name":"wallzy"}],"observability":{"enabled":true}}
