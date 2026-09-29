@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Wallpaper } from "../../lib/wallpaper";
-import { wallpaperImageUrl, wallpaperPath, wallpaperTitle, getWallzySupabase, loadWallzyFavorites, saveWallzyFavorites } from "../../lib/wallpaper";
+import { wallpaperImageUrl, wallpaperOriginalImageUrl, wallpaperPath, wallpaperTitle, getWallzySupabase, loadWallzyFavorites, saveWallzyFavorites } from "../../lib/wallpaper";
 
 export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpaper }) {
   const router = useRouter();
   const image = wallpaperImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
+  const originalImage = wallpaperOriginalImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
   const title = wallpaperTitle(wallpaper);
   const category = wallpaper.category || "Wallpaper";
   const [favorite, setFavorite] = useState(false);
@@ -104,12 +105,12 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   };
 
   const downloadOriginal = async () => {
-    if (!image) return;
+    if (!originalImage) return;
     setAdOpen(false);
     setDownloading(true);
     const filename = `wallzy-${wallpaper.id}.jpg`;
     try {
-      const response = await fetch(`/api/download?url=${encodeURIComponent(image)}&name=${encodeURIComponent(filename)}`, { cache: "no-store" });
+      const response = await fetch(`/api/download?url=${encodeURIComponent(originalImage)}&name=${encodeURIComponent(filename)}`, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const blob = await response.blob();
       const type = blob.type || "image/jpeg";
