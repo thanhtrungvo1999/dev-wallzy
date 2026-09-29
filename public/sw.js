@@ -1,11 +1,10 @@
-const CACHE_VERSION = 'wallzy-v7';
+const CACHE_VERSION = 'wallzy-v8-next';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 const MAX_IMAGE_CACHE_ENTRIES = 80;
 
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-256.png',
@@ -114,7 +113,7 @@ async function networkFirst(request) {
   } catch (error) {
     const cached = await caches.match(request);
     if (cached) return cached;
-    const fallback = await caches.match('/index.html');
+    const fallback = await caches.match('/explore');
     if (fallback) return fallback;
     throw error;
   }
