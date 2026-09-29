@@ -34,10 +34,7 @@ export function wallpaperOriginalImageUrl(w: Wallpaper) {
 export function wallpaperImageUrl(w: Wallpaper) {
   const original = wallpaperOriginalImageUrl(w);
   if (!original) return "";
-  const base = (process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://img.wallzy.org").replace(/\/+$/, "");
-  const sourcePath = String(w.storage_path || "").trim().replace(/^\/+/, "");
-  if (!sourcePath) return original;
-  return `${base}/cdn-cgi/image/width=600,quality=70,format=auto/${sourcePath}`;
+  return `${wallzyTransformBase}/cdn-cgi/image/width=600,quality=70,format=auto/${original}`;
 }
 export function wallpaperPath(w: Wallpaper) {
   return `/wallpaper/${slugifyWallpaper(wallpaperTitle(w))}-${encodeURIComponent(String(w.id))}`;
