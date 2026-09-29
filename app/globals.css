@@ -12,8 +12,8 @@
 
 /* React wallpaper skeleton shimmer */
 .skeleton-wave{position:absolute!important;inset:0!important;display:block!important;overflow:hidden!important;background:#0a0a0c!important;pointer-events:none!important;z-index:5!important}
-.skeleton-wave::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,.025) 0%,rgba(255,255,255,.025) 30%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.025) 70%,rgba(255,255,255,.025) 100%);background-size:220% 100%;animation:wallzySkeletonWave 1.25s linear infinite;will-change:background-position}
-.skeleton-wave::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);transform:translateX(-120%);animation:wallzySkeletonSweep 1.8s ease-in-out infinite;will-change:transform;pointer-events:none}
+.skeleton-wave::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0c 0%,#101014 30%,#202026 50%,#101014 70%,#0a0a0c 100%);background-size:200% 100%;animation:wallzySkeletonWave 1.15s linear infinite!important;will-change:background-position}
+.skeleton-wave::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-18deg) translateX(0);animation:wallzySkeletonSweep 1.35s linear infinite!important;will-change:transform;pointer-events:none}
 @keyframes wallzySkeletonWave{0%{background-position:200% 0}100%{background-position:-200% 0}}
-@keyframes wallzySkeletonSweep{0%,25%{transform:translateX(-120%)}70%,100%{transform:translateX(120%)}}
+@keyframes wallzySkeletonSweep{0%{transform:skewX(-18deg) translateX(0)}100%{transform:skewX(-18deg) translateX(355%)}}
 @media (prefers-reduced-motion:reduce){.skeleton-wave::before,.skeleton-wave::after{animation:none!important}}
