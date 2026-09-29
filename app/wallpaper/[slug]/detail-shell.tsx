@@ -177,7 +177,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.15),#000000_72%)]" />
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-black via-black/70 to-transparent" />
-      </div>
+      </div>}
       <div className="relative z-10 h-[100dvh] flex flex-col px-5 pt-5 pb-4">
         <header className="flex items-center justify-between flex-shrink-0 pt-1 relative z-20">
           <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-11 h-11 rounded-full bg-white/[0.07] backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,.35)] active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
@@ -203,6 +203,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
           <div className="space-y-2.5">
           <button onClick={share} className="ripple-target w-full bg-white/[0.065] backdrop-blur-xl text-white font-semibold py-3.5 rounded-2xl border border-white/15 shadow-[0_12px_35px_rgba(0,0,0,.28)] flex items-center justify-center gap-2 active:scale-[.99] transition"><i className="fa-solid fa-share-nodes text-xs" /><span className="text-[11px] uppercase tracking-wider">Share Wallpaper</span></button>
           <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl shadow-[0_14px_40px_rgba(255,255,255,.12)] flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span></button>
+          </div>
         </section>
       </div>
 
