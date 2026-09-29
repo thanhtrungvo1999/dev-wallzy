@@ -28,11 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `https://www.wallzy.org${wallpaperPath(wallpaper)}`;
 
   return {
-    title: `${title} | Wallzy`,
+    title: `${title} - 4K UHD Wallpaper for iPhone & Android | Wallzy`,
     description,
     alternates: { canonical },
     openGraph: {
-      title: `${title} | Wallzy`,
+      title: `${title} - 4K UHD Wallpaper for iPhone & Android | Wallzy`,
       description,
       url: canonical,
       type: "article",
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | Wallzy`,
+      title: `${title} - 4K UHD Wallpaper for iPhone & Android | Wallzy`,
       description,
       images: image ? [image] : undefined,
     },
