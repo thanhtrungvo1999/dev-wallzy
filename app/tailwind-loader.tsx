@@ -1,1 +1,0 @@
-"use client";import{useEffect}from"react";export default function TailwindLoader(){useEffect(()=>{if(document.querySelector('script[data-wallzy-tailwind]'))return;const s=document.createElement("script");s.src="https://cdn.tailwindcss.com";s.async=true;s.dataset.wallzyTailwind="1";document.head.appendChild(s)},[]);return null}
