@@ -1,108 +1,23 @@
 // Wallzy download and ad flow
-        let downloadAdTimer = null;
-        let downloadAdSeconds = 5;
-        let downloadAdReady = false;
-        let pendingDownloadUrl = null;
-        let pendingDownloadFilename = null;
-
         window.openAdModal = (urlToDownload, customFilename = null) => {
-            if (!urlToDownload) return;
-            pendingDownloadUrl = urlToDownload;
-            pendingDownloadFilename = customFilename;
-
-            const modal = document.getElementById('adModal');
-            const countdown = document.getElementById('downloadAdCountdown');
-            const waiting = document.getElementById('downloadAdWaiting');
-            const skip = document.getElementById('downloadAdSkip');
-            const close = document.getElementById('downloadAdClose');
-            const slot = document.getElementById('adModalSlot');
-            
-            if (!modal) {
-                // Fallback: if the modal is not found, download directly
-                window.startDownloadDirectly(pendingDownloadUrl, pendingDownloadFilename);
-                return;
-            }
-
-            if (downloadAdTimer) clearInterval(downloadAdTimer);
-            downloadAdSeconds = 5;
-            downloadAdReady = false;
-            countdown.textContent = '5s';
-            waiting.textContent = 'Please wait...';
-            waiting.classList.remove('hidden');
-            skip.disabled = true;
-            skip.classList.remove('bg-white', 'text-black', 'cursor-pointer', 'active:scale-[.98]');
-            skip.classList.add('bg-white/10', 'text-white/30', 'cursor-not-allowed');
-            close?.classList.add('hidden');
-            
-            // Render the 300x250 native ad code inside a sandboxed iframe.
-            slot.innerHTML = '';
-            const iframe = document.createElement('iframe');
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
-            iframe.style.width = '300px';
-            iframe.style.height = '250px';
-            iframe.style.border = '0';
-            iframe.style.overflow = 'hidden';
-            iframe.scrolling = 'no';
-            iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;background:transparent;overflow:hidden;}#container-d57e1d0e6497dfaa47e074d39d673693{width:300px;height:250px;overflow:hidden;}</style></head><body>
-                <script async="async" data-cfasync="false" src="https://pl31467882.profitableratecpmnetwork.com/d57e1d0e6497dfaa47e074d39d673693/invoke.js"></scr`+`ipt>
-                <div id="container-d57e1d0e6497dfaa47e074d39d673693"></div>
-            </body></html>`;
-            slot.appendChild(iframe);
-
-            modal.classList.remove('hidden');
-
-            downloadAdTimer = setInterval(() => {
-                downloadAdSeconds -= 1;
-                if (downloadAdSeconds > 0) {
-                    countdown.textContent = downloadAdSeconds + 's';
-                } else {
-                    clearInterval(downloadAdTimer);
-                    downloadAdTimer = null;
-                    downloadAdReady = true;
-                    countdown.textContent = '';
-                    waiting.textContent = 'You can continue';
-                    skip.disabled = false;
-                    skip.classList.remove('bg-white/10', 'text-white/30', 'cursor-not-allowed');
-                    skip.classList.add('bg-white', 'text-black', 'cursor-pointer', 'active:scale-[.98]');
-                    close?.classList.remove('hidden');
-                    close?.classList.add('flex');
-                }
-            }, 1000);
+            window.__wallzyOpenDownloadAd?.(urlToDownload, customFilename);
         };
 
         window.closeDownloadAdModal = () => {
-            if (downloadAdTimer) clearInterval(downloadAdTimer);
-            downloadAdTimer = null;
-            downloadAdReady = false;
-            document.getElementById('adModal')?.classList.add('hidden');
+            window.__wallzyCloseDownloadAd?.();
         };
 
         window.skipDownloadAdAndStart = () => {
-            if (!downloadAdReady) return;
-            if (downloadAdTimer) clearInterval(downloadAdTimer);
-            downloadAdTimer = null;
-            downloadAdReady = false;
-            document.getElementById('adModal')?.classList.add('hidden');
-
-            // Use the exact same download flow as Explore.
-            if (pendingDownloadUrl) {
-                window.startDownloadDirectly(pendingDownloadUrl, pendingDownloadFilename);
-            }
+            window.__wallzySkipDownloadAd?.();
         };
 
-        window.showRewardedAdThenDownload = () => { 
-            if (!window.__wallzyGetCurrentWallpaper?.()?.url) return; 
-            openAdModal(window.__wallzyGetCurrentWallpaper?.().url); 
+        window.showRewardedAdThenDownload = () => {
+            const wallpaper = window.__wallzyGetCurrentWallpaper?.();
+            if (wallpaper?.url) window.__wallzyOpenDownloadAd?.(wallpaper.url);
         };
-        
+
         function setDownloadLoading(visible, title = 'Preparing download', status = 'Getting the original wallpaper...') {
-            const overlay = document.getElementById('downloadLoadingOverlay');
-            if (!overlay) return;
-            const titleEl = document.getElementById('downloadLoadingTitle');
-            const statusEl = document.getElementById('downloadLoadingStatus');
-            if (titleEl) titleEl.textContent = title;
-            if (statusEl) statusEl.textContent = status;
-            overlay.classList.toggle('hidden', !visible);
+            window.__wallzySetDownloadLoading?.(visible, title, status);
         }
 
         window.startDownloadDirectly = async (urlToDownload = null, customFilename = null) => {
