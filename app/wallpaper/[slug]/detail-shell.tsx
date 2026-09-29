@@ -124,7 +124,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
       setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
       setMessage("Downloading file...");
     } catch {
-      window.location.assign(`/api/download?url=${encodeURIComponent(image)}&name=${encodeURIComponent(filename)}`);
+      window.location.assign(`/api/download?url=${encodeURIComponent(originalImage)}&name=${encodeURIComponent(filename)}`);
     } finally { setDownloading(false); }
   };
 
