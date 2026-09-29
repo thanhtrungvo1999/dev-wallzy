@@ -172,24 +172,37 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
 
   return (
     <main className="fixed inset-0 bg-[#000000] text-white overflow-hidden">
-      <div className="h-[100dvh] flex flex-col p-5">
-        <header className="flex items-center justify-between flex-shrink-0 pt-1">
-          <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-10 h-10 rounded-full bg-[#121215] border border-white/20 flex items-center justify-center shadow-lg active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
-          <span className="max-w-[62%] truncate text-[10px] font-semibold uppercase tracking-widest text-white/90 bg-[#121215]/80 px-3.5 py-1.5 rounded-full border border-white/20">{category} • {quality || "Original"}</span>
+      {image && <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <img src={image} alt="" className="absolute inset-[-12%] w-[124%] h-[124%] object-cover scale-110 blur-[55px] opacity-[0.16]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.15),#000000_72%)]" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-black via-black/70 to-transparent" />
+      </div>
+      <div className="relative z-10 h-[100dvh] flex flex-col px-5 pt-5 pb-4">
+        <header className="flex items-center justify-between flex-shrink-0 pt-1 relative z-20">
+          <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-11 h-11 rounded-full bg-white/[0.07] backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,.35)] active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
+          <span className="max-w-[64%] truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 bg-white/[0.07] backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-lg">{category} • {quality || "Original"}</span>
           <button type="button" onClick={handleFavorite} className="ripple-target w-10 h-10 rounded-full bg-[#121215] border border-white/20 flex items-center justify-center shadow-lg active:scale-95 transition" aria-label="Favorite"><i className={favorite ? "fa-solid fa-heart text-white text-sm" : "fa-regular fa-heart text-white text-sm"} /></button>
         </header>
 
-        <section className="flex-1 min-h-0 flex items-center justify-center py-5">
-          <div className="relative h-full max-h-full max-w-full flex items-center justify-center">
+        <section className="relative flex-1 min-h-0 flex items-center justify-center py-3 sm:py-5">
+          <div className="relative h-full max-h-full max-w-full flex items-center justify-center px-1">
+            <div aria-hidden="true" className="absolute inset-3 rounded-[28px] bg-black/50 blur-2xl opacity-80" />
             {!imageReady && !imageFailed && <div className="absolute inset-0 rounded-2xl skeleton-wave" />}
-            {image && !imageFailed && <img src={image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="relative z-10 max-h-full max-w-full object-contain rounded-2xl shadow-2xl transition-opacity duration-300" decoding="async" draggable={false} />}
+            {image && !imageFailed && <img src={image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="relative z-10 max-h-full max-w-full object-contain rounded-[28px] border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,.62)] transition-opacity duration-300" decoding="async" draggable={false} />}
             {imageFailed && <div className="absolute inset-0 rounded-2xl bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
           </div>
         </section>
 
-        <section className="flex-shrink-0 w-full max-w-sm mx-auto space-y-2.5 pb-1">
-          <button onClick={share} className="ripple-target w-full bg-[#121215] text-white font-semibold py-3 rounded-2xl border border-white/20 shadow-xl flex items-center justify-center gap-2 active:scale-[.99] transition"><i className="fa-solid fa-share-nodes text-xs" /><span className="text-[11px] uppercase tracking-wider">Share Wallpaper</span></button>
-          <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-200 text-black font-semibold py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span></button>
+        <section className="relative flex-shrink-0 w-full max-w-sm mx-auto pb-1">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="px-3 py-1.5 rounded-full bg-white/[0.055] backdrop-blur-xl border border-white/10 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55">{category}</span>
+            <span className="w-1 h-1 rounded-full bg-white/25" />
+            <span className="px-3 py-1.5 rounded-full bg-white/[0.055] backdrop-blur-xl border border-white/10 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55">{quality || "Original"}</span>
+          </div>
+          <div className="space-y-2.5">
+          <button onClick={share} className="ripple-target w-full bg-white/[0.065] backdrop-blur-xl text-white font-semibold py-3.5 rounded-2xl border border-white/15 shadow-[0_12px_35px_rgba(0,0,0,.28)] flex items-center justify-center gap-2 active:scale-[.99] transition"><i className="fa-solid fa-share-nodes text-xs" /><span className="text-[11px] uppercase tracking-wider">Share Wallpaper</span></button>
+          <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl shadow-[0_14px_40px_rgba(255,255,255,.12)] flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span></button>
         </section>
       </div>
 
