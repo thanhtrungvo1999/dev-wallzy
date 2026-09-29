@@ -25,6 +25,38 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const adSlotRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!originalImage) {
+      setQuality("");
+      return;
+    }
+    let cancelled = false;
+    const probe = new Image();
+    probe.onload = () => {
+      if (cancelled) return;
+      const width = probe.naturalWidth || 0;
+      const height = probe.naturalHeight || 0;
+      const max = Math.max(width, height);
+      setQuality(
+        max >= 7680 ? "8K" :
+        max >= 5120 ? "6K" :
+        max >= 3840 ? "4K" :
+        max >= 2560 ? "2K" :
+        max >= 1920 ? "FHD" :
+        max >= 1280 ? "HD" : "SD"
+      );
+    };
+    probe.onerror = () => {
+      if (!cancelled) setQuality("");
+    };
+    probe.src = originalImage;
+    return () => {
+      cancelled = true;
+      probe.onload = null;
+      probe.onerror = null;
+    };
+  }, [originalImage]);
+
+  useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
