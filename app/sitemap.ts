@@ -6,7 +6,7 @@ import type { Wallpaper } from "./lib/wallpaper";
 export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://wallzy.org";
+  const base = "https://www.wallzy.org";
   const sb = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ""
