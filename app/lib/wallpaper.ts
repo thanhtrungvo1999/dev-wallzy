@@ -40,13 +40,15 @@ export function wallpaperPath(w: Wallpaper) {
   return `/wallpaper/${encodeURIComponent(String(w.id))}`;
 }
 export function wallpaperIdFromSlug(slug: string) {
-  const value = decodeURIComponent(String(slug || "").replace(/^\/+|\/+$/g, ""));
-  const uuid = value.match(/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i);
-  if (uuid) return uuid[1];
-  const numeric = value.match(/^(\d+)(?:-|$)/);
-  if (numeric) return numeric[1];
-  const legacy = value.match(/-([^/]+)$/);
-  return legacy ? decodeURIComponent(legacy[1]) : null;
+  const value = decodeURIComponent(String(slug || "").replace(/^\/+|\/+$/g, "")).trim();
+  if (!value || value.includes("/")) return null;
+
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const numeric = /^\d+$/;
+  const numericUuid = /^\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  if (numericUuid.test(value) || uuid.test(value) || numeric.test(value)) return value;
+  return null;
 }
 export async function getWallpaperById(id: string): Promise<Wallpaper | null> {
   const sb = getSupabase();
