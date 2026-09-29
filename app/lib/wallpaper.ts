@@ -34,7 +34,7 @@ export function wallpaperOriginalImageUrl(w: Wallpaper) {
 export function wallpaperImageUrl(w: Wallpaper) {
   const original = wallpaperOriginalImageUrl(w);
   if (!original) return "";
-  return `${wallzyTransformBase}/cdn-cgi/image/width=480,quality=60,format=auto/${original}`;
+  return `${wallzyTransformBase}/cdn-cgi/image/width=360,quality=50,format=auto/${original}`;
 }
 export function wallpaperPath(w: Wallpaper) {
   return `/wallpaper/${encodeURIComponent(String(w.id))}`;
