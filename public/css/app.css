@@ -84,7 +84,7 @@
         }
 
         #landscapeWarning { display: none; }
-        @media screen and (orientation: landscape) and (max-height: 600px) {
+        @media screen and (orientation: landscape) {
             #landscapeWarning { display: flex !important; }
             #appContainer { display: none !important; }
         }
