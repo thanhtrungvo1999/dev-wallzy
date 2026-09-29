@@ -192,7 +192,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
           {imageFailed && <div className="absolute inset-0 bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
         </section>
 
-        <section className="relative flex-shrink-0 w-full max-w-sm mx-auto pb-1 pointer-events-auto">
+        <section className="absolute left-5 right-5 bottom-6 z-20 w-auto max-w-sm mx-auto pointer-events-auto">
           <div className="flex items-center gap-3">
             <button onClick={share} className="ripple-target flex-1 min-w-0 bg-white/[0.065] backdrop-blur-xl text-white font-semibold py-3.5 rounded-2xl border border-white/15 shadow-[0_12px_35px_rgba(0,0,0,.28)] flex items-center justify-center gap-2 active:scale-[.99] transition">
               <i className="fa-solid fa-share-nodes text-xs" />
