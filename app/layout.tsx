@@ -1,1 +1,71 @@
-import "./globals.css";import type{ReactNode}from"react";import WallzyShellClient from "./wallzy-shell-client";export default function RootLayout({children}:{children:ReactNode}){return <html lang="en" className="dark"><head><script async src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5"></script><script dangerouslySetInnerHTML={{__html:"window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag(\'js\', new Date()); gtag(\'config\', \'G-CV68K011E5\');"}} /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><title>Wallzy - 4K UHD Wallpapers for iPhone and Android</title><meta name="description" id="pageDescription" content="Discover and download free 4K UHD wallpapers for iPhone and Android on Wallzy."/><meta name="robots" content="index,follow"/><link rel="canonical" id="canonicalUrl" href="https://www.wallzy.org/"/><meta property="og:type" content="website"/><meta property="og:title" id="ogTitle" content="Wallzy - 4K UHD Wallpapers"/><meta property="og:description" id="ogDescription" content="Discover 4K UHD wallpapers on Wallzy."/><meta property="og:url" id="ogUrl" content="https://www.wallzy.org/"/><meta property="og:site_name" content="Wallzy"/><meta name="twitter:card" content="summary_large_image"/><meta name="theme-color" content="#08080a"/><link rel="manifest" href="/manifest.json"/><link rel="apple-touch-icon" href="/icons/icon-192.svg"/><link rel="stylesheet" href="/css/app.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/></head><body id="bodyElement" className="bg-[#000000] text-gray-100 min-h-screen selection:bg-white selection:text-black overflow-x-hidden font-sans overflow-hidden"><WallzyShellClient/>{children}</body></html>}
+import "./globals.css";
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import WallzyShellClient from "./wallzy-shell-client";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://www.wallzy.org"),
+  title: {
+    default: "Wallzy - 4K UHD Wallpapers for iPhone and Android",
+    template: "%s",
+  },
+  description: "Discover and download free 4K UHD wallpapers for iPhone and Android on Wallzy.",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Wallzy",
+    title: "Wallzy - 4K UHD Wallpapers",
+    description: "Discover 4K UHD wallpapers on Wallzy.",
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#08080a",
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en" className="dark">
+      <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-CV68K011E5');",
+          }}
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+        <link rel="stylesheet" href="/css/app.css" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        id="bodyElement"
+        className="bg-[#000000] text-gray-100 min-h-screen selection:bg-white selection:text-black overflow-x-hidden font-sans overflow-hidden"
+      >
+        <WallzyShellClient />
+        {children}
+      </body>
+    </html>
+  );
+}
