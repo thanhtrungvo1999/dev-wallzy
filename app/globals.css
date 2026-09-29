@@ -16,4 +16,4 @@
 .skeleton-wave::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.08) 50%,transparent 65%);transform:translateX(-120%);animation:wallzySkeletonSweep 1.8s ease-in-out infinite;will-change:transform;pointer-events:none}
 @keyframes wallzySkeletonWave{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes wallzySkeletonSweep{0%,25%{transform:translateX(-120%)}70%,100%{transform:translateX(120%)}}
-@media (prefers-reduced-motion:reduce){.skeleton-wave::before,.skeleton-wave::after{animation:none!important}}}
+@media (prefers-reduced-motion:reduce){.skeleton-wave::before,.skeleton-wave::after{animation:none!important}}
