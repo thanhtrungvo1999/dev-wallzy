@@ -28,7 +28,9 @@ export function wallpaperDescription(w: Wallpaper) {
 export function wallpaperOriginalImageUrl(w: Wallpaper) {
   const base = (process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://img.wallzy.org").replace(/\/+$/, "");
   const path = String(w.storage_path || "").trim();
-  return path ? `${base}/${path.replace(/^\/+/, "")}` : w.public_url || "";
+  if (!path) return String(w.public_url || "").trim();
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${base}/${path.replace(/^\/+/, "")}`;
 }
 
 export function wallpaperImageUrl(w: Wallpaper) {
