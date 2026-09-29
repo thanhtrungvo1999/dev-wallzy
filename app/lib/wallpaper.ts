@@ -25,11 +25,19 @@ export function wallpaperDescription(w: Wallpaper) {
   const keywords = (w.keywords || []).filter(Boolean).slice(0, 5).join(", ");
   return keywords ? `Download this ${category} 4K UHD wallpaper in original quality. Tags: ${keywords}.` : `Download this ${category} 4K UHD wallpaper in original quality from Wallzy.`;
 }
-export function wallpaperImageUrl(w: Wallpaper) {
-  const path = String(w.storage_path || "").trim();
-  if (/^https?:\/\//i.test(path)) return path;
+export function wallpaperOriginalImageUrl(w: Wallpaper) {
   const base = (process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://img.wallzy.org").replace(/\/+$/, "");
+  const path = String(w.storage_path || "").trim();
   return path ? `${base}/${path.replace(/^\/+/, "")}` : w.public_url || "";
+}
+
+export function wallpaperImageUrl(w: Wallpaper) {
+  const original = wallpaperOriginalImageUrl(w);
+  if (!original) return "";
+  const base = (process.env.NEXT_PUBLIC_R2_PUBLIC_URL || "https://img.wallzy.org").replace(/\/+$/, "");
+  const sourcePath = String(w.storage_path || "").trim().replace(/^\/+/, "");
+  if (!sourcePath) return original;
+  return `${base}/cdn-cgi/image/width=600,quality=70,format=auto/${sourcePath}`;
 }
 export function wallpaperPath(w: Wallpaper) {
   return `/wallpaper/${slugifyWallpaper(wallpaperTitle(w))}-${encodeURIComponent(String(w.id))}`;
