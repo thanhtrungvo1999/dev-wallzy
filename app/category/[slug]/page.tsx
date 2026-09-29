@@ -22,32 +22,34 @@ async function resolveCategory(slug: string) {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ""
   );
 
-  const { data, error } = await sb.from("wallpapers").select("category");
+  const candidate = titleFromSlug(value).trim();
+  if (!candidate) return null;
+
+  const { data, error } = await sb
+    .from("wallpapers")
+    .select("category")
+    .ilike("category", candidate)
+    .limit(1)
+    .maybeSingle();
+
   if (error) throw error;
-
-  const categories = [...new Set(
-    (data || [])
-      .map(row => String(row.category || "").trim())
-      .filter(Boolean)
-  )];
-
-  return categories.find(category => categorySlug(category) === value) || null;
+  return data?.category ? String(data.category).trim() : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await resolveCategory(slug);
-  if (!category) return { title: "Page Not Found | Wallzy" };
+  if (!category) return { title: "Page Not Found | Wallzy", robots: { index: false, follow: false } };
 
   const name = category;
   const url = `https://www.wallzy.org/category/${encodeURIComponent(slug)}`;
   return {
     title: `${name} Wallpapers | Wallzy`,
-    description: `Discover ${name} wallpapers on Wallzy.`,
+    description: `Discover ${name} 4K UHD wallpapers on Wallzy. Download original-quality wallpapers for your phone.`,
     alternates: { canonical: url },
     openGraph: {
       title: `${name} Wallpapers | Wallzy`,
-      description: `Discover ${name} wallpapers on Wallzy.`,
+      description: `Discover ${name} 4K UHD wallpapers on Wallzy.`,
       url,
       type: "website",
     },
@@ -59,5 +61,14 @@ export default async function CategoryPage({ params }: Props) {
   const category = await resolveCategory(slug);
   if (!category) notFound();
 
-  return null;
+  const name = category;
+  return (
+    <section className="sr-only" aria-label={`${name} wallpapers`}>
+      <h1>{name} Wallpapers</h1>
+      <p>
+        Discover {name} 4K UHD wallpapers on Wallzy. Browse wallpapers in this
+        category and download them in original quality for your phone.
+      </p>
+    </section>
+  );
 }
