@@ -178,23 +178,21 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-black via-black/70 to-transparent" />
       </div>}
-      <div className="relative z-10 h-[100dvh] flex flex-col px-5 pt-5 pb-4">
-        <header className="flex items-center justify-between flex-shrink-0 pt-1 relative z-20">
+      <div className="relative z-10 h-[100dvh] flex flex-col px-5 pt-5 pb-4 pointer-events-none">
+        <header className="flex items-center justify-between flex-shrink-0 pt-1 relative z-20 pointer-events-auto">
           <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-11 h-11 rounded-full bg-white/[0.07] backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,.35)] active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
           <span className="max-w-[64%] truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-white/90 bg-white/[0.07] backdrop-blur-xl px-4 py-2 rounded-full border border-white/15 shadow-lg">{category} • {quality || "Original"}</span>
           <button type="button" onClick={handleFavorite} className="ripple-target w-10 h-10 rounded-full bg-[#121215] border border-white/20 flex items-center justify-center shadow-lg active:scale-95 transition" aria-label="Favorite"><i className={favorite ? "fa-solid fa-heart text-white text-sm" : "fa-regular fa-heart text-white text-sm"} /></button>
         </header>
 
-        <section className="relative flex-1 min-h-0 flex items-center justify-center py-3 sm:py-5">
-          <div className="relative h-full max-h-full max-w-full flex items-center justify-center px-1">
-            <div aria-hidden="true" className="absolute inset-3 rounded-[28px] bg-black/50 blur-2xl opacity-80" />
-            {!imageReady && !imageFailed && <div className="absolute inset-0 rounded-2xl skeleton-wave" />}
-            {image && !imageFailed && <img src={image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="relative z-10 max-h-full max-w-full object-contain rounded-[28px] border border-white/10 shadow-[0_24px_80px_rgba(0,0,0,.62)] transition-opacity duration-300" decoding="async" draggable={false} />}
-            {imageFailed && <div className="absolute inset-0 rounded-2xl bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
-          </div>
+        <section className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+          {!imageReady && !imageFailed && <div className="absolute inset-0 skeleton-wave" />}
+          {image && !imageFailed && <img src={image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" decoding="async" draggable={false} />}
+          <div aria-hidden="true" className="absolute inset-0 bg-black/10" />
+          {imageFailed && <div className="absolute inset-0 bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
         </section>
 
-        <section className="relative flex-shrink-0 w-full max-w-sm mx-auto pb-1">
+        <section className="relative flex-shrink-0 w-full max-w-sm mx-auto pb-1 pointer-events-auto">
           <div className="flex items-center justify-center gap-2 mb-3">
             <span className="px-3 py-1.5 rounded-full bg-white/[0.055] backdrop-blur-xl border border-white/10 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55">{category}</span>
             <span className="w-1 h-1 rounded-full bg-white/25" />
