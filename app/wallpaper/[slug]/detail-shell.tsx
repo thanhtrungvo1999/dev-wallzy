@@ -187,7 +187,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
 
         <section className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
           {!imageReady && !imageFailed && <div className="absolute inset-0 skeleton-wave" />}
-          {(originalImage || image) && !imageFailed && <img src={originalImage || image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" decoding="async" draggable={false} />}
+          {(originalImage || image) && !imageFailed && <img src={originalImage || image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="absolute left-0 top-1/2 w-full h-auto max-w-none -translate-y-1/2 object-contain transition-opacity duration-300" decoding="async" draggable={false} />}
           <div aria-hidden="true" className="absolute inset-0 bg-black/10" />
           {imageFailed && <div className="absolute inset-0 bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
         </section>
