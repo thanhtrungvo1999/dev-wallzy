@@ -14,6 +14,36 @@ const nextConfig: NextConfig = {
         hostname: "wallzy.org",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "**.tiktokcdn.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.tiktokcdn-us.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.tiktokcdn-eu.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.byteimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.ibyteimg.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.pstatp.com",
+        pathname: "/**",
+      },
     ],
   },
   async rewrites() {
