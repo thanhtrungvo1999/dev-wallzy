@@ -48,6 +48,15 @@ export function wallpaperIdFromSlug(slug: string) {
   const numericUuid = /^\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
   if (numericUuid.test(value) || uuid.test(value) || numeric.test(value)) return value;
+
+  // Support legacy SEO URLs that append the wallpaper filename after the ID.
+  const numericUuidPrefix = value.match(/^(\d+-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:-|$)/i);
+  if (numericUuidPrefix) return numericUuidPrefix[1];
+  const uuidPrefix = value.match(/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:-|$)/i);
+  if (uuidPrefix) return uuidPrefix[1];
+  const numericPrefix = value.match(/^(\d+)(?:-|$)/);
+  if (numericPrefix) return numericPrefix[1];
+
   return null;
 }
 export async function getWallpaperById(id: string): Promise<Wallpaper | null> {
