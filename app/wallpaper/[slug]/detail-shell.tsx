@@ -18,6 +18,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const [seconds, setSeconds] = useState(5);
   const [downloading, setDownloading] = useState(false);
   const [imageReady, setImageReady] = useState(false);
+  const [quality, setQuality] = useState("");
   const [imageFailed, setImageFailed] = useState(false);
   const [message, setMessage] = useState("");
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -142,7 +143,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
       <div className="h-[100dvh] flex flex-col p-5">
         <header className="flex items-center justify-between flex-shrink-0 pt-1">
           <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-10 h-10 rounded-full bg-[#121215] border border-white/20 flex items-center justify-center shadow-lg active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
-          <span className="max-w-[62%] truncate text-[10px] font-semibold uppercase tracking-widest text-white/90 bg-[#121215]/80 px-3.5 py-1.5 rounded-full border border-white/20">{category} • 4K</span>
+          <span className="max-w-[62%] truncate text-[10px] font-semibold uppercase tracking-widest text-white/90 bg-[#121215]/80 px-3.5 py-1.5 rounded-full border border-white/20">{category} • {quality || "Original"}</span>
           <button type="button" onClick={handleFavorite} className="ripple-target w-10 h-10 rounded-full bg-[#121215] border border-white/20 flex items-center justify-center shadow-lg active:scale-95 transition" aria-label="Favorite"><i className={favorite ? "fa-solid fa-heart text-white text-sm" : "fa-regular fa-heart text-white text-sm"} /></button>
         </header>
 
@@ -156,7 +157,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
 
         <section className="flex-shrink-0 w-full max-w-sm mx-auto space-y-2.5 pb-1">
           <button onClick={share} className="ripple-target w-full bg-[#121215] text-white font-semibold py-3 rounded-2xl border border-white/20 shadow-xl flex items-center justify-center gap-2 active:scale-[.99] transition"><i className="fa-solid fa-share-nodes text-xs" /><span className="text-[11px] uppercase tracking-wider">Share Wallpaper</span></button>
-          <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-200 text-black font-semibold py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : "Download 4K UHD"}</span></button>
+          <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-200 text-black font-semibold py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span></button>
         </section>
       </div>
 
