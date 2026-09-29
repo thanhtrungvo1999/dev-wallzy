@@ -193,14 +193,15 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
         </section>
 
         <section className="relative flex-shrink-0 w-full max-w-sm mx-auto pb-1 pointer-events-auto">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="px-3 py-1.5 rounded-full bg-white/[0.055] backdrop-blur-xl border border-white/10 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55">{category}</span>
-            <span className="w-1 h-1 rounded-full bg-white/25" />
-            <span className="px-3 py-1.5 rounded-full bg-white/[0.055] backdrop-blur-xl border border-white/10 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55">{quality || "Original"}</span>
-          </div>
-          <div className="space-y-2.5">
-          <button onClick={share} className="ripple-target w-full bg-white/[0.065] backdrop-blur-xl text-white font-semibold py-3.5 rounded-2xl border border-white/15 shadow-[0_12px_35px_rgba(0,0,0,.28)] flex items-center justify-center gap-2 active:scale-[.99] transition"><i className="fa-solid fa-share-nodes text-xs" /><span className="text-[11px] uppercase tracking-wider">Share Wallpaper</span></button>
-          <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target w-full bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl shadow-[0_14px_40px_rgba(255,255,255,.12)] flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60"><i className="fa-solid fa-download text-xs" /><span className="text-[11px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span></button>
+          <div className="flex items-center gap-3">
+            <button onClick={share} className="ripple-target flex-1 min-w-0 bg-white/[0.065] backdrop-blur-xl text-white font-semibold py-3.5 rounded-2xl border border-white/15 shadow-[0_12px_35px_rgba(0,0,0,.28)] flex items-center justify-center gap-2 active:scale-[.99] transition">
+              <i className="fa-solid fa-share-nodes text-xs" />
+              <span className="text-[10px] uppercase tracking-wider">Share</span>
+            </button>
+            <button onClick={() => setAdOpen(true)} disabled={downloading} className="ripple-target flex-1 min-w-0 bg-white hover:bg-gray-100 text-black font-semibold py-3.5 rounded-2xl shadow-[0_14px_40px_rgba(255,255,255,.12)] flex items-center justify-center gap-2 active:scale-[.99] transition disabled:opacity-60">
+              <i className="fa-solid fa-download text-xs" />
+              <span className="text-[10px] uppercase tracking-wider">{downloading ? "Downloading..." : `Download ${quality || "Original"}`}</span>
+            </button>
           </div>
         </section>
       </div>
