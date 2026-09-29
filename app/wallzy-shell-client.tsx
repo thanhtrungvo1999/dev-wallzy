@@ -18,6 +18,9 @@ export default function WallzyShellClient() {
     pathname === "/favorites" ||
     isCategory;
 
-  if (isWallpaperDetail || !isKnownShellRoute) return null;
+  // Keep WallzyShell mounted while opening a wallpaper detail route.
+  // This preserves the grid, category, scroll position and in-memory cache
+  // so returning from detail does not bootstrap/reload the app again.
+  if (!isWallpaperDetail && !isKnownShellRoute) return null;
   return <WallzyShell />;
 }
