@@ -1,32 +1,116 @@
 {
-  "id":"https://wallzy.org/",
-  "name":"Wallzy Wallpaper Studio",
-  "short_name":"Wallzy",
-  "description":"4K UHD wallpaper studio with cloud wallpapers, favorites, categories, and Gradient Studio.",
-  "lang":"en-US",
-  "dir":"ltr",
-  "start_url":"https://wallzy.org/?source=pwa",
-  "scope":"https://wallzy.org/",
-  "display":"standalone",
-  "display_override":["window-controls-overlay","standalone","minimal-ui"],
-  "orientation":"portrait",
-  "theme_color":"#08080a",
-  "background_color":"#08080a",
-  "prefer_related_applications":false,
-  "categories":["art","design","photography","personalization"],
-  "icons":[
-    {"src":"https://wallzy.org/icons/icon-192.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any"},
-    {"src":"https://wallzy.org/icons/icon-256.svg","sizes":"256x256","type":"image/svg+xml","purpose":"any"},
-    {"src":"https://wallzy.org/icons/icon-384.svg","sizes":"384x384","type":"image/svg+xml","purpose":"any"},
-    {"src":"https://wallzy.org/icons/icon-512.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any"},
-    {"src":"https://wallzy.org/icons/icon-512-maskable.svg","sizes":"512x512","type":"image/svg+xml","purpose":"maskable"}
+  "id": "/",
+  "name": "Wallzy Wallpaper Studio",
+  "short_name": "Wallzy",
+  "description": "4K UHD wallpaper studio with cloud wallpapers, favorites, categories, and Gradient Studio.",
+  "lang": "en-US",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
   ],
-  "shortcuts":[
-    {"name":"Explore Wallpapers","short_name":"Explore","description":"Browse the Wallzy wallpaper database.","url":"https://wallzy.org/explore","icons":[{"src":"https://wallzy.org/icons/shortcut-explore.svg","sizes":"192x192","type":"image/svg+xml"}]},
-    {"name":"Favorites","short_name":"Favorites","description":"Open your saved wallpapers.","url":"https://wallzy.org/favorites","icons":[{"src":"https://wallzy.org/icons/shortcut-favorites.svg","sizes":"192x192","type":"image/svg+xml"}]},
-    {"name":"Gradient Studio","short_name":"Studio","description":"Create custom gradient wallpapers.","url":"https://wallzy.org/studio","icons":[{"src":"https://wallzy.org/icons/shortcut-studio.svg","sizes":"192x192","type":"image/svg+xml"}]}
+  "orientation": "portrait",
+  "theme_color": "#08080a",
+  "background_color": "#08080a",
+  "prefer_related_applications": false,
+  "categories": [
+    "art",
+    "design",
+    "photography",
+    "personalization"
   ],
-  "launch_handler":{"client_mode":["navigate-existing","auto"]},
-  "handle_links":"preferred",
-  "share_target":{"action":"https://wallzy.org/share/","method":"GET","enctype":"application/x-www-form-urlencoded","params":{"title":"title","text":"text","url":"url"}}
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-256.svg",
+      "sizes": "256x256",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-384.svg",
+      "sizes": "384x384",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explore Wallpapers",
+      "short_name": "Explore",
+      "description": "Browse the Wallzy wallpaper database.",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/icons/shortcut-explore.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "short_name": "Favorites",
+      "description": "Open your saved wallpapers.",
+      "url": "/favorites",
+      "icons": [
+        {
+          "src": "/icons/shortcut-favorites.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Gradient Studio",
+      "short_name": "Studio",
+      "description": "Create custom gradient wallpapers.",
+      "url": "/studio",
+      "icons": [
+        {
+          "src": "/icons/shortcut-studio.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  },
+  "handle_links": "preferred",
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
