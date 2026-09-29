@@ -173,7 +173,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   return (
     <main className="fixed inset-0 bg-[#000000] text-white overflow-hidden">
       {image && <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <img src={image} alt="" className="absolute inset-[-12%] w-[124%] h-[124%] object-cover scale-110 blur-[55px] opacity-[0.16]" />
+        <img src={originalImage || image} alt="" className="absolute inset-[-12%] w-[124%] h-[124%] object-cover scale-110 blur-[55px] opacity-[0.16]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.15),#000000_72%)]" />
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-black via-black/70 to-transparent" />
@@ -187,7 +187,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
 
         <section className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
           {!imageReady && !imageFailed && <div className="absolute inset-0 skeleton-wave" />}
-          {image && !imageFailed && <img src={image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" decoding="async" draggable={false} />}
+          {(originalImage || image) && !imageFailed && <img src={originalImage || image} alt={title} onLoad={() => setImageReady(true)} onError={() => setImageFailed(true)} className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" decoding="async" draggable={false} />}
           <div aria-hidden="true" className="absolute inset-0 bg-black/10" />
           {imageFailed && <div className="absolute inset-0 bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
         </section>
