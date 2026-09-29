@@ -18,14 +18,14 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const id = wallpaperIdFromSlug(slug);
-  if (!id) return { title: "Wallpaper Not Found | Wallzy" };
+  if (!id) notFound();
   const wallpaper = await getWallpaperById(id);
-  if (!wallpaper) return { title: "Wallpaper Not Found | Wallzy" };
+  if (!wallpaper) notFound();
 
   const title = wallpaperTitle(wallpaper);
   const description = wallpaperDescription(wallpaper);
   const image = wallpaperImageUrl(wallpaper);
-  const canonical = `https://wallzy.org${wallpaperPath(wallpaper)}`;
+  const canonical = `https://www.wallzy.org${wallpaperPath(wallpaper)}`;
 
   return {
     title: `${title} | Wallzy`,
