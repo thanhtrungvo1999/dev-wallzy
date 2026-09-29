@@ -37,7 +37,7 @@ export function wallpaperImageUrl(w: Wallpaper) {
   return `${wallzyTransformBase}/cdn-cgi/image/width=600,quality=70,format=auto/${original}`;
 }
 export function wallpaperPath(w: Wallpaper) {
-  return `/wallpaper/${slugifyWallpaper(wallpaperTitle(w))}-${encodeURIComponent(String(w.id))}`;
+  return `/wallpaper/${encodeURIComponent(String(w.id))}`;
 }
 export function wallpaperIdFromSlug(slug: string) {
   const value = decodeURIComponent(String(slug || "").replace(/^\/+|\/+$/g, ""));
