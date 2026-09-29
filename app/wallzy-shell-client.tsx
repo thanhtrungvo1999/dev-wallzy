@@ -8,7 +8,15 @@ const WallzyShell = dynamic(() => import("./wallzy-shell"), {
 });
 
 export default function WallzyShellClient() {
-  const pathname = usePathname();
-  if (pathname?.startsWith("/wallpaper/")) return null;
+  const pathname = usePathname() || "/";
+  const isWallpaperDetail = pathname.startsWith("/wallpaper/");
+  const isCategory = pathname.startsWith("/category/");
+  const isKnownShellRoute =
+    pathname === "/" ||
+    pathname === "/studio" ||
+    pathname === "/tiktok" ||
+    isCategory;
+
+  if (isWallpaperDetail || !isKnownShellRoute) return null;
   return <WallzyShell />;
 }
