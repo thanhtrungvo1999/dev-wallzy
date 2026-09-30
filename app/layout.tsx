@@ -48,6 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           }}
         />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <link rel="stylesheet" href="/css/app.css" />
         <link
