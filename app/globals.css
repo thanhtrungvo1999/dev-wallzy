@@ -7,8 +7,6 @@ html,body{margin:0;padding:0;background:#08080a;color:#fff;font-family:var(--fon
 
 
 
-.ripple-target{-webkit-tap-highlight-color:transparent;touch-action:manipulation;overflow:hidden!important}.native-ripple{position:absolute;z-index:2147483647;pointer-events:none;border-radius:9999px;background:rgba(255,255,255,.22);transform:translate(-50%,-50%) scale(0);animation:wallzy-native-ripple 420ms ease-out forwards}.ripple-target.ripple-press{transform:scale(.985);filter:brightness(.92)}@keyframes wallzy-native-ripple{0%{opacity:.48;transform:translate(-50%,-50%) scale(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}@media (prefers-reduced-motion:reduce){.native-ripple{animation-duration:120ms}}
-
 /* React wallpaper skeleton shimmer */
 .skeleton-wave{position:absolute!important;inset:0!important;display:block!important;overflow:hidden!important;background:#0a0a0c!important;pointer-events:none!important;z-index:0!important}
 .skeleton-wave::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0c 0%,#101014 30%,#202026 50%,#101014 70%,#0a0a0c 100%);background-size:200% 100%;animation:wallzySkeletonWave 1.15s linear infinite!important;will-change:background-position}
@@ -39,41 +37,6 @@ html,body{margin:0;padding:0;background:#08080a;color:#fff;font-family:var(--fon
             user-select: none !important;
             -webkit-user-drag: none !important;
             will-change: opacity;
-        }
-
-        @keyframes shimmerWave {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
-        .wallzy-card {
-            content-visibility: auto;
-            contain-intrinsic-size: 0 540px;
-        }
-
-        .skeleton-wave {
-            position: relative;
-            overflow: hidden;
-            background:
-                linear-gradient(90deg, rgba(255,255,255,.025) 0%, rgba(255,255,255,.07) 42%, rgba(255,255,255,.13) 50%, rgba(255,255,255,.07) 58%, rgba(255,255,255,.025) 100%),
-                #0a0a0c;
-            background-size: 220% 100%;
-            animation: shimmerWave 1.65s cubic-bezier(.4,0,.2,1) infinite;
-        }
-
-        .skeleton-wave::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.055) 50%, transparent 65%);
-            transform: translateX(-100%);
-            animation: skeletonSweep 2.2s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes skeletonSweep {
-            0%, 35% { transform: translateX(-100%); }
-            70%, 100% { transform: translateX(100%); }
         }
 
         .wallzy-loader-orb { animation: wallzyLoaderFloat 2.2s ease-in-out infinite; }
@@ -183,32 +146,6 @@ html,body{margin:0;padding:0;background:#08080a;color:#fff;font-family:var(--fon
         }
         @keyframes downloadProgress { 0% { transform: translateX(-130%); } 100% { transform: translateX(390%); } }
         .download-loading-status { margin-top: 7px; min-height: 16px; font-size: 10px; color: rgba(255,255,255,.42); }
-
-        /* Native iOS-style touch feedback */
-        .ripple-target {
-            overflow: hidden !important; -webkit-tap-highlight-color: transparent !important;
-            touch-action: manipulation; -webkit-user-select: none; user-select: none;
-        }
-        .ripple-target.ripple-positioned { position: relative; }
-        .ripple-target.ripple-press { transform: scale(0.985); transition: transform 110ms cubic-bezier(0.2, 0, 0, 1); }
-        .ripple-target.ripple-release { transform: scale(1); transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .native-ripple {
-            position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 50%;
-            pointer-events: none; z-index: 9999; background: rgba(255,255,255,.20);
-            transform: translate(-50%, -50%) scale(0); opacity: 0;
-            animation: nativeRippleExpand 520ms cubic-bezier(.2,.75,.2,1) forwards;
-            will-change: transform, opacity;
-        }
-        @keyframes nativeRippleExpand {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            12% { opacity: .42; }
-            48% { opacity: .20; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .ripple-target.ripple-press, .ripple-target.ripple-release { transition-duration: 80ms; }
-            .native-ripple { animation-duration: 180ms; }
-        }
 
 /* Shared ad frame layouts */
 .wallzy-ad-frame-320 {
