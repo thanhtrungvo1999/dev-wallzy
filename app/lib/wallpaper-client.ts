@@ -51,16 +51,17 @@ export function createWallzyLoader(sb:SupabaseClient,category="all",options:{ran
         }
         initialized=true;
       }
-      const start=offset,end=start+pageSize-1;
+      const start=offset,end=start+pageSize;
       let q=sb.from("wallpapers").select("id,category,keywords,storage_path,public_url,created_at").order("created_at",{ascending:false}).order("id",{ascending:false});
       if(value.toLowerCase()!=="all")q=q.eq("category",value);
       q=q.range(start,end);
       const{data,error}=await q;
       if(error)throw error;
       const rows=data||[];
-      offset+=rows.length;
-      if(rows.length<pageSize)exhausted=true;
-      return{images:rows.map(normalizeWallzyWallpaper),hasMore:!exhausted,nextOffset:offset};
+      const visibleRows=rows.slice(0,pageSize);
+      offset=start+visibleRows.length;
+      if(rows.length<=pageSize)exhausted=true;
+      return{images:visibleRows.map(normalizeWallzyWallpaper),hasMore:!exhausted,nextOffset:offset};
     }finally{loading=false}
   };
 }
