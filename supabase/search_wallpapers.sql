@@ -26,7 +26,7 @@ stable
 as $$
 with tokens as (
   select distinct regexp_replace(lower(trim(x)), '[^[:alnum:]_]+', '', 'g') as token
-  from regexp_split_to_table(trim(coalesce(search_query,'')), 's+') x
+  from regexp_split_to_table(trim(coalesce(search_query,'')), '\s+') x
   where trim(x) <> ''
   limit 5
 ),
