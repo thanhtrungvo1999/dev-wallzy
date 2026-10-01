@@ -52,12 +52,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <link rel="stylesheet" href="/css/app.css" />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          media="print"
-          onLoad={(event) => { event.currentTarget.media = "all"; }}
-        />
+        <Script id="wallzy-fontawesome" strategy="lazyOnload">
+          {String.raw`(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";document.head.appendChild(l)})()`}
+        </Script>
       </head>
       <body
         id="bodyElement"
