@@ -9,7 +9,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const router = useRouter();
   const image = wallpaperImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
   const originalImage = wallpaperOriginalImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
-  const detailImage = image || originalImage;
+  const detailImage = originalImage || image;
   const title = wallpaperTitle(wallpaper);
   const category = wallpaper.category || "Wallpaper";
   const [favorite, setFavorite] = useState(false);
