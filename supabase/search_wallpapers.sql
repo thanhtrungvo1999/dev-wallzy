@@ -1,10 +1,10 @@
-create or replace function public.wallpapers_search_text(values text[])
+create or replace function public.wallpapers_search_text(arr text[])
 returns text
 language sql
 immutable
 parallel safe
 as $$
-  select array_to_string(coalesce(values, array[]::text[]), ' ');
+  select array_to_string(coalesce(arr, array[]::text[]), ' ');
 $$;
 
 create index if not exists wallpapers_search_fts_idx
