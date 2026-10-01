@@ -28,7 +28,7 @@ async function resolveCategory(slug: string) {
   const { data, error } = await sb
     .from("wallpapers")
     .select("category")
-    .ilike("category", candidate)
+    .ilike("category", `%${candidate}%`)
     .limit(1)
     .maybeSingle();
 
