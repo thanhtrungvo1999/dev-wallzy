@@ -14,6 +14,11 @@ export default function WallzyShellClient() {
     pathname === "/favorites" ||
     isCategory;
 
-  if (!isWallpaperDetail && !isKnownShellRoute) return null;
+  // Detail pages have their own lightweight UI and must not mount the feed shell.
+  // Mounting WallzyShell here still runs its bootstrap effect, which fetches
+  // categories, favorites, gradients, and the first 20 wallpapers even though
+  // the shell is visually hidden on the detail page.
+  if (isWallpaperDetail) return null;
+  if (!isKnownShellRoute) return null;
   return <WallzyShell />;
 }
