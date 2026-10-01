@@ -7,6 +7,7 @@ export default function WallzyShellClient() {
   const pathname = usePathname() || "/";
   const isWallpaperDetail = pathname.startsWith("/wallpaper/");
   const isCategory = pathname.startsWith("/category/");
+  const isSearch = pathname === "/search";
   const isKnownShellRoute =
     pathname === "/" ||
     pathname === "/studio" ||
@@ -19,6 +20,7 @@ export default function WallzyShellClient() {
   // categories, favorites, gradients, and the first 20 wallpapers even though
   // the shell is visually hidden on the detail page.
   if (isWallpaperDetail) return null;
+  if (isSearch) return null;
   if (!isKnownShellRoute) return null;
   return <WallzyShell />;
 }
