@@ -31,7 +31,8 @@ export default function WallzyShellClient() {
     pathname === "/favorites" ||
     isCategory;
 
-  if (isWallpaperDetail) return null;
+  // Keep the shell mounted on wallpaper detail routes so returning to the
+  // previous page restores the existing grid, filters, and scroll position.
   if (isSearch) return null;
   if (!isKnownShellRoute) return null;
 
