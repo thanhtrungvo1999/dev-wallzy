@@ -81,10 +81,11 @@ export async function loadWallzyCategories(sb:SupabaseClient){
   if(wallzyCategoriesCache)return wallzyCategoriesCache;
   if(wallzyCategoriesPromise)return wallzyCategoriesPromise;
   wallzyCategoriesPromise=(async()=>{
-    const{data,error}=await sb.from("categories").select("name").order("name",{ascending:true});
+    const{data,error}=await sb.from("categories").select("*");
     if(error)throw error;
-    const categories=(data||[]).map(x=>String(x.name||"").trim()).filter(Boolean);
-    wallzyCategoriesCache=categories; return categories;
+    const categories=(data||[]).map((x:any)=>String(x?.name??x?.category??x?.title??x?.slug??"").trim()).filter(Boolean);
+    wallzyCategoriesCache=[...new Set(categories)].sort((a,b)=>a.localeCompare(b));
+    return wallzyCategoriesCache;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
 }
