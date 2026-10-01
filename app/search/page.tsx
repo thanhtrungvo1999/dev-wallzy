@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getWallzySupabase, searchWallzyWallpapers } from "../lib/wallpaper";
 
@@ -17,7 +17,7 @@ function SearchCard({wallpaper,onOpen}:{wallpaper:any;onOpen:()=>void}){
   </button>
 }
 
-export default function SearchPage(){
+function SearchPageContent(){
   const router=useRouter();
   const params=useSearchParams();
   const query=params.get("q")?.trim()||"";
@@ -82,3 +82,5 @@ export default function SearchPage(){
     </main>
   </div>
 }
+
+export default function SearchPage(){return <Suspense fallback={<div className="min-h-[100dvh] bg-black"/>}><SearchPageContent/></Suspense>}
