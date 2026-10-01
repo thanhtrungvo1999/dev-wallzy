@@ -212,8 +212,10 @@ html,body{margin:0;padding:0;background:#08080a;color:#fff;font-family:var(--fon
 
 /* Shared ad frame layouts */
 .wallzy-ad-frame-320 {
-    width: 100%;
+    width: calc(100% + 40px);
     height: 60px;
+    margin-left: -20px;
+    margin-right: -20px;
     margin-bottom: 10px;
     display: flex;
     justify-content: center;
