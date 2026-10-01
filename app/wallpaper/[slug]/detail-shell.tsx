@@ -9,14 +9,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const router = useRouter();
   const image = wallpaperImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
   const originalImage = wallpaperOriginalImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
-  const detailImage = (() => {
-    const path = String(wallpaper.storage_path || "").trim();
-    const isAbsoluteUrl = path.startsWith("http://") || path.startsWith("https://");
-    if (path && !isAbsoluteUrl) {
-      return `/api/media/${path.split("/").filter(Boolean).map(encodeURIComponent).join("/")}`;
-    }
-    return image;
-  })();
+  const detailImage = image || originalImage;
   const title = wallpaperTitle(wallpaper);
   const category = wallpaper.category || "Wallpaper";
   const [favorite, setFavorite] = useState(false);
