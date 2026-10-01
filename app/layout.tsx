@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="" />
-        <link rel="stylesheet" href="/css/fontawesome.min.css" media="print" onLoad={(event) => { event.currentTarget.media = "all"; }} />
+        <link rel="stylesheet" href="/css/fontawesome.min.css" />
       </head>
       <body
         id="bodyElement"
