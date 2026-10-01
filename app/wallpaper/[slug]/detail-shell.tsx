@@ -11,7 +11,8 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
   const originalImage = wallpaperOriginalImageUrl(wallpaper) || String(wallpaper.public_url || "").trim();
   const detailImage = (() => {
     const path = String(wallpaper.storage_path || "").trim();
-    if (path && !/^https?:\\/\\//i.test(path)) {
+    const isAbsoluteUrl = path.startsWith("http://") || path.startsWith("https://");
+    if (path && !isAbsoluteUrl) {
       return `/api/media/${path.split("/").filter(Boolean).map(encodeURIComponent).join("/")}`;
     }
     return image;
