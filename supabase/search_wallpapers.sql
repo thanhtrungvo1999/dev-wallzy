@@ -51,7 +51,7 @@ matched as (
     coalesce(w.keywords,array[]::text[]) as keywords,
     coalesce(w.storage_path,'')::text as storage_path,
     coalesce(w.public_url,'')::text as public_url,
-    coalesce(w.created_at,'')::text as created_at,
+    w.created_at::text as created_at,
     ts_rank(
       to_tsvector(
         'simple'::regconfig,
