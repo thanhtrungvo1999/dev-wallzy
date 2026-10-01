@@ -46,14 +46,19 @@ q as (
 ),
 matched as (
   select
-    w,
+    w.id::text as id,
+    coalesce(w.category,'')::text as category,
+    coalesce(w.keywords,array[]::text[]) as keywords,
+    coalesce(w.storage_path,'')::text as storage_path,
+    coalesce(w.public_url,'')::text as public_url,
+    coalesce(w.created_at,'')::text as created_at,
     ts_rank(
       to_tsvector(
         'simple'::regconfig,
         coalesce(w.category,'') || ' ' || public.wallpapers_search_text(w.keywords)
       ),
       to_tsquery('simple'::regconfig, q.tsquery)
-    ) as rank
+    )::real as rank
   from public.wallpapers w
   cross join q
   where q.tsquery is not null
@@ -64,15 +69,15 @@ matched as (
     ) @@ to_tsquery('simple'::regconfig, q.tsquery)
 )
 select
-  m.w.id::text,
-  coalesce(m.w.category,'')::text,
-  coalesce(m.w.keywords,array[]::text[]),
-  coalesce(m.w.storage_path,'')::text,
-  coalesce(m.w.public_url,'')::text,
-  coalesce(m.w.created_at,'')::text,
-  m.rank::real
+  m.id,
+  m.category,
+  m.keywords,
+  m.storage_path,
+  m.public_url,
+  m.created_at,
+  m.rank
 from matched m
-order by m.rank desc, m.w.created_at desc nulls last, m.w.id::text desc
+order by m.rank desc, m.created_at desc nulls last, m.id desc
 offset greatest(search_offset,0)
 limit least(greatest(search_limit,1),50);
 $$;
