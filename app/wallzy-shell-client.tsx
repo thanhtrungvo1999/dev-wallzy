@@ -29,7 +29,8 @@ export default function WallzyShellClient() {
     pathname === "/studio" ||
     pathname === "/tiktok" ||
     pathname === "/favorites" ||
-    isCategory;
+    isCategory ||
+    isWallpaperDetail;
 
   // Keep the shell mounted on wallpaper detail routes so returning to the
   // previous page restores the existing grid, filters, and scroll position.
