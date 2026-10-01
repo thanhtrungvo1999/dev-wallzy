@@ -1,5 +1,4 @@
 "use client";
-import { createWallzyLoader } from "../lib/wallpaper";
 import { useEffect, useMemo, useState } from "react";
 import WallpaperCard from "./WallpaperCard";
 
