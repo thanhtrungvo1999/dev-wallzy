@@ -1,9 +1,18 @@
+create or replace function public.wallpapers_search_text(values text[])
+returns text
+language sql
+immutable
+parallel safe
+as $$
+  select array_to_string(coalesce(values, array[]::text[]), ' ');
+$$;
+
 create index if not exists wallpapers_search_fts_idx
 on public.wallpapers
 using gin (
   to_tsvector(
-    'simple',
-    coalesce(category,'') || ' ' || array_to_string(coalesce(keywords, array[]::text[]),' ')
+    'simple'::regconfig,
+    coalesce(category,'') || ' ' || public.wallpapers_search_text(keywords)
   )
 );
 
@@ -39,20 +48,20 @@ matched as (
   select
     w,
     ts_rank(
-      to_tsvector('simple',
-        coalesce(w.category,'') || ' ' ||
-        array_to_string(coalesce(w.keywords,array[]::text[]),' ')
+      to_tsvector(
+        'simple'::regconfig,
+        coalesce(w.category,'') || ' ' || public.wallpapers_search_text(w.keywords)
       ),
-      to_tsquery('simple', q.tsquery)
+      to_tsquery('simple'::regconfig, q.tsquery)
     ) as rank
   from public.wallpapers w
   cross join q
   where q.tsquery is not null
     and q.tsquery <> ''
-    and to_tsvector('simple',
-      coalesce(w.category,'') || ' ' ||
-      array_to_string(coalesce(w.keywords,array[]::text[]),' ')
-    ) @@ to_tsquery('simple', q.tsquery)
+    and to_tsvector(
+      'simple'::regconfig,
+      coalesce(w.category,'') || ' ' || public.wallpapers_search_text(w.keywords)
+    ) @@ to_tsquery('simple'::regconfig, q.tsquery)
 )
 select
   m.w.id::text,
