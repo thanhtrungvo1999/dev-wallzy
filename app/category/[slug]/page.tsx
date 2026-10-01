@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { categorySlug } from "../../lib/wallpaper";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -25,15 +24,16 @@ async function resolveCategory(slug: string) {
   const candidate = titleFromSlug(value).trim();
   if (!candidate) return null;
 
-  const { data, error } = await sb
-    .from("wallpapers")
-    .select("category")
-    .ilike("category", `%${candidate}%`)
-    .limit(1)
-    .maybeSingle();
+  const { data, error } = await sb.rpc("search_wallpapers", {
+    search_query: candidate,
+    search_offset: 0,
+    search_limit: 1,
+  });
 
   if (error) throw error;
-  return data?.category ? String(data.category).trim() : null;
+
+  const row = Array.isArray(data) ? data[0] : null;
+  return row?.category ? String(row.category).trim() : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
