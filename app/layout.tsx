@@ -1,7 +1,11 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import WallzyShellClient from "./wallzy-shell-client";
+
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap", preload: true, variable: "--font-plus-jakarta" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.wallzy.org"),
@@ -38,15 +42,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${plusJakartaSans.variable}`}>
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-CV68K011E5');",
-          }}
-        />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5" strategy="lazyOnload" />
+        <Script id="wallzy-gtag" strategy="lazyOnload">
+          {String.raw`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-CV68K011E5');`}
+        </Script>
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
@@ -54,10 +55,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
+          media="print"
+          onLoad="this.media='all'"
         />
       </head>
       <body
