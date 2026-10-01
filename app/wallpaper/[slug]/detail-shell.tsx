@@ -141,11 +141,6 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
 
   return (
     <main className="fixed inset-0 bg-[#000000] text-white overflow-hidden">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.15),#000000_72%)]" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/70 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-black via-black/70 to-transparent" />
-      </div>
       <div className="relative z-10 h-[100dvh] flex flex-col px-5 pt-5 pb-4 pointer-events-none">
         <header className="flex items-center justify-between flex-shrink-0 pt-1 relative z-20 pointer-events-auto">
           <button onClick={() => { const saved = window.sessionStorage.getItem("wallzy:return-url"); const fallback = "/"; let target = fallback; if (saved) { try { const parsed = new URL(saved, window.location.origin); if (parsed.origin === window.location.origin && !parsed.pathname.startsWith("/wallpaper/")) target = parsed.pathname + parsed.search + parsed.hash; } catch {} } window.sessionStorage.removeItem("wallzy:return-url"); router.replace(target); }} className="ripple-target w-11 h-11 rounded-full bg-white/[0.07] backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,.35)] active:scale-95 transition" aria-label="Back"><i className="fa-solid fa-arrow-left text-white text-sm" /></button>
@@ -156,7 +151,6 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
         <section className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
           {!imageReady && !imageFailed && <div className="absolute inset-0 z-0 skeleton-wave" aria-hidden="true" />}
           {(originalImage || image) && !imageFailed && <img src={detailImage} alt={title} onLoad={(event) => { const width = event.currentTarget.naturalWidth || 0; const height = event.currentTarget.naturalHeight || 0; const max = Math.max(width, height); setQuality(max >= 7680 ? "8K" : max >= 5120 ? "6K" : max >= 3840 ? "4K" : max >= 2560 ? "2K" : max >= 1920 ? "FHD" : max >= 1280 ? "HD" : "SD"); setImageReady(true); }} onError={() => setImageFailed(true)} className="absolute left-0 top-1/2 z-10 w-full h-auto max-w-none -translate-y-1/2 object-contain transition-opacity duration-300" loading="eager" fetchPriority="high" decoding="async" draggable={false} />}
-          <div aria-hidden="true" className="absolute inset-0 bg-black/10" />
           {imageFailed && <div className="absolute inset-0 bg-[#0a0a0c] flex items-center justify-center text-sm font-semibold text-white">Image Unavailable</div>}
         </section>
 
