@@ -89,7 +89,17 @@ export async function loadWallzyCategories(sb:SupabaseClient){
       if(error)throw error;
       return count&&count>0?category:null;
     }));
-    wallzyCategoriesCache=[...new Set(available.filter(Boolean) as string[])].sort((a,b)=>a.localeCompare(b));
+    const priority=["Sports Graphic","Move","Cartoon Character"];
+    const priorityIndex=(value:string)=>priority.findIndex(x=>x.toLowerCase()===value.toLowerCase());
+    wallzyCategoriesCache=[...new Set(available.filter(Boolean) as string[])].sort((a,b)=>{
+      const ai=priorityIndex(a),bi=priorityIndex(b);
+      if(ai!==-1||bi!==-1){
+        if(ai===-1)return 1;
+        if(bi===-1)return -1;
+        return ai-bi;
+      }
+      return a.localeCompare(b);
+    });
     return wallzyCategoriesCache;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
