@@ -81,9 +81,9 @@ export async function loadWallzyCategories(sb:SupabaseClient){
   if(wallzyCategoriesCache)return wallzyCategoriesCache;
   if(wallzyCategoriesPromise)return wallzyCategoriesPromise;
   wallzyCategoriesPromise=(async()=>{
-    const{data,error}=await sb.from("wallpapers").select("category");
+    const{data,error}=await sb.from("categories").select("name").order("name",{ascending:true});
     if(error)throw error;
-    const categories=[...new Set((data||[]).map(x=>String(x.category||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    const categories=(data||[]).map(x=>String(x.name||"").trim()).filter(Boolean);
     wallzyCategoriesCache=categories; return categories;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
