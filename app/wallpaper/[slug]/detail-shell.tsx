@@ -68,7 +68,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
     if (!adOpen || !adSlotRef.current) return;
     const iframe = document.createElement("iframe");
     iframe.title = "Advertisement";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups");
+    iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-forms");
     iframe.style.width = "300px";
     iframe.style.height = "250px";
     iframe.style.border = "0";
