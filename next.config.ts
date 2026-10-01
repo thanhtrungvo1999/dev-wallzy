@@ -53,6 +53,24 @@ const nextConfig: NextConfig = {
       { source: "/terms", destination: "/terms.html" },
     ];
   },
+  // Wallzy targets Next.js's supported modern browsers. The built-in
+  // polyfill-module is otherwise bundled unconditionally and Lighthouse
+  // flags its legacy APIs (Array.at/flat/flatMap, Object.hasOwn/fromEntries,
+  // trimStart/trimEnd). Keep the module empty for modern clients.
+  turbopack: {
+    resolveAlias: {
+      "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+      "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+    },
+  },
+  webpack(config) {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "../build/polyfills/polyfill-module": false,
+      "next/dist/build/polyfills/polyfill-module": false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
