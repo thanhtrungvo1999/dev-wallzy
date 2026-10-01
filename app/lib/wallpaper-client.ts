@@ -84,7 +84,12 @@ export async function loadWallzyCategories(sb:SupabaseClient){
     const{data,error}=await sb.from("categories").select("*");
     if(error)throw error;
     const categories=(data||[]).map((x:any)=>String(x?.name??x?.category??x?.title??x?.slug??"").trim()).filter(Boolean);
-    wallzyCategoriesCache=[...new Set(categories)].sort((a,b)=>a.localeCompare(b));
+    const available=await Promise.all(categories.map(async category=>{
+      const{count,error}=await sb.from("wallpapers").select("id",{count:"exact",head:true}).eq("category",category);
+      if(error)throw error;
+      return count&&count>0?category:null;
+    }));
+    wallzyCategoriesCache=[...new Set(available.filter(Boolean) as string[])].sort((a,b)=>a.localeCompare(b));
     return wallzyCategoriesCache;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
