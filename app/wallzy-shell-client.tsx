@@ -1,7 +1,9 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import WallzyShell from "./wallzy-shell";
+
+const WallzyShell = dynamic(() => import("./wallzy-shell"), { ssr: true });
 
 export default function WallzyShellClient() {
   const pathname = usePathname() || "/";
