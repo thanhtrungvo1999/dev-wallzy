@@ -51,7 +51,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="preload" as="image" href="/icons/icon-512.svg" fetchPriority="high" type="image/svg+xml" />
         <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="" />
         <Script id="wallzy-fontawesome" strategy="afterInteractive">{String.raw`(function(){if(document.getElementById("wallzy-fontawesome-css"))return;var l=document.createElement("link");l.id="wallzy-fontawesome-css";l.rel="stylesheet";l.href="/css/fontawesome.min.css";document.head.appendChild(l)})()`}</Script>
       </head>
       <body
