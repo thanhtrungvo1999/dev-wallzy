@@ -44,9 +44,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`dark ${plusJakartaSans.variable}`}>
       <head>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5" strategy="lazyOnload" />
-        <Script id="wallzy-gtag" strategy="lazyOnload">
-          {String.raw`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-CV68K011E5');`}
+        <Script id="wallzy-analytics" strategy="afterInteractive">
+          {String.raw`(function(){var loaded=false;function load(){if(loaded)return;loaded=true;window.removeEventListener("pointerdown",load,true);window.removeEventListener("keydown",load,true);var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5";document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag("js",new Date());window.gtag("config","G-CV68K011E5")}window.addEventListener("pointerdown",load,{once:true,capture:true});window.addEventListener("keydown",load,{once:true,capture:true});window.setTimeout(load,15000)})()`}
         </Script>
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
