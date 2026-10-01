@@ -29,7 +29,7 @@ export function normalizeWallzyWallpaper(row:any):WallzyFeedWallpaper{
   return{id:String(row?.id??""),url,original_url:originalUrl,title:row?.title||row?.name||"",category:row?.category||"Other",keywords:Array.isArray(row?.keywords)?row.keywords:[],timestamp:row?.created_at||row?.timestamp||"",storage_path:row?.storage_path||""};
 }
 
-export async function getWallzyLatestMarker(sb:SupabaseClient,category="all"){const value=String(category||"").trim();let q=sb.from("wallpapers").select("id,created_at").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);if(value.toLowerCase()!=="all")q=q.eq("category",value);const{data,error}=await q.maybeSingle();if(error)throw error;const row=data as any;return row?{id:String(row.id??""),created_at:String(row.created_at??"")}:{id:"",created_at:""};}
+export async function getWallzyLatestMarker(sb:SupabaseClient,category="all"){const value=String(category||"").trim();let q=sb.from("wallpapers").select("id,created_at").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);if(value.toLowerCase()!=="all")q=q.ilike("category",value);const{data,error}=await q.maybeSingle();if(error)throw error;const row=data as any;return row?{id:String(row.id??""),created_at:String(row.created_at??"")}:{id:"",created_at:""};}
 
 export function createWallzyLoader(sb:SupabaseClient,category="all",options:{randomize?:boolean;pageSize?:number;initialOffset?:number}={}){
   let loading=false,exhausted=false,initialized=false,offset=Number.isFinite(options.initialOffset)?Math.max(0,Math.floor(options.initialOffset as number)):0;
