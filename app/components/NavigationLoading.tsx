@@ -24,6 +24,7 @@ export default function NavigationLoading() {
 
     const onPopState = () => start();
     const onNavigationStart = () => start();
+    const onNavigationStart = () => start();
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
@@ -36,12 +37,14 @@ export default function NavigationLoading() {
 
     window.addEventListener("popstate", onPopState);
     window.addEventListener("wallzy:navigation-start", onNavigationStart);
+    window.addEventListener("wallzy:navigation-start", onNavigationStart);
     document.addEventListener("click", onClick, true);
 
     return () => {
       history.pushState = originalPushState;
       history.replaceState = originalReplaceState;
       window.removeEventListener("popstate", onPopState);
+      window.removeEventListener("wallzy:navigation-start", onNavigationStart);
       window.removeEventListener("wallzy:navigation-start", onNavigationStart);
       document.removeEventListener("click", onClick, true);
     };
