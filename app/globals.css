@@ -273,3 +273,29 @@ html, body {
     min-height: 100dvh;
     max-height: 100dvh;
 }
+
+
+/* Global touch ripple */
+.touch-ripple-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    pointer-events: none;
+    overflow: hidden;
+}
+.touch-ripple {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: rgba(255,255,255,.20);
+    transform: translate(-50%, -50%) scale(0);
+    animation: wallzyGlobalRipple 520ms cubic-bezier(.2,.75,.2,1) forwards;
+}
+@keyframes wallzyGlobalRipple {
+    0% { transform: translate(-50%,-50%) scale(0); opacity: .42; }
+    100% { transform: translate(-50%,-50%) scale(14); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .touch-ripple { animation-duration: 180ms; }
+}
