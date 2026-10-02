@@ -23,7 +23,7 @@ export default function BottomNav({ active }: BottomNavProps) {
           {index > 0 && <div className="h-4 w-px bg-white/10" />}
           <button
             type="button"
-            onClick={() => router.push(path)}
+            onClick={() => (window.dispatchEvent(new Event("wallzy:navigation-start")), router.push(path)}
             className={
               "flex flex-col items-center space-y-0.5 text-xs transition " +
               (active === key ? "text-white" : "text-gray-400 hover:text-white")
