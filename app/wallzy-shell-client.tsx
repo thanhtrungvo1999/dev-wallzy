@@ -28,7 +28,6 @@ export default function WallzyShellClient() {
     pathname === "/" ||
     pathname === "/studio" ||
     pathname === "/tiktok" ||
-    pathname === "/favorites" ||
     isCategory ||
     isWallpaperDetail;
 
