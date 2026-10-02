@@ -5,7 +5,7 @@ import WallpaperGrid from "../components/WallpaperGrid";
 import AuthModal from "../components/AuthModal";
 import InstallModal from "../components/InstallModal";
 import BottomNav from "../components/BottomNav";
-import {getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites,loadRandomWallzyWallpapers} from "../lib/wallpaper-client";
+import {getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites,loadCategoryWallzyWallpapers} from "../lib/wallpaper-client";
 
 const slugify=(v:string)=>String(v||"all").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"").replace(/-+/g,"-").replace(/^-+|-+$/g,"")||"all";
 
@@ -39,7 +39,7 @@ useEffect(()=>{let dead=false;(async()=>{try{const sb=getWallzySupabase();sbRef.
           if(Array.isArray(section?.items))cachedItems=section.items.slice(0,6);
         }catch{}
         const firstSix=cachedItems.length===6?cachedItems:[];
-        const extra=await loadRandomWallzyWallpapers(sb,actual,14,firstSix.map((x:any)=>String(x.id)));
+        const extra=await loadCategoryWallzyWallpapers(sb,actual,14,firstSix.map((x:any)=>String(x.id)));
         if(dead)return;
         const initialItems=[...firstSix,...extra.images];
         setItems(initialItems);
@@ -61,7 +61,7 @@ const loadMore=async()=>{
       const parsed=raw?JSON.parse(raw):null;
       if(Array.isArray(parsed?.items))cached=parsed.items;
     }catch{}
-    const page=cached.length?{images:cached,hasMore:cached.length>=20}:await loadRandomWallzyWallpapers(sbRef.current,category,20,items.map((x:any)=>String(x.id)));
+    const page=cached.length?{images:cached,hasMore:cached.length>=20}:await loadCategoryWallzyWallpapers(sbRef.current,category,20,items.map((x:any)=>String(x.id)));
     if(!cached.length)try{sessionStorage.setItem(cacheKey,JSON.stringify({items:page.images||[]}))}catch{}
     setItems(v=>[...v,...(page.images||[])]);
     setHasMore(Boolean(page.hasMore));
