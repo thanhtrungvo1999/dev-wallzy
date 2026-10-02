@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 
 const WallzyShell = dynamic(() => import("./wallzy-shell"), {
-  ssr: true,
+  ssr: false,
   loading: () => (
     <div className="min-h-screen bg-[#08080a] flex items-center justify-center">
       <div className="w-20 h-20 rounded-[26px] bg-[#0a0a0c] border border-white/10 flex items-center justify-center shadow-2xl">
