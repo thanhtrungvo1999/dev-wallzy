@@ -279,6 +279,6 @@ export default function FavoritesPageClient() {
         </div>
       }
     </main>
-  ));
+  );
 }
 
