@@ -93,6 +93,23 @@ useEffect(()=>{const tab=pathname==="/favorites"?"favorites":pathname==="/studio
   useEffect(()=>{if(!sbRef.current)return;if(pathname!=="/"&&!pathname.startsWith("/category/"))return;let cancelled=false;(async()=>{try{let targetCategory=pathname.startsWith("/category/")?activeCategory:"all";if(categoryOptions.length===0){setCategoryLoading(true);const categories=await loadWallzyCategories(sbRef.current);if(cancelled)return;setCategoryOptions(categories);const match=pathname.match(/^\/category\/([^/]+)/i);targetCategory=match?(categories.find(x=>categorySlug(x)===match[1].toLowerCase())||"all"):"all";setActiveCategory(targetCategory);setCategoryLoading(false)}if(view.items.length===0&&!view.loading&&!cancelled)await loadCategory(targetCategory)}catch(error){if(!cancelled){console.error("[Wallzy] Route data load failed:",error);setCategoryLoading(false)}}})();return()=>{cancelled=true}},[pathname,categoryOptions.length]);
   useEffect(()=>{if(currentTab!=="studio"||!sbRef.current||savedGradients.length)return;let cancelled=false;(async()=>{try{const items=await loadWallzyGradients(sbRef.current,userRef.current);if(!cancelled)setSavedGradients(items)}catch(error){console.error("[Wallzy] Gradient load failed:",error)}})();return()=>{cancelled=true}},[currentTab]);
   useEffect(()=>{setView((v:any)=>({...v,favorites}))},[favorites]);
+  useEffect(()=>{
+    const handler=(event:Event)=>{
+      const detail=(event as CustomEvent).detail||{};
+      const id=String(detail.id||"");
+      if(!id)return;
+      setFavorites(current=>{
+        if(detail.favorite){
+          const item=detail.wallpaper;
+          if(!item||current.some(x=>String(x?.id)===id))return current;
+          return [...current,item];
+        }
+        return current.filter(x=>String(x?.id)!==id);
+      });
+    };
+    window.addEventListener("wallzy:favorite-updated",handler);
+    return()=>window.removeEventListener("wallzy:favorite-updated",handler);
+  },[]);
   useEffect(()=>{const el=mainRef.current;if(!el)return;let last=0,ticking=false;const onScroll=()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{const st=el.scrollTop,delta=st-last;if(st<=6){setHeaderHidden(false);setControlsTop(56)}else if(delta>0){setHeaderHidden(true);setControlsTop(0)}else if(delta<0){setHeaderHidden(false);setControlsTop(56)}last=st;ticking=false})};el.addEventListener("scroll",onScroll,{passive:true});return()=>el.removeEventListener("scroll",onScroll)},[]);
   useEffect(()=>{setTopHeight(pathname==="/favorites"||pathname==="/studio"||pathname==="/tiktok"?120:172)},[pathname]);
   useEffect(()=>{if(!downloadAd.open||downloadAd.ready)return;const timer=setInterval(()=>setDownloadAd(v=>v.seconds<=1?{...v,seconds:0,ready:true}:{...v,seconds:v.seconds-1}),1000);return()=>clearInterval(timer)},[downloadAd.open,downloadAd.ready]);
