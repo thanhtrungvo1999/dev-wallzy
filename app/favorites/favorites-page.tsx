@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import BottomNav from "../components/BottomNav";
 import {
   getWallzySupabase,
   loadWallzyFavorites,
@@ -253,29 +253,7 @@ export default function FavoritesPageClient() {
         </div>
       </section>
 
-      <footer id="footerEl" className="absolute bottom-12 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center flex-shrink-0 z-30 transition-all duration-300 ease-in-out rounded-full shadow-2xl">
-        {[
-          ["explore","fa-regular fa-compass","Explore"],
-          ["favorites","fa-regular fa-heart","Favorites"],
-          ["studio","fa-solid fa-palette","Studio"],
-          ["tiktok","fa-brands fa-tiktok","TikTok"],
-        ].map(([tab,icon,label],index)=>(
-          <FragmentNav key={tab} divider={index>0}>
-            <button
-              type="button"
-              onClick={()=>{
-                if(tab==="explore")router.push("/");
-                else if(tab==="studio")router.push("/studio");
-                else if(tab==="tiktok")router.push("/tiktok");
-              }}
-              className={"flex flex-col items-center space-y-0.5 cursor-pointer transition "+(tab==="favorites"?"text-white":"text-gray-400 hover:text-white")}
-            >
-              <i className={icon+" text-xs "+(tab==="favorites"?"text-white":"text-gray-400")}/>
-              <span className="text-[9px] font-semibold">{label}</span>
-            </button>
-          </FragmentNav>
-        ))}
-      </footer>
+      <BottomNav active="favorites" />
 
       {authOpen&&
         <AuthModal
@@ -304,11 +282,3 @@ export default function FavoritesPageClient() {
   );
 }
 
-function FragmentNav({children,divider}:{children:ReactNode;divider:boolean}){
-  return (
-    <>
-      {divider&&<div className="w-[1px] h-4 bg-white/10"/>}
-      {children}
-    </>
-  );
-}
