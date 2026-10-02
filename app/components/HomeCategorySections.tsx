@@ -53,8 +53,9 @@ export default function HomeCategorySections({categories,favorites,onNavigate,on
 
       const loadOne=async(category:string)=>{
         try{
-          const items=await client.loadHomeCategoryWallpapers(sb,category,6);
-          return{category,items};
+          const loader=client.createWallzyLoader(sb,category,{randomize:true,pageSize:6});
+          const page=await loader();
+          return{category,items:page.images||[]};
         }catch(error){
           console.error("[Wallzy] Home category load failed:",category,error);
           return{category,items:[]};

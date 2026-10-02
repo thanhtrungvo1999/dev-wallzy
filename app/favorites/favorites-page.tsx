@@ -196,8 +196,8 @@ export default function FavoritesPageClient() {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-black text-white">
-      <header className="relative z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
+    <main className="fixed inset-0 bg-black text-white overflow-hidden">
+      <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
         <button
           type="button"
           onClick={()=>router.push("/")}
@@ -222,7 +222,7 @@ export default function FavoritesPageClient() {
         </button>
       </header>
 
-      <section className="px-5 pt-4 pb-10">
+      <section className="h-full overflow-y-auto scrollbar-none px-5 pt-[92px] pb-[360px]">
         <div className="flex justify-center mb-3">
           <WallzyAd size="320x50"/>
         </div>
@@ -253,7 +253,7 @@ export default function FavoritesPageClient() {
         </div>
       </section>
 
-      <footer id="footerEl" className="fixed bottom-0 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center flex-shrink-0 z-30 transition-all duration-300 ease-in-out rounded-full shadow-2xl">
+      <footer id="footerEl" className="absolute bottom-12 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center flex-shrink-0 z-30 transition-all duration-300 ease-in-out rounded-full shadow-2xl">
         {[
           ["explore","fa-regular fa-compass","Explore"],
           ["favorites","fa-regular fa-heart","Favorites"],

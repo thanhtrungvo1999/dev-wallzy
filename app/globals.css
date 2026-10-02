@@ -212,21 +212,17 @@ html,body{margin:0;padding:0;background:#08080a;color:#fff;font-family:var(--fon
 
 /* Shared ad frame layouts */
  .wallzy-ad-frame-320 {
-    width: 330px;
-    max-width: 100%;
+    width: 100%;
     height: 60px;
-    min-height: 60px;
-    margin: 0 auto 10px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
 }
 .wallzy-ad-frame-320 > .wallzy-ad-frame-inner {
-    width: 330px;
+    width: 100%;
     height: 60px;
-    min-height: 60px;
-    flex: 0 0 330px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,.10);
     background: #0a0a0c;
@@ -267,14 +263,13 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    overflow-y: auto;
 }
 
 #appContainer {
     width: 100%;
     min-width: 100%;
     max-width: none;
-    height: auto;
+    height: 100dvh;
     min-height: 100dvh;
-    max-height: none;
+    max-height: 100dvh;
 }
