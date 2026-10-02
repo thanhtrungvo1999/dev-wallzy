@@ -297,7 +297,7 @@ export default function WallzyShell() {
       window.sessionStorage.setItem("wallzy:return-scroll", String(mainRef.current?.scrollTop || 0));
     } catch {}
 
-    router.push("/wallpaper/" + encodeURIComponent(String(wallpaper.id))));
+    router.push("/wallpaper/" + encodeURIComponent(String(wallpaper.id)));
   };
 
   const openCategory = (category: string) => {
