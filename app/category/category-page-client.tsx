@@ -146,14 +146,18 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   useEffect(() => {
     let cancelled = false;
 
-    getWallzySupabase()
-      .then(sb => loadWallzyCategories(sb))
-      .then(values => {
-        if (!cancelled) setCategories(values);
-      })
-      .catch(error => {
-        console.error("[Wallzy] Category nav load failed:", error);
-      });
+    try {
+      const sb = getWallzySupabase();
+      loadWallzyCategories(sb)
+        .then((values: string[]) => {
+          if (!cancelled) setCategories(values);
+        })
+        .catch((error: unknown) => {
+          console.error("[Wallzy] Category nav load failed:", error);
+        });
+    } catch (error) {
+      console.error("[Wallzy] Category nav init failed:", error);
+    }
 
     return () => {
       cancelled = true;
