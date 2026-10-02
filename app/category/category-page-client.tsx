@@ -43,15 +43,6 @@ function WallzyAd({ size }: { size: "320x50" | "300x250" }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setCategoryPinned(window.scrollY > 70);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
     const delay = size === "320x50" ? 1200 : 2200;
     const run = () => {
@@ -216,6 +207,15 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   const [authModal, setAuthModal] = useState(false);
   const [installModal, setInstallModal] = useState(false);
   const [categoryPinned, setCategoryPinned] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setCategoryPinned(window.scrollY > 70);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
