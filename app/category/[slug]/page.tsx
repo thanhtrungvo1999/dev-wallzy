@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${category} Wallpapers | Wallzy`,
-    description: `Discover {category} 4K UHD wallpapers on Wallzy. Download original-quality wallpapers for your phone.`,
+    description: `Discover ${category} 4K UHD wallpapers on Wallzy. Download original-quality wallpapers for your phone.`,
     alternates: { canonical: url },
     openGraph: {
       title: `${category} Wallpapers | Wallzy`,
@@ -53,7 +53,7 @@ export default async function CategoryPage({ params }: Props) {
       <section className="sr-only" aria-label={`${category} wallpapers`}>
         <h1>{category} Wallpapers</h1>
         <p>
-          Discover ${category} 4K UHD wallpapers on Wallzy. Browse wallpapers in
+          Discover {category} 4K UHD wallpapers on Wallzy. Browse wallpapers in
           this category and download them in original quality for your phone.
         </p>
       </section>
