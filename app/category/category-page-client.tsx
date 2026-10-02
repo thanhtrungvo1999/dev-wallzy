@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import WallpaperGrid from "../components/WallpaperGrid";
 import {
   createWallzyLoader,
@@ -19,6 +20,9 @@ type CategoryWallpaper = {
   timestamp: string;
   storage_path: string;
 };
+
+const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr: true });
+const InstallModal = dynamic(() => import("../components/InstallModal"), { ssr: true });
 
 type Props = {
   category: string;
@@ -199,27 +203,11 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(initialItems.length >= 20);
   const [categories, setCategories] = useState<string[]>([]);
+  const [authUser, setAuthUser] = useState<any>(null);
+  const [authModal, setAuthModal] = useState(false);
+  const [installModal, setInstallModal] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    try {
-      const sb = getWallzySupabase();
-      loadWallzyCategories(sb)
-        .then((values: string[]) => {
-          if (!cancelled) setCategories(values);
-        })
-        .catch((error: unknown) => {
-          console.error("[Wallzy] Category nav load failed:", error);
-        });
-    } catch (error) {
-      console.error("[Wallzy] Category nav init failed:", error);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  useEffect(() => {\n    let cancelled = false;\n    let subscription: { unsubscribe: () => void } | null = null;\n    try {\n      const sb = getWallzySupabase();\n      loadWallzyCategories(sb).then((values: string[]) => { if (!cancelled) setCategories(values); }).catch((error: unknown) => console.error("[Wallzy] Category nav load failed:", error));\n      sb.auth.getSession().then(({ data }) => { if (!cancelled) setAuthUser(data.session?.user || null); }).catch(() => {});\n      subscription = sb.auth.onAuthStateChange((_event, session) => { if (!cancelled) setAuthUser(session?.user || null); }).data.subscription;\n    } catch (error) { console.error("[Wallzy] Category nav init failed:", error); }\n    return () => { cancelled = true; subscription?.unsubscribe(); };\n  }, []);
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
@@ -278,11 +266,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
             >
               <i className="fa-solid fa-arrow-left text-xs" />
             </button>
-            <div className="min-w-0">
-              <h1 className="truncate text-base font-bold">{category} Wallpapers</h1>
-              <p className="text-[10px] text-white/40">4K UHD wallpapers for your phone</p>
-            </div>
-          </div>
+            <div className="min-w-0 flex-1"><h1 className="truncate text-base font-bold">{category} Wallpapers</h1><p className="text-[10px] text-white/40">4K UHD wallpapers for your phone</p></div><div className="flex items-center gap-2 shrink-0"><button type="button" onClick={() => setInstallModal(true)} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center text-gray-200 hover:bg-[#222228] transition cursor-pointer" title="Install" aria-label="Install"><i className="fa-solid fa-mobile-screen-button text-xs text-white" /></button><button type="button" onClick={() => setAuthModal(true)} className="px-3 py-1.5 rounded-full bg-[#121215] hover:bg-[#222228] text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer border border-white/10" title="Account" aria-label="Account"><i className="fa-solid fa-user-circle text-xs text-white" /><span>{authUser?.user_metadata?.full_name?.split(" ")[0] || "Account"}</span></button></div>          </div>
           <CategoryNav
             categories={categories}
             activeCategory={category}
@@ -312,6 +296,8 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
 
         <BottomNav />
       </div>
+      {installModal && <InstallModal onClose={() => setInstallModal(false)} />}
+      {authModal && <AuthModal user={authUser} onClose={() => setAuthModal(false)} onLogin={async () => { const sb = getWallzySupabase(); const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.href } }); if (error) console.error("[Wallzy] Login failed:", error); }} onLogout={async () => { const sb = getWallzySupabase(); const { error } = await sb.auth.signOut(); if (!error) setAuthModal(false); }} />}
     </main>
   );
 }
