@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import WallpaperGrid from "../components/WallpaperGrid";
 import {
@@ -132,7 +132,37 @@ function CategoryNav({
           {value === "all" ? "#All Wallpapers" : "#" + value}
         </button>
       ))}
-    </nav>
+    </n
+
+function BottomNav() {
+  const items = [
+    ["explore", "fa-regular fa-compass", "Explore", "/"],
+    ["favorites", "fa-regular fa-heart", "Favorites", "/favorites"],
+    ["studio", "fa-solid fa-palette", "Studio", "/studio"],
+    ["tiktok", "fa-brands fa-tiktok", "TikTok", "/tiktok"],
+  ] as const;
+
+  return (
+    <footer
+      id="footerEl"
+      className="fixed bottom-12 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center z-40 rounded-full shadow-2xl"
+    >
+      {items.map(([tab, icon, label, href], index) => (
+        <Fragment key={tab}>
+          {index > 0 && <div className="w-[1px] h-4 bg-white/10" />}
+          <button
+            type="button"
+            onClick={() => window.location.href = href}
+            className={"flex flex-col items-center space-y-0.5 cursor-pointer transition " + (tab === "explore" ? "text-white" : "text-gray-400 hover:text-white")}
+          >
+            <i className={icon + " text-xs"} />
+            <span className="text-[9px] font-semibold">{label}</span>
+          </button>
+        </Fragment>
+      ))}
+    </footer>
+  );
+}av>
   );
 }
 
@@ -252,15 +282,8 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
           <WallzyAd size="300x250" />
         </div>
 
-        <footer className="w-full flex justify-center items-center pt-[30px] pb-8">
-          <div className="flex items-center justify-center gap-3 text-[15px] text-white/70 font-bold">
-            <a href="/terms" className="hover:text-white transition">Terms of Use</a>
-            <span className="text-white/40">|</span>
-            <a href="/privacy" className="hover:text-white transition">Privacy Policy</a>
-            <span className="text-white/40">|</span>
-            <a href="/contact" className="hover:text-white transition">Contact</a>
-          </div>
-        </footer>
+
+        <BottomNav />
       </div>
     </main>
   );
