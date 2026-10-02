@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { getWallzySupabase, loadWallzyGradients, saveWallzyGradient, deleteWallzyGradient } from "../lib/wallpaper-client";
 
-const GradientStudio = dynamic(() => import("../components/GradientStudio"), { ssr:false });
-const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr:false });
+const GradientStudio = dynamic(() => import("../components/GradientStudio"), { ssr: true });
+const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr: true });
 
 
 function TouchRipple(){useEffect(()=>{const handler=(event:PointerEvent)=>{const target=(event.target as HTMLElement)?.closest?.("button,a,[role='button'],.ripple-target") as HTMLElement|null;if(!target||target.hasAttribute("disabled")||target.getAttribute("aria-disabled")==="true")return;const rect=target.getBoundingClientRect();if(!rect.width||!rect.height)return;const ripple=document.createElement("span");ripple.className="native-ripple";ripple.style.left=(event.clientX-rect.left)+"px";ripple.style.top=(event.clientY-rect.top)+"px";const radius=Math.max(rect.width,rect.height)*1.5;ripple.style.width=radius+"px";ripple.style.height=radius+"px";target.appendChild(ripple);window.setTimeout(()=>ripple.remove(),430)};document.addEventListener("pointerdown",handler,true);return()=>document.removeEventListener("pointerdown",handler,true)},[]);return null}
