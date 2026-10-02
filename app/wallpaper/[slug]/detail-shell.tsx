@@ -99,7 +99,9 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
       const exists = current.some(item => String(item?.id) === String(wallpaper.id));
       const next = exists ? current.filter(item => String(item?.id) !== String(wallpaper.id)) : [...current, wallpaper];
       await saveWallzyFavorites(sb, user, next);
-      setFavorite(!exists);
+      const nextFavorite=!exists;
+      setFavorite(nextFavorite);
+      window.dispatchEvent(new CustomEvent("wallzy:favorite-updated",{detail:{id:wallpaper.id,favorite:nextFavorite,wallpaper}}));
     } catch { setMessage("Unable to update favorite. Please try again."); }
   };
 
