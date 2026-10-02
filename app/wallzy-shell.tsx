@@ -216,6 +216,7 @@ export default function WallzyShell() {
       } catch (error) {
         console.error("[Wallzy] Home bootstrap failed:", error);
       } finally {
+        if (!cancelled) setSplashHidden(true);
       }
     })();
 
