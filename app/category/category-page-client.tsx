@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import WallpaperGrid from "../components/WallpaperGrid";
 import {
@@ -28,7 +28,7 @@ type Props = {
 export default function CategoryPageClient({ category, initialItems }: Props) {
   const router = useRouter();
   const [items, setItems] = useState(initialItems);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);\n  const [hasMore, setHasMore] = useState(initialItems.length >= 20);
 
   const hasMore = useMemo(() => initialItems.length >= 20 || items.length > initialItems.length, [initialItems.length, items.length]);
 
