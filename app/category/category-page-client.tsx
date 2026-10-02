@@ -288,10 +288,9 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
 
   return (
     <main className="min-h-[100dvh] bg-black text-white">
-      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-[124px] pb-10">
+      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-[76px] pb-10">
         <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 px-5 py-3 backdrop-blur-xl">
-          <div className="mx-auto w-full max-w-xl">
-          <div className="flex items-center gap-3">
+          <div className="mx-auto flex w-full max-w-xl items-center gap-3">
             <button
               type="button"
               onClick={() => router.push("/")}
@@ -314,9 +313,13 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
               </button>
             </div>
           </div>
-          <CategoryNav categories={categories} activeCategory={category} onSelect={selectCategory} />
-          </div>
         </header>
+
+        <CategoryNav
+          categories={categories}
+          activeCategory={category}
+          onSelect={selectCategory}
+        />
 
         <div>
           <div className="flex justify-center mb-4">
@@ -351,5 +354,5 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
         const { error } = await sb.auth.signOut();
         if (!error) setAuthModal(false);
       }} />}
-    </main>  );
+    </main> );
 }
