@@ -113,14 +113,41 @@ function CategoryNav({
   activeCategory: string;
   onSelect: (value: string) => void;
 }) {
+  const navRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    const active = Array.from(
+      nav.querySelectorAll<HTMLElement>("[data-category]")
+    ).find(
+      element =>
+        element.dataset.category?.toLowerCase() ===
+        String(activeCategory).toLowerCase()
+    );
+
+    if (!active) return;
+
+    const target =
+      active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2;
+
+    nav.scrollTo({
+      left: Math.max(0, target),
+      behavior: "smooth",
+    });
+  }, [activeCategory, categories]);
+
   return (
     <nav
+      ref={navRef}
       className="w-full min-w-0 px-0 py-2.5 flex flex-nowrap gap-2 overflow-x-auto overscroll-x-contain touch-pan-x scrollbar-none"
       aria-label="Wallpaper categories"
     >
       {["all", ...categories].map(value => (
         <button
           key={value}
+          data-category={value}
           type="button"
           onClick={() => onSelect(value)}
           className={
@@ -132,7 +159,9 @@ function CategoryNav({
           {value === "all" ? "#All Wallpapers" : "#" + value}
         </button>
       ))}
-    </n
+    </nav>
+  );
+}
 
 function BottomNav() {
   const items = [
@@ -161,8 +190,6 @@ function BottomNav() {
         </Fragment>
       ))}
     </footer>
-  );
-}av>
   );
 }
 
