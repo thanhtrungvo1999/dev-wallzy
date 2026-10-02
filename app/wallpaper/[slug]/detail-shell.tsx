@@ -33,7 +33,7 @@ export default function WallpaperDetailShell({ wallpaper }: { wallpaper: Wallpap
     (async () => {
       try {
         const sb = getWallzySupabase();
-        const { data: { user: currentUser } } = await sb.auth.getUser();
+        const { data: { session } } = await sb.auth.getSession(); let currentUser = session?.user || null; if (!currentUser) { const { data: { user: verifiedUser } } = await sb.auth.getUser(); currentUser = verifiedUser || null; }
         if (cancelled) return;
         setUser(currentUser || null);
         const items = await loadWallzyFavorites(sb, currentUser || null);
