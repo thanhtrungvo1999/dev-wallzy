@@ -8,10 +8,9 @@ export default function NavigationLoading() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const start = () => setLoading(true);
     const originalPushState = history.pushState;
     const originalReplaceState = history.replaceState;
-
-    const start = () => setLoading(true);
 
     history.pushState = function (...args) {
       start();
@@ -24,12 +23,24 @@ export default function NavigationLoading() {
     };
 
     const onPopState = () => start();
+    const onClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest("a[href]") as HTMLAnchorElement | null;
+      if (!link || link.target === "_blank" || link.download) return;
+      const url = new URL(link.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return;
+      start();
+    };
+
     window.addEventListener("popstate", onPopState);
+    document.addEventListener("click", onClick, true);
 
     return () => {
       history.pushState = originalPushState;
       history.replaceState = originalReplaceState;
       window.removeEventListener("popstate", onPopState);
+      document.removeEventListener("click", onClick, true);
     };
   }, []);
 
@@ -41,10 +52,7 @@ export default function NavigationLoading() {
 
   return (
     <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-transparent">
-      <div
-        className="h-9 w-9 rounded-full border-2 border-white/20 border-t-white animate-spin"
-        aria-label="Loading"
-      />
+      <div className="h-9 w-9 rounded-full border-2 border-white/20 border-t-white animate-spin" aria-label="Loading" />
     </div>
   );
 }
