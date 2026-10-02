@@ -289,7 +289,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   return (
     <main className="min-h-[100dvh] bg-black text-white">
       <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-4 pb-10">
-        <header className="sticky top-0 z-30 -mx-5 mb-3 border-b border-white/10 bg-black/90 px-5 py-3 backdrop-blur-xl">
+        <header className="relative z-30 -mx-5 mb-3 border-b border-white/10 bg-black/90 px-5 py-3 backdrop-blur-xl">
           <div className="flex items-center gap-3">
             <button
               type="button"
