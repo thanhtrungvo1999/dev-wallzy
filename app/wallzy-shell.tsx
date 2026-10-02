@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import BottomNav from "./components/BottomNav";
 
 const HomeCategorySections = dynamic(() => import("./components/HomeCategorySections"), {
   ssr: false,
@@ -152,32 +153,6 @@ function SearchBar() {
         </div>
       </div>
     </button>
-  );
-}
-
-function BottomNav() {
-  const router = useRouter();
-  const items = [
-    ["/", "fa-regular fa-compass", "Explore"],
-    ["/favorites", "fa-regular fa-heart", "Favorites"],
-    ["/studio", "fa-solid fa-palette", "Studio"],
-    ["/tiktok", "fa-brands fa-tiktok", "TikTok"],
-  ] as const;
-
-  return (
-    <footer className="absolute inset-x-6 bottom-0 z-30 flex items-center justify-around rounded-t-3xl border border-white/10 bg-[#0a0a0c]/90 px-6 py-2.5 shadow-2xl backdrop-blur-xl">
-      {items.map(([path, icon, label]) => (
-        <button
-          key={path}
-          type="button"
-          onClick={() => router.push(path)}
-          className={"flex flex-col items-center space-y-0.5 text-xs transition " + (path === "/" ? "text-white" : "text-gray-400 hover:text-white")}
-        >
-          <i className={icon} />
-          <span className="text-[9px] font-semibold">{label}</span>
-        </button>
-      ))}
-    </footer>
   );
 }
 
@@ -337,7 +312,7 @@ export default function WallzyShell() {
           />
         </main>
 
-        <BottomNav />
+        <BottomNav active="explore" />
       </div>
 
       {installModal && <InstallModal onClose={() => setInstallModal(false)} />}
