@@ -5,7 +5,7 @@ import WallpaperGrid from "../components/WallpaperGrid";
 import AuthModal from "../components/AuthModal";
 import InstallModal from "../components/InstallModal";
 import BottomNav from "../components/BottomNav";
-import {createWallzyLoader,getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites,loadRandomWallzyWallpapers} from "../lib/wallpaper-client";
+import {getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites,loadRandomWallzyWallpapers} from "../lib/wallpaper-client";
 
 const slugify=(v:string)=>String(v||"all").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"").replace(/-+/g,"-").replace(/^-+|-+$/g,"")||"all";
 
