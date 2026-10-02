@@ -43,6 +43,15 @@ function WallzyAd({ size }: { size: "320x50" | "300x250" }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const onScroll = () => {
+      setCategoryPinned(window.scrollY > 70);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     const delay = size === "320x50" ? 1200 : 2200;
     const run = () => {
@@ -206,6 +215,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   const [authUser, setAuthUser] = useState<any>(null);
   const [authModal, setAuthModal] = useState(false);
   const [installModal, setInstallModal] = useState(false);
+  const [categoryPinned, setCategoryPinned] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -315,12 +325,22 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
           </div>
         </header>
 
-        <div className="sticky top-0 z-50 -mx-5 bg-black/95 px-5 backdrop-blur-xl border-b border-white/10">
-          <CategoryNav
-            categories={categories}
-            activeCategory={category}
-            onSelect={selectCategory}
-          />
+        <div className="h-[45px] -mx-5">
+          <div
+            className={
+              categoryPinned
+                ? "fixed top-0 left-0 right-0 z-50 bg-black/95 px-5 backdrop-blur-xl border-b border-white/10"
+                : "bg-black/95 px-5 backdrop-blur-xl border-b border-white/10"
+            }
+          >
+            <div className="mx-auto w-full max-w-xl">
+              <CategoryNav
+                categories={categories}
+                activeCategory={category}
+                onSelect={selectCategory}
+              />
+            </div>
+          </div>
         </div>
 
         <div>
