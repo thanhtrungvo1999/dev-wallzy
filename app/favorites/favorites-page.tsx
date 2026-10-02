@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import {
@@ -38,8 +39,7 @@ function WallzyAd({size}:{size:"320x50"|"300x250"}) {
     : {w:300,h:250,key:"d57e1d0e6497dfaa47e074d39d673693",provider:"profitablerate"};
 
   const srcDoc=cfg.provider==="highrevenue"
-    ? '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body><script>atOptions={\\'key\\':\\''+cfg.key+'\\',\\'format\\':\\'iframe\\',\\'height\\':'+cfg.h+',\\'width\\':'+cfg.w+',\\'params\\':{}};</script><script src="https://www.highrevenueformat.com/'+cfg.key+'/invoke.js"></script></body></html>'
-    : '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body><script async="async" data-cfasync="false" src="https://pl31436544.profitableratecpmnetwork.com/'+cfg.key+'/invoke.js"></script><div id="container-'+cfg.key+'"></div></body></html>';
+    ? `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body><script>atOptions={'key':'${cfg.key}','format':'iframe','height':${cfg.h},'width':${cfg.w},'params':{}};</script><script src="https://www.highrevenueformat.com/${cfg.key}/invoke.js"></script></body></html>`\n    : '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body><script async="async" data-cfasync="false" src="https://pl31436544.profitableratecpmnetwork.com/'+cfg.key+'/invoke.js"></script><div id="container-'+cfg.key+'"></div></body></html>';
 
   return (
     <div className={size==="320x50"?"wallzy-ad-frame-320":"wallzy-ad-frame-300"}>
@@ -302,7 +302,7 @@ export default function FavoritesPageClient() {
   );
 }
 
-function FragmentNav({children,divider}:{children:React.ReactNode;divider:boolean}){
+function FragmentNav({children,divider}:{children:ReactNode;divider:boolean}){
   return (
     <>
       {divider&&<div className="w-[1px] h-4 bg-white/10"/>}
