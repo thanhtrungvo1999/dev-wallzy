@@ -52,7 +52,7 @@ export function createWallzyLoader(sb:SupabaseClient,category="all",options:{ran
         initialized=true;
       }
       const start=offset,end=start+pageSize-1;
-      const cacheKey=`wallzy:wallpapers:${value.toLowerCase()||"all"}:${start}:${pageSize}`;
+      const cacheKey=`wallzy:wallpapers:v2:${value.toLowerCase()||"all"}:${start}:${pageSize}`;
 
       if(typeof window!=="undefined"){
         try{
@@ -77,7 +77,7 @@ export function createWallzyLoader(sb:SupabaseClient,category="all",options:{ran
       const visibleRows=rows.slice(0,pageSize);
       const images=visibleRows.map(normalizeWallzyWallpaper);
       offset=start+visibleRows.length;
-      if(rows.length<=pageSize)exhausted=true;
+      if(rows.length<pageSize)exhausted=true;
       const page={images,hasMore:!exhausted,nextOffset:offset};
 
       if(typeof window!=="undefined"){
