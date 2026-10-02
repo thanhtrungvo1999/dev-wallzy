@@ -287,9 +287,9 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   };
 
   return (
-    <main className="min-h-[100dvh] bg-black text-white">
-      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-[124px] pb-10">
-        <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 px-5 py-3 backdrop-blur-xl">
+    <main className="fixed inset-0 bg-black text-white overflow-hidden">
+      <header className="absolute top-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-xl px-5 py-3 border-b border-white/10">
+        <div className="mx-auto w-full max-w-xl">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -299,38 +299,57 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
             >
               <i className="fa-solid fa-arrow-left text-xs" />
             </button>
-            <div className="min-w-0 flex-1"><h1 className="truncate text-base font-bold">{category} Wallpapers</h1><p className="text-[10px] text-white/40">4K UHD wallpapers for your phone</p></div><div className="flex items-center gap-2 shrink-0"><button type="button" onClick={() => setInstallModal(true)} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center text-gray-200 hover:bg-[#222228] transition cursor-pointer" title="Install" aria-label="Install"><i className="fa-solid fa-mobile-screen-button text-xs text-white" /></button><button type="button" onClick={() => setAuthModal(true)} className="px-3 py-1.5 rounded-full bg-[#121215] hover:bg-[#222228] text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer border border-white/10" title="Account" aria-label="Account"><i className="fa-solid fa-user-circle text-xs text-white" /><span>{authUser?.user_metadata?.full_name?.split(" ")[0] || "Account"}</span></button></div>          </div>
-          <CategoryNav
-            categories={categories}
-            activeCategory={category}
-            onSelect={selectCategory}
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-base font-bold">{category} Wallpapers</h1>
+              <p className="text-[10px] text-white/40">4K UHD wallpapers for your phone</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button type="button" onClick={() => setInstallModal(true)} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center text-gray-200 hover:bg-[#222228] transition cursor-pointer" title="Install" aria-label="Install">
+                <i className="fa-solid fa-mobile-screen-button text-xs text-white" />
+              </button>
+              <button type="button" onClick={() => setAuthModal(true)} className="px-3 py-1.5 rounded-full bg-[#121215] hover:bg-[#222228] text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer border border-white/10" title="Account" aria-label="Account">
+                <i className="fa-solid fa-user-circle text-xs text-white" />
+                <span>{authUser?.user_metadata?.full_name?.split(" ")[0] || "Account"}</span>
+              </button>
+            </div>
+          </div>
+          <CategoryNav categories={categories} activeCategory={category} onSelect={selectCategory} />
+        </div>
+      </header>
+
+      <section className="h-full overflow-y-auto scrollbar-none px-5 pt-[126px] pb-[360px]">
+        <div className="mx-auto w-full max-w-xl">
+          <div className="flex justify-center mb-4">
+            <WallzyAd size="320x50" />
+          </div>
+
+          <WallpaperGrid
+            view={view}
+            hideFavorite
+            onNavigate={wallpaper => {
+              router.push(`/wallpaper/${encodeURIComponent(String(wallpaper.id))}`);
+            }}
+            onToggleFavorite={() => {}}
+            onLoadMore={loadMore}
+            onExplore={() => router.push("/")}
           />
-        </header>
 
-        <div className="flex justify-center mb-4">
-          <WallzyAd size="320x50" />
+          <div className="flex justify-center pt-6">
+            <WallzyAd size="300x250" />
+          </div>
         </div>
+      </section>
 
-        <WallpaperGrid
-          view={view}
-          hideFavorite
-          onNavigate={wallpaper => {
-            router.push(`/wallpaper/${encodeURIComponent(String(wallpaper.id))}`);
-          }}
-          onToggleFavorite={() => {}}
-          onLoadMore={loadMore}
-          onExplore={() => router.push("/")}
-        />
-
-        <div className="flex justify-center pt-6">
-          <WallzyAd size="300x250" />
-        </div>
-
-
-        <BottomNav />
-      </div>
+      <BottomNav />
       {installModal && <InstallModal onClose={() => setInstallModal(false)} />}
-      {authModal && <AuthModal user={authUser} onClose={() => setAuthModal(false)} onLogin={async () => { const sb = getWallzySupabase(); const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.href } }); if (error) console.error("[Wallzy] Login failed:", error); }} onLogout={async () => { const sb = getWallzySupabase(); const { error } = await sb.auth.signOut(); if (!error) setAuthModal(false); }} />}
-    </main>
-  );
+      {authModal && <AuthModal user={authUser} onClose={() => setAuthModal(false)} onLogin={async () => {
+        const sb = getWallzySupabase();
+        const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.href } });
+        if (error) console.error("[Wallzy] Login failed:", error);
+      }} onLogout={async () => {
+        const sb = getWallzySupabase();
+        const { error } = await sb.auth.signOut();
+        if (!error) setAuthModal(false);
+      }} />}
+    </main>  );
 }
