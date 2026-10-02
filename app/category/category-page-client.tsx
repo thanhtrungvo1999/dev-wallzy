@@ -178,7 +178,7 @@ function BottomNav() {
   return (
     <footer
       id="footerEl"
-      className="fixed bottom-12 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center z-40 rounded-full shadow-2xl"
+      className="fixed bottom-[35px] inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center z-40 rounded-full shadow-2xl"
     >
       {items.map(([tab, icon, label, href], index) => (
         <Fragment key={tab}>
