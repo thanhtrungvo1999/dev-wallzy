@@ -92,20 +92,43 @@ export function createWallzyLoader(sb:SupabaseClient,category="all",options:{ran
 export async function loadRandomWallzyWallpapers(
   sb:SupabaseClient,
   category="all",
+  limit=6
+){
+  const value=String(category||"").trim();
+  const pageSize=Math.min(Math.max(Math.floor(limit||6),1),20);
+  const{data,error}=await sb.rpc("get_random_wallpapers",{
+    category_filter:value.toLowerCase()==="all"?"":value,
+    result_limit:pageSize,
+    exclude_ids:[]
+  });
+  if(error)throw error;
+  const images=(Array.isArray(data)?data:[]).map(normalizeWallzyWallpaper);
+  return{images,hasMore:images.length>=pageSize};
+}
+
+export async function loadCategoryWallzyWallpapers(
+  sb:SupabaseClient,
+  category="all",
   limit=14,
   excludeIds:string[]=[]
 ){
   const value=String(category||"").trim();
   const pageSize=Math.min(Math.max(Math.floor(limit||14),1),50);
   const excluded=[...new Set((excludeIds||[]).map(String).filter(Boolean))];
-  const{data,error}=await sb.rpc("get_random_wallpapers",{
-    category_filter:value.toLowerCase()==="all"?"":value,
-    result_limit:pageSize,
-    exclude_ids:excluded
-  });
+
+  let q=sb.from("wallpapers")
+    .select("id,category,keywords,storage_path,public_url,created_at")
+    .order("created_at",{ascending:false})
+    .order("id",{ascending:false})
+    .limit(pageSize);
+
+  if(value.toLowerCase()!=="all")q=q.ilike("category",value);
+  if(excluded.length)q=q.not("id","in","("+excluded.join(",")+")");
+
+  const{data,error}=await q;
   if(error)throw error;
-  const images=(Array.isArray(data)?data:[]).map(normalizeWallzyWallpaper);
-  return{images,hasMore:images.length>=pageSize};
+  const rows=data||[];
+  return{images:rows.map(normalizeWallzyWallpaper),hasMore:rows.length>=pageSize};
 }
 export async function searchWallzyWallpapers(sb:SupabaseClient,query:string,offset=0){
   const raw=String(query||"").trim().toLowerCase().replace(/^#+/,"");
