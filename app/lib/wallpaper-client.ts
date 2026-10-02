@@ -98,7 +98,7 @@ export async function loadWallzyCategories(sb:SupabaseClient){
         if(bi===-1)return -1;
         return ai-bi;
       }
-      return a.localeCompare(b);
+      if(a.toLowerCase()==="other")return 1;if(b.toLowerCase()==="other")return -1;return a.localeCompare(b);
     });
     return wallzyCategoriesCache;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
