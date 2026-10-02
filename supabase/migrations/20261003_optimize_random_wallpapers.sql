@@ -1,11 +1,8 @@
-alter table public.wallpapers
-  add column if not exists random_key double precision not null default random();
-
-create index if not exists wallpapers_random_category_idx
-on public.wallpapers (lower(category), random_key);
-
-create index if not exists wallpapers_random_key_idx
-on public.wallpapers (random_key);
+-- Switch random wallpaper loading to PostgreSQL TABLESAMPLE.
+-- Remove the temporary random_key approach from the previous experiment.
+drop index if exists public.wallpapers_random_category_idx;
+drop index if exists public.wallpapers_random_key_idx;
+alter table public.wallpapers drop column if exists random_key;
 
 create or replace function public.get_random_wallpapers(
   category_filter text default '',
@@ -20,56 +17,45 @@ returns table (
   public_url text,
   created_at text
 )
-language sql
-stable
+language plpgsql
+volatile
 as $$
-with params as (
-  select
-    least(greatest(coalesce(result_limit,14),1),50)::integer as lim,
-    random()::double precision as pivot
-),
-first_part as (
-  select
-    w.id::text,
-    coalesce(w.category,'')::text as category,
-    coalesce(w.keywords,array[]::text[]) as keywords,
-    coalesce(w.storage_path,'')::text as storage_path,
-    coalesce(w.public_url,'')::text as public_url,
-    w.created_at::text as created_at,
-    w.random_key
-  from public.wallpapers w
-  cross join params p
-  where
-    (coalesce(category_filter,'') = '' or lower(w.category)=lower(category_filter))
-    and not (w.id::text = any(coalesce(exclude_ids,'{}'::text[])))
-    and w.random_key >= p.pivot
-  order by w.random_key
-  limit (select lim from params)
-),
-second_part as (
-  select
-    w.id::text,
-    coalesce(w.category,'')::text as category,
-    coalesce(w.keywords,array[]::text[]) as keywords,
-    coalesce(w.storage_path,'')::text as storage_path,
-    coalesce(w.public_url,'')::text as public_url,
-    w.created_at::text as created_at,
-    w.random_key
-  from public.wallpapers w
-  cross join params p
-  where
-    (coalesce(category_filter,'') = '' or lower(w.category)=lower(category_filter))
-    and not (w.id::text = any(coalesce(exclude_ids,'{}'::text[])))
-    and w.random_key < p.pivot
-  order by w.random_key
-  limit greatest(
-    (select lim from params) - (select count(*) from first_part),
-    0
-  )
-)
-select id,category,keywords,storage_path,public_url,created_at
-from first_part
-union all
-select id,category,keywords,storage_path,public_url,created_at
-from second_part;
+declare
+  wanted integer := least(greatest(coalesce(result_limit,14),1),50);
+  sample_percent real := 5;
+  rows_found integer := 0;
+begin
+  -- TABLESAMPLE SYSTEM samples physical table pages instead of scanning
+  -- and sorting the whole wallpapers table.
+  while sample_percent <= 100 and rows_found < wanted loop
+    return query execute format($sql$
+      select
+        w.id::text,
+        coalesce(w.category,'')::text,
+        coalesce(w.keywords,array[]::text[]),
+        coalesce(w.storage_path,'')::text,
+        coalesce(w.public_url,'')::text,
+        w.created_at::text
+      from public.wallpapers tablesample system (%s) as w
+      where
+        (coalesce($1,'') = '' or lower(w.category)=lower($1))
+        and not (w.id::text = any(coalesce($2,'{}'::text[])))
+      limit $3
+    $sql$, sample_percent)
+    using category_filter, exclude_ids, wanted;
+
+    get diagnostics rows_found = row_count;
+
+    if rows_found >= wanted then
+      exit;
+    end if;
+
+    sample_percent := least(sample_percent * 2, 100);
+    if sample_percent = 100 then
+      exit;
+    end if;
+  end loop;
+
+  return;
+end;
 $$;
