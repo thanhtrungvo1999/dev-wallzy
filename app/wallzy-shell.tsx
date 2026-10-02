@@ -137,6 +137,28 @@ function Header({
   );
 }
 
+function WallzyAd({size}:{size:"320x50"|"300x250"}) {
+  const [ready,setReady]=useState(false);
+  useEffect(()=>{
+    const t=window.setTimeout(()=>setReady(true),size==="320x50"?1200:2200);
+    return()=>window.clearTimeout(t);
+  },[size]);
+
+  const cfg=size==="320x50"
+    ? {w:320,h:50,key:"2c49a0e222fe3b51d12473cd1592ca66",provider:"highrevenue"}
+    : {w:300,h:250,key:"d57e1d0e6497dfaa47e074d39d673693",provider:"profitablerate"};
+
+  const srcDoc=cfg.provider==="highrevenue"
+    ? `<!DOCTYPE html><html><body style="margin:0;overflow:hidden"><script>atOptions={'key':'${cfg.key}','format':'iframe','height':${cfg.h},'width':${cfg.w},'params':{}};</script><script src="https://www.highrevenueformat.com/${cfg.key}/invoke.js"></script></body></html>`
+    : `<!DOCTYPE html><html><body style="margin:0;overflow:hidden"><script async="async" data-cfasync="false" src="https://pl31436544.profitableratecpmnetwork.com/${cfg.key}/invoke.js"></script><div id="container-${cfg.key}"></div></body></html>`;
+
+  return <div className={size==="320x50"?"wallzy-ad-frame-320":"wallzy-ad-frame-300"}>
+    <div className="wallzy-ad-frame-inner">
+      {ready&&<iframe title="Advertisement" width={cfg.w} height={cfg.h} loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups" srcDoc={srcDoc} style={{width:cfg.w,height:cfg.h,border:0}} scrolling="no"/>}
+    </div>
+  </div>;
+}
+
 function SearchBar() {
   const router = useRouter();
 
@@ -302,6 +324,7 @@ export default function WallzyShell() {
           ref={mainRef}
           className="flex-1 overflow-y-auto bg-transparent px-5 pb-28 pt-[120px] scrollbar-none"
         >
+          <WallzyAd size="320x50" />
           <HomeCategorySections
             categories={categories}
             favorites={favorites}
