@@ -288,8 +288,8 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
 
   return (
     <main className="min-h-[100dvh] bg-black text-white">
-      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-[76px] pb-10">
-        <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 px-5 py-3 backdrop-blur-xl">
+      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-4 pb-10">
+        <header className="-mx-5 border-b border-white/10 bg-black/95 px-5 py-3 backdrop-blur-xl">
           <div className="mx-auto flex w-full max-w-xl items-center gap-3">
             <button
               type="button"
@@ -315,11 +315,13 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
           </div>
         </header>
 
-        <CategoryNav
-          categories={categories}
-          activeCategory={category}
-          onSelect={selectCategory}
-        />
+        <div className="sticky top-0 z-50 -mx-5 bg-black/95 px-5 backdrop-blur-xl border-b border-white/10">
+          <CategoryNav
+            categories={categories}
+            activeCategory={category}
+            onSelect={selectCategory}
+          />
+        </div>
 
         <div>
           <div className="flex justify-center mb-4">
