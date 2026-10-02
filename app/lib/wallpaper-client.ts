@@ -89,7 +89,7 @@ export async function loadWallzyCategories(sb:SupabaseClient){
       if(error)throw error;
       return count&&count>0?category:null;
     }));
-    const priority=["Sports Graphic","Movie","Cartoon Character"];
+    const priority=["Sports Graphic","Car","Movie","Natrue","WILD ANIMAL","Cartoon Character","Chibi"];
     const priorityIndex=(value:string)=>priority.findIndex(x=>x.toLowerCase()===value.toLowerCase());
     wallzyCategoriesCache=[...new Set(available.filter(Boolean) as string[])].sort((a,b)=>{
       const ai=priorityIndex(a),bi=priorityIndex(b);
