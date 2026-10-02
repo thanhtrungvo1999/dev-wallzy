@@ -17,7 +17,7 @@ export default function BottomNav({ active }: BottomNavProps) {
   const router = useRouter();
 
   return (
-    <footer className="absolute inset-x-6 bottom-0 z-40 flex items-center justify-around rounded-t-3xl border border-white/10 bg-[#0a0a0c]/90 px-6 py-2.5 shadow-2xl backdrop-blur-xl">
+    <footer className="absolute inset-x-6 bottom-12 z-40 flex items-center justify-around rounded-full border border-white/10 bg-[#0a0a0c]/90 px-6 py-2.5 shadow-2xl backdrop-blur-xl">
       {items.map(([key, path, icon, label], index) => (
         <div key={key} className="contents">
           {index > 0 && <div className="h-4 w-px bg-white/10" />}
