@@ -6,7 +6,6 @@ import WallpaperGrid from "../components/WallpaperGrid";
 import {
   createWallzyLoader,
   getWallzySupabase,
-  normalizeWallzyWallpaper,
 } from "../lib/wallpaper-client";
 
 type CategoryWallpaper = {
@@ -28,9 +27,8 @@ type Props = {
 export default function CategoryPageClient({ category, initialItems }: Props) {
   const router = useRouter();
   const [items, setItems] = useState(initialItems);
-  const [loadingMore, setLoadingMore] = useState(false);\n  const [hasMore, setHasMore] = useState(initialItems.length >= 20);
-
-  const hasMore = useMemo(() => initialItems.length >= 20 || items.length > initialItems.length, [initialItems.length, items.length]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(initialItems.length >= 20);
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
@@ -44,10 +42,10 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
         initialOffset: items.length,
       });
       const page = await loader();
-      setItems(current => [...current, ...(page.images || [])]);
-      if (!(page.images || []).length || !page.hasMore) {
-        // Keep the current items; the next click is prevented by the local end check below.
-      }
+      const nextItems = page.images || [];
+
+      setItems(current => [...current, ...nextItems]);
+      setHasMore(Boolean(nextItems.length) && Boolean(page.hasMore));
     } catch (error) {
       console.error("[Wallzy] Category load more failed:", error);
     } finally {
