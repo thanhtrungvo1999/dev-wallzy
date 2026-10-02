@@ -21,9 +21,8 @@ async function loadCategories(): Promise<string[]> {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ""
   );
 
-  CATEGORY_PROMISE = (async () => {
+  CATEGORY_PROMISE = (async (): Promise<string[]> => {
     const { data, error } = await sb.from("categories").select("*");
-
     if (error) throw error;
 
     return (data ?? [])
@@ -37,9 +36,10 @@ async function loadCategories(): Promise<string[]> {
         ).trim()
       )
       .filter(Boolean);
-  })().catch((error: unknown) => {
+  })();
+
+  CATEGORY_PROMISE.catch(() => {
     CATEGORY_PROMISE = null;
-    throw error;
   });
 
   return CATEGORY_PROMISE;
