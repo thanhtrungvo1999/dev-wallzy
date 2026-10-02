@@ -7,13 +7,13 @@ let CATEGORY_PROMISE: Promise<string[]> | null = null;
 function normalizeSlug(value: string) {
   return decodeURIComponent(String(value || ""))
     .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
-async function loadCategories() {
+async function loadCategories(): Promise<string[]> {
   if (CATEGORY_PROMISE) return CATEGORY_PROMISE;
 
   const sb = createClient(
@@ -21,19 +21,26 @@ async function loadCategories() {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ""
   );
 
-  CATEGORY_PROMISE = sb
-    .from("categories")
-    .select("*")
-    .then(({ data, error }) => {
-      if (error) throw error;
-      return (data || [])
-        .map((row: any) => String(row?.name ?? row?.category ?? row?.title ?? row?.slug ?? "").trim())
-        .filter(Boolean);
-    })
-    .catch(error => {
-      CATEGORY_PROMISE = null;
-      throw error;
-    });
+  CATEGORY_PROMISE = (async () => {
+    const { data, error } = await sb.from("categories").select("*");
+
+    if (error) throw error;
+
+    return (data ?? [])
+      .map((row: any) =>
+        String(
+          row?.name ??
+            row?.category ??
+            row?.title ??
+            row?.slug ??
+            ""
+        ).trim()
+      )
+      .filter(Boolean);
+  })().catch((error: unknown) => {
+    CATEGORY_PROMISE = null;
+    throw error;
+  });
 
   return CATEGORY_PROMISE;
 }
@@ -48,7 +55,9 @@ export const resolveCategoryBySearch = cache(async (slug: string) => {
   if (!candidate) return null;
 
   const categories = await loadCategories();
-  const category = categories.find(name => normalizeSlug(name) === candidate) ?? null;
+  const category = categories.find(
+    (name) => normalizeSlug(name) === candidate
+  ) ?? null;
 
   CATEGORY_CACHE.set(value, category);
   return category;
