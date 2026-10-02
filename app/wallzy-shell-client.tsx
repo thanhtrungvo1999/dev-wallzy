@@ -21,15 +21,12 @@ const WallzyShell = dynamic(() => import("./wallzy-shell"), {
 
 export default function WallzyShellClient() {
   const pathname = usePathname() || "/";
-  const isWallpaperDetail = pathname.startsWith("/wallpaper/");
   const isCategory = pathname.startsWith("/category/");
   const isSearch = pathname === "/search";
   const isKnownShellRoute =
     pathname === "/" ||
     isCategory;
 
-  // Keep the shell mounted on wallpaper detail routes so returning to the
-  // previous page restores the existing grid, filters, and scroll position.
   if (isSearch) return null;
   if (!isKnownShellRoute) return null;
 
