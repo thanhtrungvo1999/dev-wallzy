@@ -344,7 +344,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
         </div>
 
         <div>
-          <div className="flex justify-center pt-2 mb-4">
+          <div className="flex justify-center pt-2 mb-2">
             <WallzyAd size="320x50" />
           </div>
 
