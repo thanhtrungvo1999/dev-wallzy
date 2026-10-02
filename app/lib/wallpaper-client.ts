@@ -51,7 +51,7 @@ export function createWallzyLoader(sb:SupabaseClient,category="all",options:{ran
         }
         initialized=true;
       }
-      const start=offset,end=start+pageSize;
+      const start=offset,end=start+pageSize-1;
       const cacheKey=`wallzy:wallpapers:${value.toLowerCase()||"all"}:${start}:${pageSize}`;
 
       if(typeof window!=="undefined"){
