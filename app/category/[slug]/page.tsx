@@ -1,23 +1,39 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
+import CategoryPageClient from "../category-page-client";
 import { resolveCategoryBySearch } from "../../lib/category-search";
+import { getCategoryWallpapers } from "../../lib/category-data";
+
+export const revalidate = 300;
+export const dynamicParams = true;
 
 type Props = { params: Promise<{ slug: string }> };
 
+const getResolvedCategory = cache(async (slug: string) => {
+  return resolveCategoryBySearch(slug);
+});
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = await resolveCategoryBySearch(slug);
-  if (!category) return { title: "Page Not Found | Wallzy", robots: { index: false, follow: false } };
+  const category = await getResolvedCategory(slug);
 
-  const name = category;
+  if (!category) {
+    return {
+      title: "Page Not Found | Wallzy",
+      robots: { index: false, follow: false },
+    };
+  }
+
   const url = `https://www.wallzy.org/category/${encodeURIComponent(slug)}`;
+
   return {
-    title: `${name} Wallpapers | Wallzy`,
-    description: `Discover ${name} 4K UHD wallpapers on Wallzy. Download original-quality wallpapers for your phone.`,
+    title: `${category} Wallpapers | Wallzy`,
+    description: `Discover ${category} 4K UHD wallpapers on Wallzy. Download original-quality wallpapers for your phone.`,
     alternates: { canonical: url },
     openGraph: {
-      title: `${name} Wallpapers | Wallzy`,
-      description: `Discover ${name} 4K UHD wallpapers on Wallzy.`,
+      title: `${category} Wallpapers | Wallzy`,
+      description: `Discover ${category} 4K UHD wallpapers on Wallzy.`,
       url,
       type: "website",
     },
@@ -26,17 +42,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-  const category = await resolveCategoryBySearch(slug);
+  const category = await getResolvedCategory(slug);
+
   if (!category) notFound();
 
-  const name = category;
+  const items = await getCategoryWallpapers(category);
+
   return (
-    <section className="sr-only" aria-label={`${name} wallpapers`}>
-      <h1>{name} Wallpapers</h1>
-      <p>
-        Discover {name} 4K UHD wallpapers on Wallzy. Browse wallpapers in this
-        category and download them in original quality for your phone.
-      </p>
-    </section>
+    <>
+      <section className="sr-only" aria-label={`${category} wallpapers`}>
+        <h1>${category} Wallpapers</h1>
+        <p>
+          Discover ${category} 4K UHD wallpapers on Wallzy. Browse wallpapers in
+          this category and download them in original quality for your phone.
+        </p>
+      </section>
+      <CategoryPageClient category={category} initialItems={items} />
+    </>
   );
 }
