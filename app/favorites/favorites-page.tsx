@@ -200,7 +200,7 @@ export default function FavoritesPageClient() {
       <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
         <button
           type="button"
-          onClick={() => { window.dispatchEvent(new Event("wallzy:navigation-start")); router.push("/"); }}
+          onClick={() => router.push("/")}
           className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"
           aria-label="Home"
         >
@@ -231,13 +231,11 @@ export default function FavoritesPageClient() {
           view={view}
           onNavigate={(wallpaper)=>{
             window.sessionStorage.setItem("wallzy:return-url",window.location.href);
-            window.dispatchEvent(new Event("wallzy:navigation-start"));
-      router.push("/wallpaper/"+encodeURIComponent(String(wallpaper.id)));
+            router.push("/wallpaper/"+encodeURIComponent(String(wallpaper.id))));
           }}
           onToggleFavorite={toggleFavorite}
           onLoadMore={()=>{}}
-          onExplore={()=>window.dispatchEvent(new Event("wallzy:navigation-start"));
-      router.push("/")}
+          onExplore={()=>router.push("/")}
         />
 
         <div className="mt-8 flex justify-center">
@@ -281,6 +279,6 @@ export default function FavoritesPageClient() {
         </div>
       }
     </main>
-  );
+  ));
 }
 
