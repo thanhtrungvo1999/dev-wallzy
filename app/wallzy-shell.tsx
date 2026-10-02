@@ -301,7 +301,7 @@ export default function WallzyShell() {
   };
 
   const openCategory = (category: string) => {
-    router.push("/category/" + String(category || "all").trim().toLowerCase().replace(/\s+/g, "-")));
+    router.push("/category/" + String(category || "all").trim().toLowerCase().replace(/\s+/g, "-"));
   };
 
   return (
