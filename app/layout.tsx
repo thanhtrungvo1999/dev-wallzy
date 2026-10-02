@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
-import WallzyShellClient from "./wallzy-shell-client";
 import ProductionProtection from "./components/ProductionProtection";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap", preload: true, variable: "--font-plus-jakarta" });
@@ -62,7 +61,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className="bg-[#000000] text-gray-100 min-h-screen selection:bg-white selection:text-black overflow-x-hidden font-sans overflow-hidden"
       >
         <ProductionProtection />
-        <WallzyShellClient />
         {children}
       </body>
     </html>
