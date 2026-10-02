@@ -13,7 +13,7 @@ function normalizeCategoryWallpaper(row: any) {
     : String(row?.public_url || "").trim();
 
   const url = originalUrl
-    ? `${transformBase}/cdn-cgi/image/width=320,quality=40,format=auto/${originalUrl}`
+    ? `${transformBase}/cdn-cgi/image/width=240,quality=25,format=auto/${originalUrl}`
     : "";
 
   return {
