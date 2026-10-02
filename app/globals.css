@@ -263,13 +263,14 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #appContainer {
     width: 100%;
     min-width: 100%;
     max-width: none;
-    height: 100dvh;
+    height: auto;
     min-height: 100dvh;
-    max-height: 100dvh;
+    max-height: none;
 }
