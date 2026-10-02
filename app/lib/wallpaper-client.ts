@@ -25,7 +25,7 @@ const wallzyTransformBase=(process.env.NEXT_PUBLIC_IMAGE_TRANSFORM_URL||process.
 export function normalizeWallzyWallpaper(row:any):WallzyFeedWallpaper{
   const path=String(row?.storage_path||"").trim();
   const originalUrl=path?(path.startsWith("http://")||path.startsWith("https://")?path:wallzyR2+"/"+path.replace(/^\/+/, "")):String(row?.public_url||row?.url||"");
-  const url=originalUrl?`${wallzyTransformBase}/cdn-cgi/image/width=360,quality=45,format=auto/${originalUrl}`:"";
+  const url=originalUrl?`${wallzyTransformBase}/cdn-cgi/image/width=320,quality=40,format=auto/${originalUrl}`:"";
   return{id:String(row?.id??""),url,original_url:originalUrl,title:row?.title||row?.name||"",category:row?.category||"Other",keywords:Array.isArray(row?.keywords)?row.keywords:[],timestamp:row?.created_at||row?.timestamp||"",storage_path:row?.storage_path||""};
 }
 
