@@ -75,21 +75,17 @@ export async function searchWallzyWallpapers(sb:SupabaseClient,query:string,offs
   return{images:rows.slice(0,20).map(normalizeWallzyWallpaper),hasMore:rows.length>20};
 }
 
-let wallzyCategoriesCache:string[]|null=null;
 let wallzyCategoriesPromise:Promise<string[]>|null=null;
 const WALLZY_CATEGORIES_SESSION_KEY="wallzy:categories";
 
 export async function loadWallzyCategories(sb:SupabaseClient){
-  if(wallzyCategoriesCache)return wallzyCategoriesCache;
-
   if(typeof window!=="undefined"){
     try{
       const cached=window.sessionStorage.getItem(WALLZY_CATEGORIES_SESSION_KEY);
       if(cached){
         const parsed=JSON.parse(cached);
         if(Array.isArray(parsed)){
-          wallzyCategoriesCache=parsed.filter((x):x is string=>typeof x==="string"&&x.trim().length>0);
-          return wallzyCategoriesCache;
+          return parsed.filter((x):x is string=>typeof x==="string"&&x.trim().length>0);
         }
       }
     }catch{}
@@ -102,7 +98,7 @@ export async function loadWallzyCategories(sb:SupabaseClient){
     const categories=(data||[]).map((x:any)=>String(x?.name??x?.category??x?.title??x?.slug??"").trim()).filter(Boolean);
     const priority=["Sports Graphic","Car Art","Movie","Nature","WILD ANIMAL","Cartoon Character","Chibi"];
     const priorityIndex=(value:string)=>priority.findIndex(x=>x.toLowerCase()===value.toLowerCase());
-    wallzyCategoriesCache=[...new Set(categories)].sort((a,b)=>{
+    const sortedCategories=[...new Set(categories)].sort((a,b)=>{
       const ai=priorityIndex(a),bi=priorityIndex(b);
       if(ai!==-1||bi!==-1){
         if(ai===-1)return 1;
@@ -112,9 +108,9 @@ export async function loadWallzyCategories(sb:SupabaseClient){
       if(a.toLowerCase()==="other")return 1;if(b.toLowerCase()==="other")return -1;return a.localeCompare(b);
     });
     if(typeof window!=="undefined"){
-      try{window.sessionStorage.setItem(WALLZY_CATEGORIES_SESSION_KEY,JSON.stringify(wallzyCategoriesCache))}catch{}
+      try{window.sessionStorage.setItem(WALLZY_CATEGORIES_SESSION_KEY,JSON.stringify(sortedCategories))}catch{}
     }
-    return wallzyCategoriesCache;
+    return sortedCategories;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
 }
