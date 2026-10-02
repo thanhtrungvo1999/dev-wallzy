@@ -7,7 +7,7 @@ export default function GlobalTouchRipple() {
     const onPointerDown = (event: PointerEvent) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
       const target = event.target as HTMLElement | null;
-      if (!target || target.closest("input,textarea,select,[contenteditable="true"]")) return;
+      if (!target || target.closest(`input,textarea,select,[contenteditable="true"]`)) return;
 
       let layer = document.querySelector<HTMLElement>(".touch-ripple-layer");
       if (!layer) {
