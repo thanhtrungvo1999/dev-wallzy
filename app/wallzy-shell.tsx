@@ -49,7 +49,7 @@ function escapeHtml(value:string){return String(value??"").replace(/&/g,"&amp;")
     ["studio","fa-solid fa-palette","Studio"],
     ["tiktok","fa-brands fa-tiktok","TikTok"]
   ] as const;
-  return <footer id="footerEl" className="fixed bottom-12 inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center flex-shrink-0 z-40 transition-all duration-300 ease-in-out rounded-full shadow-2xl">
+  return <footer id="footerEl" className="fixed bottom-[35px] inset-x-6 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center flex-shrink-0 z-40 transition-all duration-300 ease-in-out rounded-full shadow-2xl">
     {items.map(([tab,icon,label],index)=><Fragment key={tab}>
       {index>0&&<div className="w-[1px] h-4 bg-white/10"/>}
       <button type="button" onClick={()=>onSelect(tab)} className={"flex flex-col items-center space-y-0.5 cursor-pointer transition "+(activeTab===tab?"text-white":"text-gray-400 hover:text-white")}>
