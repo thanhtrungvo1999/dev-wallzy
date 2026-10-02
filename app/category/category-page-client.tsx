@@ -247,6 +247,16 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
         <div className="flex justify-center pt-6">
           <WallzyAd size="300x250" />
         </div>
+
+        <footer className="w-full flex justify-center items-center pt-[30px] pb-8">
+          <div className="flex items-center justify-center gap-3 text-[15px] text-white/70 font-bold">
+            <a href="/terms" className="hover:text-white transition">Terms of Use</a>
+            <span className="text-white/40">|</span>
+            <a href="/privacy" className="hover:text-white transition">Privacy Policy</a>
+            <span className="text-white/40">|</span>
+            <a href="/contact" className="hover:text-white transition">Contact</a>
+          </div>
+        </footer>
       </div>
     </main>
   );
