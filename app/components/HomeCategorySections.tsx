@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useMemo, useState } from "react";
 import WallpaperCard from "./WallpaperCard";
 
@@ -53,9 +54,20 @@ export default function HomeCategorySections({categories,favorites,onNavigate,on
 
       const loadOne=async(category:string)=>{
         try{
-          const loader=client.createWallzyLoader(sb,category,{randomize:true,pageSize:6});
-          const page=await loader();
-          return{category,items:page.images||[]};
+          const{data,error}=await sb
+            .from("wallpapers")
+            .select("id,category,keywords,storage_path,public_url,created_at")
+            .ilike("category",category)
+            .order("created_at",{ascending:false})
+            .order("id",{ascending:false})
+            .limit(6);
+
+          if(error)throw error;
+
+          return{
+            category,
+            items:(data||[]).map(client.normalizeWallzyWallpaper),
+          };
         }catch(error){
           console.error("[Wallzy] Home category load failed:",category,error);
           return{category,items:[]};
