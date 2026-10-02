@@ -4,12 +4,13 @@ import { createClient } from "@supabase/supabase-js";
 const CATEGORY_CACHE = new Map<string, string | null>();
 let CATEGORY_PROMISE: Promise<string[]> | null = null;
 
-function titleFromSlug(slug: string) {
-  return decodeURIComponent(String(slug || ""))
-    .split("-")
-    .filter(Boolean)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+function normalizeSlug(value: string) {
+  return decodeURIComponent(String(value || ""))
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 async function loadCategories() {
@@ -43,11 +44,11 @@ export const resolveCategoryBySearch = cache(async (slug: string) => {
 
   if (CATEGORY_CACHE.has(value)) return CATEGORY_CACHE.get(value) ?? null;
 
-  const candidate = titleFromSlug(value).trim().toLowerCase();
+  const candidate = normalizeSlug(value);
   if (!candidate) return null;
 
   const categories = await loadCategories();
-  const category = categories.find(name => name.toLowerCase() === candidate) ?? null;
+  const category = categories.find(name => normalizeSlug(name) === candidate) ?? null;
 
   CATEGORY_CACHE.set(value, category);
   return category;
