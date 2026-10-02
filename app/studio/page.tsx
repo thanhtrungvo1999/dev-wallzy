@@ -1,13 +1,5 @@
-import type { Metadata } from "next";
-import StudioPageClient from "./studio-page";
+import WallzyShell from "../wallzy-shell";
 
-export const metadata: Metadata = {
-  title: "Gradient Studio | Wallzy",
-  description: "Create and save custom gradients on Wallzy.",
-  alternates: { canonical: "https://www.wallzy.org/studio" },
-  robots: { index: false, follow: false },
-};
-
-export default function StudioPage() {
-  return <StudioPageClient />;
+export default function Page(){
+  return <WallzyShell />;
 }
