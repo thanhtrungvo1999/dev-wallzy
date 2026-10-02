@@ -231,7 +231,7 @@ export default function FavoritesPageClient() {
           view={view}
           onNavigate={(wallpaper)=>{
             window.sessionStorage.setItem("wallzy:return-url",window.location.href);
-            router.push("/wallpaper/"+encodeURIComponent(String(wallpaper.id))));
+            router.push("/wallpaper/"+encodeURIComponent(String(wallpaper.id)));
           }}
           onToggleFavorite={toggleFavorite}
           onLoadMore={()=>{}}
