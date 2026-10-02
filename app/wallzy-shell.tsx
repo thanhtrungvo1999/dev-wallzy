@@ -188,7 +188,6 @@ export default function WallzyShell() {
   const [user, setUser] = useState<any>(null);
   const [installModal, setInstallModal] = useState(false);
   const [authModal, setAuthModal] = useState(false);
-  const [splashHidden, setSplashHidden] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -216,7 +215,6 @@ export default function WallzyShell() {
       } catch (error) {
         console.error("[Wallzy] Home bootstrap failed:", error);
       } finally {
-        if (!cancelled) setSplashHidden(true);
       }
     })();
 
@@ -242,7 +240,7 @@ export default function WallzyShell() {
     );
 
     return () => subscription.data.subscription.unsubscribe();
-  }, [splashHidden]);
+  }, []);
 
   const toggleFavorite = async (id: string) => {
     const currentUser = userRef.current;
@@ -306,7 +304,6 @@ export default function WallzyShell() {
 
   return (
     <>
-      <SplashScreen visible={!splashHidden} />
       <LandscapeWarning />
 
       <div className="relative flex h-[100dvh] w-full min-w-0 max-w-none flex-col overflow-hidden bg-black shadow-2xl">
