@@ -165,8 +165,7 @@ function SearchBar() {
   return (
     <button
       type="button"
-      onClick={() => window.dispatchEvent(new Event("wallzy:navigation-start"));
-      router.push("/search")}
+      onClick={() => { window.dispatchEvent(new Event("wallzy:navigation-start")); router.push("/search"); }}
       className="w-full px-5 pb-1 pt-3 text-left"
     >
       <div className="relative flex items-center">
