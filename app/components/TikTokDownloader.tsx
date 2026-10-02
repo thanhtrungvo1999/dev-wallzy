@@ -5,6 +5,7 @@ export default function TikTokDownloader({onMessage,onDownload}:{onMessage:(mess
   const [url,setUrl]=useState("");
   const [loading,setLoading]=useState(false);
   const [images,setImages]=useState<string[]>([]);
+  const [originalImages,setOriginalImages]=useState<string[]>([]);
 
   const paste=async()=>{
     try{
@@ -20,11 +21,15 @@ export default function TikTokDownloader({onMessage,onDownload}:{onMessage:(mess
     if(!value){onMessage("Please paste a valid TikTok link.");return}
     setLoading(true);
     try{
-      const response=await fetch(`https://tikwm.com/api/?url=${encodeURIComponent(value)}&hd=1`);
-      const json=await response.json();
+      const [previewResponse,originalResponse]=await Promise.all([
+        fetch(`https://tikwm.com/api/?url=${encodeURIComponent(value)}&hd=0`),
+        fetch(`https://tikwm.com/api/?url=${encodeURIComponent(value)}&hd=1`)
+      ]);
+      const [json,originalJson]=await Promise.all([previewResponse.json(),originalResponse.json()]);
       if(json.code===0&&json.data){
         if(Array.isArray(json.data.images)&&json.data.images.length){
           setImages(json.data.images);
+          setOriginalImages(Array.isArray(originalJson?.data?.images)&&originalJson.data.images.length?originalJson.data.images:json.data.images);
           onMessage("Images extracted successfully!");
         }else if(json.data.play){
           onMessage("This link is a video. Please enter a photo post (Photo Slide) link to download images.");
@@ -73,7 +78,7 @@ export default function TikTokDownloader({onMessage,onDownload}:{onMessage:(mess
         <span className="text-[10px] text-gray-400">Tap to open image directly</span>
       </div>
       <div id="tiktokImageGrid" className="grid grid-cols-2 gap-3.5">
-        {images.map((imgUrl,index)=><div key={imgUrl+"-"+index} onClick={()=>openDirectImage(imgUrl)} className="wallzy-card relative group rounded-2xl overflow-hidden bg-[#0a0a0c] aspect-[9/16] cursor-pointer shadow border border-white/10">
+        {images.map((imgUrl,index)=><div key={imgUrl+"-"+index} onClick={()=>openDirectImage(originalImages[index]||imgUrl)} className="wallzy-card relative group rounded-2xl overflow-hidden bg-[#0a0a0c] aspect-[9/16] cursor-pointer shadow border border-white/10">
           <div className="absolute inset-0 skeleton-wave z-0"></div>
           <img src={imgUrl} alt={`TikTok slide ${index+1}`} className="w-full h-full object-cover relative z-10 transition-opacity duration-500" onError={e=>{e.currentTarget.src="https://placehold.co/600x900/0a0a0c/ffffff?text=Error"}}/>
           <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[9px] font-bold text-white tracking-widest uppercase border border-white/20">Slide {index+1}</div>
