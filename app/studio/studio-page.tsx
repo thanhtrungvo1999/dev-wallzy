@@ -27,13 +27,13 @@ export default function StudioPageClient(){
   const onDelete=async(id:string|number)=>{if(!user){setAuthOpen(true);return}try{setSaved(await deleteWallzyGradient(getWallzySupabase(),user,id))}catch{setMessage("Unable to delete gradient.")}};
   const onDownload=(g:any)=>{const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1920;const ctx=canvas.getContext("2d");if(!ctx)return;const gr=g.type==="circle"?ctx.createRadialGradient(540,960,0,540,960,960):ctx.createLinearGradient(0,0,1080,1920);gr.addColorStop(0,g.color1||"#111111");gr.addColorStop(1,g.color2||"#ffffff");ctx.fillStyle=gr;ctx.fillRect(0,0,1080,1920);canvas.toBlob(b=>{if(!b)return;const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="wallzy-gradient.png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},"image/png")};
 
-  return <main className="fixed inset-0 bg-black text-white overflow-hidden">
-    <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
+  return <main className="min-h-[100dvh] bg-black text-white">
+    <header className="border-b border-white/10 bg-black/95 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between">
       <button type="button" onClick={()=>router.push("/")} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"><i className="fa-solid fa-arrow-left text-xs"/></button>
       <div className="text-center"><h1 className="text-sm font-bold">Studio</h1><p className="text-[9px] text-white/35">Gradient Studio</p></div>
       <button type="button" onClick={()=>setAuthOpen(true)} className="px-3 py-1.5 rounded-full bg-[#121215] border border-white/10 text-gray-200 text-xs font-semibold"><i className="fa-solid fa-user-circle mr-1.5"/>{accountLabel}</button>
     </header>
-    <section className="h-full overflow-y-auto scrollbar-none px-5 pt-[92px] pb-[360px]">
+    <section className="px-5 pt-4 pb-10">
       <div className="flex justify-center mb-3"><WallzyAd size="320x50"/></div>
       <GradientStudio saved={saved} onSave={onSave} onDownload={onDownload} onDelete={onDelete}/>
       <div className="mt-8 flex justify-center"><WallzyAd size="300x250"/></div>
@@ -44,4 +44,4 @@ export default function StudioPageClient(){
     {message&&<div className="fixed inset-0 z-[1700] bg-black/70 flex items-center justify-center p-5"><div className="bg-[#0a0a0c] border border-white/10 rounded-3xl p-5 w-full max-w-xs text-center"><p className="text-xs">{message}</p><button onClick={()=>setMessage("")} className="mt-4 w-full bg-white text-black rounded-2xl py-2.5 text-xs font-semibold">Got it</button></div></div>}
   </main>
 }
-function BottomNav({router}:{router:any}){return <footer className="absolute bottom-12 inset-x-6 z-40 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center rounded-full shadow-2xl">{[["/","fa-regular fa-compass","Explore"],["/favorites","fa-regular fa-heart","Favorites"],["/studio","fa-solid fa-palette","Studio"],["/tiktok","fa-brands fa-tiktok","TikTok"]].map(([path,icon,label],i)=><div key={path} className="contents">{i>0&&<div className="w-px h-4 bg-white/10"/>}<button type="button" onClick={()=>router.push(path)} className={"flex flex-col items-center space-y-0.5 "+(path==="/studio"?"text-white":"text-gray-400")}><i className={icon+" text-xs"}/><span className="text-[9px] font-semibold">{label}</span></button></div>)}</footer>}
+function BottomNav({router}:{router:any}){return <footer className="fixed bottom-12 inset-x-6 z-40 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center rounded-full shadow-2xl">{[["/","fa-regular fa-compass","Explore"],["/favorites","fa-regular fa-heart","Favorites"],["/studio","fa-solid fa-palette","Studio"],["/tiktok","fa-brands fa-tiktok","TikTok"]].map(([path,icon,label],i)=><div key={path} className="contents">{i>0&&<div className="w-px h-4 bg-white/10"/>}<button type="button" onClick={()=>router.push(path)} className={"flex flex-col items-center space-y-0.5 "+(path==="/studio"?"text-white":"text-gray-400")}><i className={icon+" text-xs"}/><span className="text-[9px] font-semibold">{label}</span></button></div>)}</footer>}
