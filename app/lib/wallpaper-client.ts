@@ -107,11 +107,13 @@ export async function loadWallzyCategories(sb:SupabaseClient){
 
 export async function loadWallzyFavorites(sb:SupabaseClient,user:User|null){
   if(!user)return[];
-  const{data}=await sb.from("favorites").select("items").eq("user_id",user.id).maybeSingle();
-  return Array.isArray(data?.items)?data.items:[];
+  const{data,error}=await sb.from("favorites").select("items").eq("user_id",user.id).maybeSingle();
+  if(error)throw error;
+  return Array.isArray(data?.items)?data.items.map(normalizeWallzyWallpaper):[];
 }
 export async function saveWallzyFavorites(sb:SupabaseClient,user:User,items:any[]){
-  const{error}=await sb.from("favorites").upsert({user_id:user.id,items},{onConflict:"user_id"});
+  const normalized=items.map(normalizeWallzyWallpaper);
+  const{error}=await sb.from("favorites").upsert({user_id:user.id,items:normalized},{onConflict:"user_id"});
   if(error)throw error;
 }
 export async function loadWallzyGradients(sb:SupabaseClient,user:User|null){
