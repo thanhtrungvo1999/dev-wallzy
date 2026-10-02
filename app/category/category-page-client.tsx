@@ -287,9 +287,10 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   };
 
   return (
-    <main className="fixed inset-0 bg-black text-white overflow-hidden">
-      <header className="absolute top-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-xl px-5 py-3 border-b border-white/10">
-        <div className="mx-auto w-full max-w-xl">
+    <main className="min-h-[100dvh] bg-black text-white">
+      <div className="mx-auto min-h-[100dvh] w-full max-w-xl px-5 pt-[124px] pb-10">
+        <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/95 px-5 py-3 backdrop-blur-xl">
+          <div className="mx-auto w-full max-w-xl">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -314,11 +315,10 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
             </div>
           </div>
           <CategoryNav categories={categories} activeCategory={category} onSelect={selectCategory} />
-        </div>
-      </header>
+          </div>
+        </header>
 
-      <section className="h-full overflow-y-auto scrollbar-none px-5 pt-[126px] pb-[360px]">
-        <div className="mx-auto w-full max-w-xl">
+        <div>
           <div className="flex justify-center mb-4">
             <WallzyAd size="320x50" />
           </div>
@@ -338,9 +338,9 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
             <WallzyAd size="300x250" />
           </div>
         </div>
-      </section>
 
-      <BottomNav />
+        <BottomNav />
+      </div>
       {installModal && <InstallModal onClose={() => setInstallModal(false)} />}
       {authModal && <AuthModal user={authUser} onClose={() => setAuthModal(false)} onLogin={async () => {
         const sb = getWallzySupabase();
