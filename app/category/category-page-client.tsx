@@ -207,7 +207,40 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
   const [authModal, setAuthModal] = useState(false);
   const [installModal, setInstallModal] = useState(false);
 
-  useEffect(() => {\n    let cancelled = false;\n    let subscription: { unsubscribe: () => void } | null = null;\n    try {\n      const sb = getWallzySupabase();\n      loadWallzyCategories(sb).then((values: string[]) => { if (!cancelled) setCategories(values); }).catch((error: unknown) => console.error("[Wallzy] Category nav load failed:", error));\n      sb.auth.getSession().then(({ data }) => { if (!cancelled) setAuthUser(data.session?.user || null); }).catch(() => {});\n      subscription = sb.auth.onAuthStateChange((_event, session) => { if (!cancelled) setAuthUser(session?.user || null); }).data.subscription;\n    } catch (error) { console.error("[Wallzy] Category nav init failed:", error); }\n    return () => { cancelled = true; subscription?.unsubscribe(); };\n  }, []);
+  useEffect(() => {
+    let cancelled = false;
+    let subscription: { unsubscribe: () => void } | null = null;
+
+    try {
+      const sb = getWallzySupabase();
+
+      loadWallzyCategories(sb)
+        .then((values: string[]) => {
+          if (!cancelled) setCategories(values);
+        })
+        .catch((error: unknown) =>
+          console.error("[Wallzy] Category nav load failed:", error)
+        );
+
+      sb.auth
+        .getSession()
+        .then(({ data }) => {
+          if (!cancelled) setAuthUser(data.session?.user || null);
+        })
+        .catch(() => {});
+
+      subscription = sb.auth.onAuthStateChange((_event, session) => {
+        if (!cancelled) setAuthUser(session?.user || null);
+      }).data.subscription;
+    } catch (error) {
+      console.error("[Wallzy] Category nav init failed:", error);
+    }
+
+    return () => {
+      cancelled = true;
+      subscription?.unsubscribe();
+    };
+  }, []);
 
   const loadMore = async () => {
     if (loadingMore || !hasMore) return;
