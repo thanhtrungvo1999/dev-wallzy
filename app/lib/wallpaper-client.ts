@@ -98,14 +98,25 @@ export async function loadRandomWallzyWallpapers(
   const value=String(category||"").trim();
   const pageSize=Math.min(Math.max(Math.floor(limit||14),1),50);
   const excluded=[...new Set((excludeIds||[]).map(String).filter(Boolean))];
+
   const{data,error}=await sb.rpc("get_random_wallpapers",{
     category_filter:value.toLowerCase()==="all"?"":value,
     result_limit:pageSize,
     exclude_ids:excluded
   });
-  if(error)throw error;
-  const images=(Array.isArray(data)?data:[]).map(normalizeWallzyWallpaper);
-  return{images,hasMore:images.length>=pageSize};
+
+  if(!error){
+    const images=(Array.isArray(data)?data:[]).map(normalizeWallzyWallpaper);
+    return{images,hasMore:images.length>=pageSize};
+  }
+
+  // Keep the page usable while the new RPC migration has not been applied yet.
+  let q=sb.from("wallpapers").select("id,category,keywords,storage_path,public_url,created_at").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(pageSize);
+  if(value.toLowerCase()!=="all")q=q.ilike("category",value);
+  if(excluded.length)q=q.not("id","in","("+excluded.join(",")+")");
+  const{data:fallback,error:fallbackError}=await q;
+  if(fallbackError)throw fallbackError;
+  return{images:(fallback||[]).map(normalizeWallzyWallpaper),hasMore:(fallback||[]).length>=pageSize};
 }
 export async function searchWallzyWallpapers(sb:SupabaseClient,query:string,offset=0){
   const raw=String(query||"").trim().toLowerCase().replace(/^#+/,"");
