@@ -325,7 +325,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
           </div>
         </header>
 
-        <div className="h-[45px] -mx-5">
+        <div className="h-[54px] -mx-5">
           <div
             className={
               categoryPinned
@@ -344,7 +344,7 @@ export default function CategoryPageClient({ category, initialItems }: Props) {
         </div>
 
         <div>
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center pt-2 mb-4">
             <WallzyAd size="320x50" />
           </div>
 
