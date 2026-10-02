@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import BottomNav from "../components/BottomNav";
 import { getWallzySupabase, loadWallzyGradients, saveWallzyGradient, deleteWallzyGradient } from "../lib/wallpaper-client";
 
 const GradientStudio = dynamic(() => import("../components/GradientStudio"), { ssr:false });
@@ -39,9 +40,8 @@ export default function StudioPageClient(){
       <div className="mt-8 flex justify-center"><WallzyAd size="300x250"/></div>
       <div className="w-full flex justify-center items-center pt-[30px] pb-8"><div className="flex items-center justify-center gap-3 text-[15px] text-white/70 font-bold"><a href="/terms">Terms of Use</a><span>|</span><a href="/privacy">Privacy Policy</a><span>|</span><a href="/contact">Contact</a></div></div>
     </section>
-    <BottomNav router={router}/>
+    <BottomNav active="studio" />
     {authOpen&&<AuthModal user={user} onClose={()=>setAuthOpen(false)} onLogin={async()=>{await getWallzySupabase().auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.href}})}} onLogout={async()=>{await getWallzySupabase().auth.signOut();setAuthOpen(false);setSaved([])}}/>}
     {message&&<div className="fixed inset-0 z-[1700] bg-black/70 flex items-center justify-center p-5"><div className="bg-[#0a0a0c] border border-white/10 rounded-3xl p-5 w-full max-w-xs text-center"><p className="text-xs">{message}</p><button onClick={()=>setMessage("")} className="mt-4 w-full bg-white text-black rounded-2xl py-2.5 text-xs font-semibold">Got it</button></div></div>}
   </main>
 }
-function BottomNav({router}:{router:any}){return <footer className="absolute bottom-12 inset-x-6 z-40 bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10 py-2.5 px-6 flex justify-around items-center rounded-full shadow-2xl">{[["/","fa-regular fa-compass","Explore"],["/favorites","fa-regular fa-heart","Favorites"],["/studio","fa-solid fa-palette","Studio"],["/tiktok","fa-brands fa-tiktok","TikTok"]].map(([path,icon,label],i)=><div key={path} className="contents">{i>0&&<div className="w-px h-4 bg-white/10"/>}<button type="button" onClick={()=>router.push(path)} className={"flex flex-col items-center space-y-0.5 "+(path==="/studio"?"text-white":"text-gray-400")}><i className={icon+" text-xs"}/><span className="text-[9px] font-semibold">{label}</span></button></div>)}</footer>}
