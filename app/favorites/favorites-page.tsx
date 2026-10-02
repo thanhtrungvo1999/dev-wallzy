@@ -230,6 +230,7 @@ export default function FavoritesPageClient() {
         <WallpaperGrid
           view={view}
           onNavigate={(wallpaper)=>{
+            window.sessionStorage.setItem("wallzy:return-url",window.location.href);
             router.push("/wallpaper/"+encodeURIComponent(String(wallpaper.id)));
           }}
           onToggleFavorite={toggleFavorite}
