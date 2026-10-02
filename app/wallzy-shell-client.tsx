@@ -21,11 +21,9 @@ const WallzyShell = dynamic(() => import("./wallzy-shell"), {
 
 export default function WallzyShellClient() {
   const pathname = usePathname() || "/";
-  const isCategory = pathname.startsWith("/category/");
   const isSearch = pathname === "/search";
-  const isKnownShellRoute =
-    pathname === "/" ||
-    isCategory;
+
+  const isKnownShellRoute = pathname === "/";
 
   if (isSearch) return null;
   if (!isKnownShellRoute) return null;
