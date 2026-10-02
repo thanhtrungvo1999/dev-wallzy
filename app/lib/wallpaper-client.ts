@@ -31,6 +31,15 @@ export function normalizeWallzyWallpaper(row:any):WallzyFeedWallpaper{
 
 export async function getWallzyLatestMarker(sb:SupabaseClient,category="all"){const value=String(category||"").trim();let q=sb.from("wallpapers").select("id,created_at").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(1);if(value.toLowerCase()!=="all")q=q.ilike("category",value);const{data,error}=await q.maybeSingle();if(error)throw error;const row=data as any;return row?{id:String(row.id??""),created_at:String(row.created_at??"")}:{id:"",created_at:""};}
 
+export async function loadHomeCategoryWallpapers(sb:SupabaseClient,category:string,limit=6){
+  const value=String(category||"").trim();
+  if(!value)return[];
+  const safeLimit=Math.min(Math.max(Math.floor(limit||6),1),6);
+  const{data,error}=await sb.from("wallpapers").select("id,category,keywords,storage_path,public_url,created_at").ilike("category",value).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(safeLimit);
+  if(error)throw error;
+  return (data||[]).map(normalizeWallzyWallpaper);
+}
+
 export function createWallzyLoader(sb:SupabaseClient,category="all",options:{randomize?:boolean;pageSize?:number;initialOffset?:number}={}){
   let loading=false,exhausted=false,initialized=false,offset=Number.isFinite(options.initialOffset)?Math.max(0,Math.floor(options.initialOffset as number)):0;
   const value=String(category||"").trim();
