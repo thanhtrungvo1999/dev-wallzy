@@ -25,7 +25,7 @@ const wallzyTransformBase=(process.env.NEXT_PUBLIC_IMAGE_TRANSFORM_URL||process.
 export function normalizeWallzyWallpaper(row:any):WallzyFeedWallpaper{
   const path=String(row?.storage_path||"").trim();
   const originalUrl=path?(path.startsWith("http://")||path.startsWith("https://")?path:wallzyR2+"/"+path.replace(/^\/+/, "")):String(row?.public_url||row?.url||"");
-  const url=originalUrl?`${wallzyTransformBase}/cdn-cgi/image/width=240,quality=30,format=auto/${originalUrl}`:"";
+  const url=originalUrl?`${wallzyTransformBase}/cdn-cgi/image/width=360,quality=45,format=auto/${originalUrl}`:"";
   return{id:String(row?.id??""),url,original_url:originalUrl,title:row?.title||row?.name||"",category:row?.category||"Other",keywords:Array.isArray(row?.keywords)?row.keywords:[],timestamp:row?.created_at||row?.timestamp||"",storage_path:row?.storage_path||""};
 }
 
@@ -107,13 +107,11 @@ export async function loadWallzyCategories(sb:SupabaseClient){
 
 export async function loadWallzyFavorites(sb:SupabaseClient,user:User|null){
   if(!user)return[];
-  const{data,error}=await sb.from("favorites").select("items").eq("user_id",user.id).maybeSingle();
-  if(error)throw error;
-  return Array.isArray(data?.items)?data.items.map(normalizeWallzyWallpaper):[];
+  const{data}=await sb.from("favorites").select("items").eq("user_id",user.id).maybeSingle();
+  return Array.isArray(data?.items)?data.items:[];
 }
 export async function saveWallzyFavorites(sb:SupabaseClient,user:User,items:any[]){
-  const normalized=items.map(normalizeWallzyWallpaper);
-  const{error}=await sb.from("favorites").upsert({user_id:user.id,items:normalized},{onConflict:"user_id"});
+  const{error}=await sb.from("favorites").upsert({user_id:user.id,items},{onConflict:"user_id"});
   if(error)throw error;
 }
 export async function loadWallzyGradients(sb:SupabaseClient,user:User|null){

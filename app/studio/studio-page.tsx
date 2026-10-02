@@ -5,11 +5,9 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { getWallzySupabase, loadWallzyGradients, saveWallzyGradient, deleteWallzyGradient } from "../lib/wallpaper-client";
 
-const GradientStudio = dynamic(() => import("../components/GradientStudio"), { ssr: true });
-const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr: true });
+const GradientStudio = dynamic(() => import("../components/GradientStudio"), { ssr:false });
+const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr:false });
 
-
-function TouchRipple(){useEffect(()=>{const handler=(event:PointerEvent)=>{const target=(event.target as HTMLElement)?.closest?.("button,a,[role='button'],.ripple-target") as HTMLElement|null;if(!target||target.hasAttribute("disabled")||target.getAttribute("aria-disabled")==="true")return;const rect=target.getBoundingClientRect();if(!rect.width||!rect.height)return;const ripple=document.createElement("span");ripple.className="native-ripple";ripple.style.left=(event.clientX-rect.left)+"px";ripple.style.top=(event.clientY-rect.top)+"px";const radius=Math.max(rect.width,rect.height)*1.5;ripple.style.width=radius+"px";ripple.style.height=radius+"px";target.appendChild(ripple);window.setTimeout(()=>ripple.remove(),430)};document.addEventListener("pointerdown",handler,true);return()=>document.removeEventListener("pointerdown",handler,true)},[]);return null}
 function WallzyAd({size}:{size:"320x50"|"300x250"}) {
   const [ready,setReady]=useState(false);
   useEffect(()=>{let cancelled=false;const delay=size==="320x50"?1200:2200;const run=()=>{if(!cancelled)setReady(true)};const w=window as typeof window & {requestIdleCallback?:Function;cancelIdleCallback?:Function};let id:any;const timer=window.setTimeout(run,delay);if(w.requestIdleCallback)id=w.requestIdleCallback(run,{timeout:delay});return()=>{cancelled=true;clearTimeout(timer);if(id!==undefined)w.cancelIdleCallback?.(id)}},[size]);
@@ -29,7 +27,7 @@ export default function StudioPageClient(){
   const onDelete=async(id:string|number)=>{if(!user){setAuthOpen(true);return}try{setSaved(await deleteWallzyGradient(getWallzySupabase(),user,id))}catch{setMessage("Unable to delete gradient.")}};
   const onDownload=(g:any)=>{const canvas=document.createElement("canvas");canvas.width=1080;canvas.height=1920;const ctx=canvas.getContext("2d");if(!ctx)return;const gr=g.type==="circle"?ctx.createRadialGradient(540,960,0,540,960,960):ctx.createLinearGradient(0,0,1080,1920);gr.addColorStop(0,g.color1||"#111111");gr.addColorStop(1,g.color2||"#ffffff");ctx.fillStyle=gr;ctx.fillRect(0,0,1080,1920);canvas.toBlob(b=>{if(!b)return;const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="wallzy-gradient.png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},"image/png")};
 
-  return <main className="fixed inset-0 bg-black text-white overflow-hidden"><TouchRipple/>
+  return <main className="fixed inset-0 bg-black text-white overflow-hidden">
     <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
       <button type="button" onClick={()=>router.push("/")} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"><i className="fa-solid fa-arrow-left text-xs"/></button>
       <div className="text-center"><h1 className="text-sm font-bold">Studio</h1><p className="text-[9px] text-white/35">Gradient Studio</p></div>

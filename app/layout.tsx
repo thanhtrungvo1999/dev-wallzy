@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/icons/favicon.svg",
+    apple: "/icons/apple-touch-icon.svg",
+  },
   openGraph: {
     type: "website",
     siteName: "Wallzy",
@@ -48,8 +52,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           {String.raw`(function(){var loaded=false;function load(){if(loaded)return;loaded=true;window.removeEventListener("pointerdown",load,true);window.removeEventListener("keydown",load,true);var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtag/js?id=G-CV68K011E5";document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){window.dataLayer.push(arguments)};window.gtag("js",new Date());window.gtag("config","G-CV68K011E5")}window.addEventListener("pointerdown",load,{once:true,capture:true});window.addEventListener("keydown",load,{once:true,capture:true});window.setTimeout(load,15000)})()`}
         </Script>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
         <Script id="wallzy-fontawesome" strategy="lazyOnload">
           {String.raw`(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";document.head.appendChild(l)})()`}
         </Script>

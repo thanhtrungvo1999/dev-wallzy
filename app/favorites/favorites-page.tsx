@@ -10,11 +10,9 @@ import {
   saveWallzyFavorites,
 } from "../lib/wallpaper-client";
 
-const WallpaperGrid = dynamic(() => import("../components/WallpaperGrid"), { ssr: true });
-const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr: true });
+const WallpaperGrid = dynamic(() => import("../components/WallpaperGrid"), { ssr: false });
+const AuthModal = dynamic(() => import("../components/AuthModal"), { ssr: false });
 
-
-function TouchRipple(){useEffect(()=>{const handler=(event:PointerEvent)=>{const target=(event.target as HTMLElement)?.closest?.("button,a,[role='button'],.ripple-target") as HTMLElement|null;if(!target||target.hasAttribute("disabled")||target.getAttribute("aria-disabled")==="true")return;const rect=target.getBoundingClientRect();if(!rect.width||!rect.height)return;const ripple=document.createElement("span");ripple.className="native-ripple";ripple.style.left=(event.clientX-rect.left)+"px";ripple.style.top=(event.clientY-rect.top)+"px";const radius=Math.max(rect.width,rect.height)*1.5;ripple.style.width=radius+"px";ripple.style.height=radius+"px";target.appendChild(ripple);window.setTimeout(()=>ripple.remove(),430)};document.addEventListener("pointerdown",handler,true);return()=>document.removeEventListener("pointerdown",handler,true)},[]);return null}
 function WallzyAd({size}:{size:"320x50"|"300x250"}) {
   const [ready,setReady]=useState(false);
 
@@ -198,7 +196,7 @@ export default function FavoritesPageClient() {
   };
 
   return (
-    <main className="fixed inset-0 bg-black text-white overflow-hidden"><TouchRipple/>
+    <main className="fixed inset-0 bg-black text-white overflow-hidden">
       <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
         <button
           type="button"

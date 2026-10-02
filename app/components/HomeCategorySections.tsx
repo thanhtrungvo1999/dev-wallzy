@@ -3,16 +3,20 @@ import { useEffect, useMemo, useState } from "react";
 import WallpaperCard from "./WallpaperCard";
 
 const HOME_SESSION_KEY="wallzy:home-category-cache:v1";
+let homeCategoryRamCache:{categories:string[];sections:any[]}|null=null;
 function readHomeSession(categories:string[]){
   try{
+    if(homeCategoryRamCache&&homeCategoryRamCache.categories.join("|")===categories.join("|"))return homeCategoryRamCache.sections;
     const raw=window.sessionStorage.getItem(HOME_SESSION_KEY);
     if(!raw)return null;
     const data=JSON.parse(raw);
     if(!Array.isArray(data?.categories)||data.categories.join("|")!==categories.join("|")||!Array.isArray(data?.sections))return null;
+    homeCategoryRamCache={categories:[...categories],sections:data.sections};
     return data.sections;
   }catch{return null}
 }
 function writeHomeSession(categories:string[],sections:any[]){
+  homeCategoryRamCache={categories:[...categories],sections};
   try{window.sessionStorage.setItem(HOME_SESSION_KEY,JSON.stringify({categories:[...categories],sections}));}catch{}
 }
 
