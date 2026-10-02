@@ -26,8 +26,6 @@ export default function WallzyShellClient() {
   const isSearch = pathname === "/search";
   const isKnownShellRoute =
     pathname === "/" ||
-    pathname === "/studio" ||
-    pathname === "/tiktok" ||
     isCategory ||
     isWallpaperDetail;
 
