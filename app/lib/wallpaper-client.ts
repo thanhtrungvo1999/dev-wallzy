@@ -77,8 +77,24 @@ export async function searchWallzyWallpapers(sb:SupabaseClient,query:string,offs
 
 let wallzyCategoriesCache:string[]|null=null;
 let wallzyCategoriesPromise:Promise<string[]>|null=null;
+const WALLZY_CATEGORIES_SESSION_KEY="wallzy:categories";
+
 export async function loadWallzyCategories(sb:SupabaseClient){
   if(wallzyCategoriesCache)return wallzyCategoriesCache;
+
+  if(typeof window!=="undefined"){
+    try{
+      const cached=window.sessionStorage.getItem(WALLZY_CATEGORIES_SESSION_KEY);
+      if(cached){
+        const parsed=JSON.parse(cached);
+        if(Array.isArray(parsed)){
+          wallzyCategoriesCache=parsed.filter((x):x is string=>typeof x==="string"&&x.trim().length>0);
+          return wallzyCategoriesCache;
+        }
+      }
+    }catch{}
+  }
+
   if(wallzyCategoriesPromise)return wallzyCategoriesPromise;
   wallzyCategoriesPromise=(async()=>{
     const{data,error}=await sb.from("categories").select("*");
@@ -95,6 +111,9 @@ export async function loadWallzyCategories(sb:SupabaseClient){
       }
       if(a.toLowerCase()==="other")return 1;if(b.toLowerCase()==="other")return -1;return a.localeCompare(b);
     });
+    if(typeof window!=="undefined"){
+      try{window.sessionStorage.setItem(WALLZY_CATEGORIES_SESSION_KEY,JSON.stringify(wallzyCategoriesCache))}catch{}
+    }
     return wallzyCategoriesCache;
   })().catch(error=>{wallzyCategoriesPromise=null;throw error});
   return wallzyCategoriesPromise;
