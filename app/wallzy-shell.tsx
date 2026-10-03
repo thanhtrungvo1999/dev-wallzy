@@ -21,30 +21,6 @@ const OfflineWarning = () => {
   const [offline, setOffline] = useState(false);
 
   useEffect(() => {
-    const restoreScroll = () => {
-      try {
-        const saved = window.sessionStorage.getItem("wallzy:return-scroll");
-        if (saved == null) return;
-        const top = Number(saved);
-        if (!Number.isFinite(top) || top < 0) return;
-
-        const restore = () => {
-          if (mainRef.current) mainRef.current.scrollTop = top;
-        };
-
-        restore();
-        requestAnimationFrame(restore);
-        window.setTimeout(restore, 0);
-        window.setTimeout(restore, 120);
-        window.setTimeout(restore, 300);
-        window.setTimeout(restore, 600);
-      } catch {}
-    };
-
-    restoreScroll();
-  }, []);
-
-  useEffect(() => {
     const sync = () => setOffline(!navigator.onLine);
     sync();
     window.addEventListener("online", sync);
@@ -185,6 +161,33 @@ export default function WallzyShell() {
   const [user, setUser] = useState<any>(null);
   const [installModal, setInstallModal] = useState(false);
   const [authModal, setAuthModal] = useState(false);
+
+  useEffect(() => {
+    const saved = window.sessionStorage.getItem("wallzy:return-scroll");
+    if (saved == null) return;
+
+    const top = Number(saved);
+    if (!Number.isFinite(top) || top < 0) return;
+
+    const restore = () => {
+      if (mainRef.current) mainRef.current.scrollTop = top;
+    };
+
+    restore();
+    const frame = requestAnimationFrame(restore);
+    const timers = [0, 120, 300, 600].map((delay) =>
+      window.setTimeout(restore, delay),
+    );
+    const clearSaved = window.setTimeout(() => {
+      window.sessionStorage.removeItem("wallzy:return-scroll");
+    }, 800);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(clearSaved);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
