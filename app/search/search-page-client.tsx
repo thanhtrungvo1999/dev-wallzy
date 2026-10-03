@@ -19,7 +19,8 @@ export default function SearchPageClient(){
   const query=params.get("q")?.trim()||"";
   const rawPage=Number(params.get("page")||"1");
   const currentPage=Number.isFinite(rawPage)&&rawPage>0?Math.min(Math.floor(rawPage),50):1;
-  const pageRef=useRef(currentPage);\n  const loadedPageRef=useRef(0);
+  const pageRef=useRef(currentPage);
+  const loadedPageRef=useRef(0);
   const mainRef=useRef<HTMLElement|null>(null);
   const scrollKey=`wallzy:search-scroll:${query.toLowerCase()}:${currentPage}`;
   const[input,setInput]=useState(query),[recent,setRecent]=useState<string[]>([]),[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(false),[loadingMore,setLoadingMore]=useState(false),[hasMore,setHasMore]=useState(false),[error,setError]=useState("");
