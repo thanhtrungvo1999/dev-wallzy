@@ -10,8 +10,6 @@ import {
   wallpaperTitle,
 } from "../../lib/wallpaper";
 
-export const revalidate = 3600;
-export const dynamicParams = true;
 
 type Props = { params: Promise<{ slug: string }> };
 
