@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { getWallzySupabase, searchWallzyWallpapers } from "../lib/wallpaper";
 
 const HISTORY_KEY="wallzy:search-history";
@@ -13,10 +13,9 @@ function SearchCard({wallpaper,onOpen}:{wallpaper:any;onOpen:()=>void}){
   return <button type="button" onClick={onOpen} className="relative w-full aspect-[9/16] overflow-hidden rounded-3xl bg-[#0a0a0c] border border-white/10 text-left">{!loaded&&<div className="absolute inset-0 animate-pulse bg-white/[0.04]"/>}{url&&<img src={url} alt={title+" wallpaper"} loading="lazy" decoding="async" onLoad={()=>setLoaded(true)} onError={()=>setLoaded(true)} className={"absolute inset-0 w-full h-full object-cover transition-opacity duration-300 "+(loaded?"opacity-100":"opacity-0")}/>}<div className="absolute inset-x-2 bottom-2 px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md border border-white/10 text-[9px] font-semibold uppercase tracking-wider text-white/90 truncate">#{String(wallpaper?.category||"Wallpaper")}</div></button>
 }
 
-export default function SearchPageClient(){
+export default function SearchPageClient({initialQuery=""}:{initialQuery?:string}){
   const router=useRouter();
-  const params=useSearchParams();
-  const query=params.get("q")?.trim()||"";
+  const query=initialQuery.trim();
   const pageRef=useRef(1);
   const mainRef=useRef<HTMLElement|null>(null);
   const scrollKey=`wallzy:search-scroll:${query.toLowerCase()}`;
@@ -43,7 +42,7 @@ export default function SearchPageClient(){
     const next=[q,...recent.filter(x=>x.toLowerCase()!==q.toLowerCase())].slice(0,8);
     setRecent(next);
     try{window.localStorage.setItem(HISTORY_KEY,JSON.stringify(next))}catch{}
-    router.push("/search?q="+encodeURIComponent(q));
+    router.push("/search/"+encodeURIComponent(q));
   };
 
   const loadMore=async()=>{
