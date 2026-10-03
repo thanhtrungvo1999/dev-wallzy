@@ -21,6 +21,30 @@ const OfflineWarning = () => {
   const [offline, setOffline] = useState(false);
 
   useEffect(() => {
+    const restoreScroll = () => {
+      try {
+        const saved = window.sessionStorage.getItem("wallzy:return-scroll");
+        if (saved == null) return;
+        const top = Number(saved);
+        if (!Number.isFinite(top) || top < 0) return;
+
+        const restore = () => {
+          if (mainRef.current) mainRef.current.scrollTop = top;
+        };
+
+        restore();
+        requestAnimationFrame(restore);
+        window.setTimeout(restore, 0);
+        window.setTimeout(restore, 120);
+        window.setTimeout(restore, 300);
+        window.setTimeout(restore, 600);
+      } catch {}
+    };
+
+    restoreScroll();
+  }, []);
+
+  useEffect(() => {
     const sync = () => setOffline(!navigator.onLine);
     sync();
     window.addEventListener("online", sync);
@@ -268,7 +292,7 @@ export default function WallzyShell() {
       window.sessionStorage.setItem("wallzy:return-scroll", String(mainRef.current?.scrollTop || 0));
     } catch {}
 
-    router.push("/wallpaper/" + encodeURIComponent(String(wallpaper.id)));
+    router.push("/wallpaper/" + encodeURIComponent(String(wallpaper.id)), { scroll: false });
   };
 
   const openCategory = (category: string) => {
