@@ -43,7 +43,6 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  orientation: "any",
   themeColor: "#08080a",
 };
 
