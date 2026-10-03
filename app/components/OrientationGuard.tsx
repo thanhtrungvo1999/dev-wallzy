@@ -6,13 +6,15 @@ export default function OrientationGuard() {
   const [landscape, setLandscape] = useState(false);
 
   useEffect(() => {
-    const update = () => setLandscape(window.innerWidth > window.innerHeight);
+    const media = window.matchMedia("(orientation: landscape)");
+
+    const update = () => setLandscape(media.matches);
+
     update();
-    window.addEventListener("resize", update);
-    window.addEventListener("orientationchange", update);
+    media.addEventListener("change", update);
+
     return () => {
-      window.removeEventListener("resize", update);
-      window.removeEventListener("orientationchange", update);
+      media.removeEventListener("change", update);
     };
   }, []);
 
