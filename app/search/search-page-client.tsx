@@ -19,13 +19,13 @@ export default function SearchPageClient(){
   const query=params.get("q")?.trim()||"";
   const rawPage=Number(params.get("page")||"1");
   const currentPage=Number.isFinite(rawPage)&&rawPage>0?Math.min(Math.floor(rawPage),50):1;
-  const pageRef=useRef(currentPage);
+  const pageRef=useRef(currentPage);\n  const loadedPageRef=useRef(0);
   const mainRef=useRef<HTMLElement|null>(null);
   const scrollKey=`wallzy:search-scroll:${query.toLowerCase()}:${currentPage}`;
   const[input,setInput]=useState(query),[recent,setRecent]=useState<string[]>([]),[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(false),[loadingMore,setLoadingMore]=useState(false),[hasMore,setHasMore]=useState(false),[error,setError]=useState("");
   const sb=useMemo(()=>getWallzySupabase(),[]);
 
-  useEffect(()=>{setInput(query)},[query]);
+  useEffect(()=>{setInput(query);loadedPageRef.current=0},[query]);
   useEffect(()=>{pageRef.current=currentPage},[currentPage]);
   useEffect(()=>{try{const saved=JSON.parse(window.localStorage.getItem(HISTORY_KEY)||"[]");setRecent(Array.isArray(saved)?saved.filter((x:any)=>typeof x==="string"&&x.trim()).slice(0,8):[])}catch{setRecent([])}},[]);
 
@@ -34,7 +34,7 @@ export default function SearchPageClient(){
     if(!query){setItems([]);setHasMore(false);setLoading(false);setError("");return}
     setLoading(true);setError("");
     const loads=Array.from({length:currentPage},(_,index)=>searchWallzyWallpapers(sb,query,index*20));
-    Promise.all(loads).then(pages=>{if(cancelled)return;const loaded=pages.flatMap(page=>page.images||[]);const last=pages[pages.length-1];setItems(loaded);setHasMore(Boolean(last?.hasMore))}).catch(err=>{console.error("[Wallzy] Search failed:",err);if(!cancelled){setItems([]);setHasMore(false);setError("Unable to search wallpapers. Please try again.")}}).finally(()=>{if(!cancelled)setLoading(false)});
+    Promise.all(loads).then(pages=>{if(cancelled)return;const loaded=pages.flatMap(page=>page.images||[]);const last=pages[pages.length-1];setItems(loaded);setHasMore(Boolean(last?.hasMore));loadedPageRef.current=currentPage}).catch(err=>{console.error("[Wallzy] Search failed:",err);if(!cancelled){setItems([]);setHasMore(false);setError("Unable to search wallpapers. Please try again.")}}).finally(()=>{if(!cancelled)setLoading(false)});
     return()=>{cancelled=true};
   },[query,currentPage,sb]);
 
