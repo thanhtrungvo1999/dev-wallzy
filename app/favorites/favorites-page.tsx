@@ -200,7 +200,7 @@ export default function FavoritesPageClient() {
       <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
         <button
           type="button"
-          onClick={() => router.push("/")}
+          onClick={() => router.back()}
           className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"
           aria-label="Home"
         >
