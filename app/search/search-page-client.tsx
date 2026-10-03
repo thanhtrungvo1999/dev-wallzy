@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getWallzySupabase, searchWallzyWallpapers } from "../lib/wallpaper";
+import BottomNav from "../components/BottomNav";
 
 const HISTORY_KEY="wallzy:search-history";
 
@@ -67,7 +68,7 @@ export default function SearchPageClient({initialQuery=""}:{initialQuery?:string
       <form id="wallzy-search-form" onSubmit={e=>{e.preventDefault();submit(input)}} className="relative flex-1"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"/><input autoFocus value={input} onChange={e=>setInput(e.target.value)} placeholder="Search wallpapers..." className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-3 pl-10 pr-10 text-[16px] text-white placeholder-gray-500 focus:outline-none focus:border-white/30"/>{input&&<button type="button" onClick={()=>setInput("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" aria-label="Clear"><i className="fa-solid fa-xmark"/></button>}</form>
       <button type="submit" form="wallzy-search-form" className="text-sm font-semibold text-white">Search</button>
     </div></header>
-    <main ref={mainRef} className="max-w-3xl mx-auto px-5 py-5 pb-20 overflow-y-auto max-h-[calc(100dvh-72px)] scrollbar-none">
+    <main ref={mainRef} className="max-w-3xl mx-auto px-5 py-5 pb-36 overflow-y-auto max-h-[calc(100dvh-72px)] scrollbar-none">
       <Ad size="320x50"/>
       {!query?<section className="rounded-3xl border border-white/10 bg-[#0a0a0c] overflow-hidden"><div className="flex items-center justify-between px-4 py-4 border-b border-white/10"><div><h1 className="text-sm font-semibold text-white">Recent searches</h1><p className="text-[11px] text-white/40 mt-1">Your recent wallpaper searches</p></div>{recent.length>0&&<button type="button" onClick={()=>{setRecent([]);try{window.localStorage.removeItem(HISTORY_KEY)}catch{}}} className="text-[11px] text-white/45 hover:text-white">Clear</button>}</div>{recent.length>0?<div className="divide-y divide-white/5">{recent.map(q=><button type="button" key={q} onClick={()=>submit(q)} className="w-full flex items-center gap-3 px-4 py-4 text-left text-white/80 hover:bg-white/5"><i className="fa-regular fa-clock text-white/35 text-xs"/><span className="truncate">{q}</span><i className="fa-solid fa-arrow-right ml-auto text-[10px] text-white/25"/></button>)}</div>:<div className="px-5 py-12 text-center"><div className="mx-auto w-14 h-14 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center justify-center"><i className="fa-regular fa-clock text-white/25 text-xl"/></div><div className="mt-3 text-sm font-medium text-white/70">No recent searches</div><div className="mt-1 text-xs text-white/35">Searches you make will appear here.</div></div>}</section>:<>
         <div className="flex items-center justify-between mb-4"><div><div className="text-[11px] uppercase tracking-wider text-white/40">Search results</div><h1 className="mt-1 text-base font-semibold text-white">“{query}”</h1></div><span className="text-[11px] text-white/35">{items.length}{hasMore?"+":""} results</span></div>
@@ -76,5 +77,6 @@ export default function SearchPageClient({initialQuery=""}:{initialQuery?:string
       <Footer/>
       <Ad size="300x250"/>
     </main>
+    <BottomNav active="explore"/>
   </div>
 }
