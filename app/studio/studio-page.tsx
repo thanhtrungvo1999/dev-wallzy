@@ -30,7 +30,7 @@ export default function StudioPageClient(){
 
   return <main className="fixed inset-0 bg-black text-white overflow-hidden">
     <header className="absolute top-0 left-0 right-0 z-40 bg-black/90 backdrop-blur-xl px-5 py-3.5 flex items-center justify-between border-b border-white/10">
-      <button type="button" onClick={() => router.back()} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"><i className="fa-solid fa-arrow-left text-xs"/></button>
+      <button type="button" onClick={() => router.push("/")} className="w-9 h-9 rounded-full bg-[#121215] border border-white/10 flex items-center justify-center"><i className="fa-solid fa-arrow-left text-xs"/></button>
       <div className="text-center"><h1 className="text-sm font-bold">Studio</h1><p className="text-[9px] text-white/35">Gradient Studio</p></div>
       <button type="button" onClick={()=>setAuthOpen(true)} className="px-3 py-1.5 rounded-full bg-[#121215] border border-white/10 text-gray-200 text-xs font-semibold"><i className="fa-solid fa-user-circle mr-1.5"/>{accountLabel}</button>
     </header>
