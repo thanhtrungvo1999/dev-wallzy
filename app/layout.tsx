@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
+import ProductionProtection from "./components/ProductionProtection";
 import GlobalTouchRipple from "./components/GlobalTouchRipple";
 import GlobalSplashScreen from "./components/GlobalSplashScreen";
 
@@ -61,6 +62,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         id="bodyElement"
         className="bg-[#000000] text-gray-100 min-h-screen selection:bg-white selection:text-black overflow-x-hidden font-sans overflow-hidden"
       >
+        <ProductionProtection />
         <GlobalTouchRipple />
         <GlobalSplashScreen />
         {children}
