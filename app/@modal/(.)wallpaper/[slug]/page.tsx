@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import WallpaperDetailShell from "../../../../wallpaper/[slug]/detail-shell";
+import WallpaperDetailShell from "@/app/wallpaper/[slug]/detail-shell";
 import {
   getWallpaperById,
   wallpaperIdFromSlug,
-} from "../../../../lib/wallpaper";
+} from "@/app/lib/wallpaper";
 
 type Props = { params: Promise<{ slug: string }> };
 
