@@ -22,7 +22,7 @@ export default function SearchPageClient(){
   const pageRef=useRef(currentPage);
   const loadedPageRef=useRef(0);
   const mainRef=useRef<HTMLElement|null>(null);
-  const scrollKey=`wallzy:search-scroll:${query.toLowerCase()}:${currentPage}`;
+  const scrollKey=`wallzy:search-scroll:${query.toLowerCase()}`;
   const[input,setInput]=useState(query),[recent,setRecent]=useState<string[]>([]),[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(false),[loadingMore,setLoadingMore]=useState(false),[hasMore,setHasMore]=useState(false),[error,setError]=useState("");
   const sb=useMemo(()=>getWallzySupabase(),[]);
 
@@ -63,7 +63,7 @@ export default function SearchPageClient(){
       loadedPageRef.current=nextPage;
       const next=new URLSearchParams(window.location.search);
       next.set("page",String(nextPage));
-      router.replace(window.location.pathname+"?"+next.toString(),{scroll:false});
+      window.history.replaceState(null,"",window.location.pathname+"?"+next.toString());
     }catch(err){console.error("[Wallzy] Search load more failed:",err)}
     finally{setLoadingMore(false)}
   };
