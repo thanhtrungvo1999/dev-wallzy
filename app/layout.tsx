@@ -5,6 +5,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 import ProductionProtection from "./components/ProductionProtection";
 import GlobalTouchRipple from "./components/GlobalTouchRipple";
+import GlobalSplashScreen from "./components/GlobalSplashScreen";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap", preload: true, variable: "--font-plus-jakarta" });
 
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       >
         <ProductionProtection />
         <GlobalTouchRipple />
+        <GlobalSplashScreen />
         {children}
       </body>
     </html>
