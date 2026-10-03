@@ -32,6 +32,7 @@ export default function SearchPageClient(){
   useEffect(()=>{
     let cancelled=false;
     if(!query){setItems([]);setHasMore(false);setLoading(false);setError("");return}
+    if(currentPage===loadedPageRef.current)return;
     setLoading(true);setError("");
     const loads=Array.from({length:currentPage},(_,index)=>searchWallzyWallpapers(sb,query,index*20));
     Promise.all(loads).then(pages=>{if(cancelled)return;const loaded=pages.flatMap(page=>page.images||[]);const last=pages[pages.length-1];setItems(loaded);setHasMore(Boolean(last?.hasMore));loadedPageRef.current=currentPage}).catch(err=>{console.error("[Wallzy] Search failed:",err);if(!cancelled){setItems([]);setHasMore(false);setError("Unable to search wallpapers. Please try again.")}}).finally(()=>{if(!cancelled)setLoading(false)});
@@ -58,6 +59,7 @@ export default function SearchPageClient(){
       setItems(prev=>[...prev,...(page.images||[])]);
       setHasMore(Boolean(page.hasMore));
       pageRef.current=nextPage;
+      loadedPageRef.current=nextPage;
       const next=new URLSearchParams(window.location.search);
       next.set("page",String(nextPage));
       router.replace(window.location.pathname+"?"+next.toString(),{scroll:false});
