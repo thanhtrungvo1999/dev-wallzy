@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import ProductionProtection from "./components/ProductionProtection";
 import GlobalTouchRipple from "./components/GlobalTouchRipple";
 import GlobalSplashScreen from "./components/GlobalSplashScreen";
-import GlobalScrollRestoration from "./components/GlobalScrollRestoration";
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], display: "swap", preload: true, variable: "--font-plus-jakarta" });
 
@@ -66,7 +65,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <ProductionProtection />
         <GlobalTouchRipple />
         <GlobalSplashScreen />
-        <GlobalScrollRestoration />
         {children}
       </body>
     </html>
