@@ -263,11 +263,6 @@ export default function WallzyShell() {
   };
 
   const openWallpaper = (wallpaper: any) => {
-    try {
-      window.sessionStorage.setItem("wallzy:return-url", window.location.href);
-      window.sessionStorage.setItem("wallzy:return-scroll", String(mainRef.current?.scrollTop || 0));
-    } catch {}
-
     router.push("/wallpaper/" + encodeURIComponent(String(wallpaper.id)));
   };
 

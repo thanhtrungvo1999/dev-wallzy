@@ -46,7 +46,7 @@ export const viewport: Viewport = {
   themeColor: "#08080a",
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children, modal }: { children: ReactNode; modal: ReactNode }) {
   return (
     <html lang="en" className={`dark ${plusJakartaSans.variable}`}>
       <head>
@@ -66,6 +66,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <GlobalTouchRipple />
         <GlobalSplashScreen />
         {children}
+        {modal}
       </body>
     </html>
   );
