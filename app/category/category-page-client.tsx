@@ -5,7 +5,7 @@ import WallpaperGrid from "../components/WallpaperGrid";
 import AuthModal from "../components/AuthModal";
 import InstallModal from "../components/InstallModal";
 import BottomNav from "../components/BottomNav";
-import {getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites,loadCategoryWallzyWallpapers} from "../lib/wallpaper-client";
+import {createWallzyLoader,getWallzySupabase,loadWallzyCategories,loadWallzyFavorites,saveWallzyFavorites} from "../lib/wallpaper-client";
 
 const slugify=(v:string)=>String(v||"all").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,"").replace(/-+/g,"-").replace(/^-+|-+$/g,"")||"all";
 
@@ -17,57 +17,10 @@ function CategoryNav({categories,active}:{categories:string[];active:string}){co
 
 function Footer(){return <div className="w-full flex justify-center items-center pt-[30px] pb-8"><div className="flex items-center gap-3 text-[15px] text-white/70 font-bold"><a href="/terms">Terms of Use</a><span>|</span><a href="/privacy">Privacy Policy</a><span>|</span><a href="/contact">Contact</a></div></div>}
 export default function CategoryPageClient({category}:{category:string}){const router=useRouter(),mainRef=useRef<HTMLElement|null>(null),sbRef=useRef<any>(null),userRef=useRef<any>(null);const[categories,setCategories]=useState<string[]>([]),[user,setUser]=useState<any>(null),[favorites,setFavorites]=useState<any[]>([]),[items,setItems]=useState<any[]>([]),[hasMore,setHasMore]=useState(false),[loading,setLoading]=useState(true),[loadingMore,setLoadingMore]=useState(false),[nextOffset,setNextOffset]=useState(0),[authModal,setAuthModal]=useState(false),[installModal,setInstallModal]=useState(false);
-useEffect(()=>{let dead=false;(async()=>{try{const sb=getWallzySupabase();sbRef.current=sb;const[{data:{session}},cats]=await Promise.all([sb.auth.getSession(),loadWallzyCategories(sb)]);if(dead)return;await new Promise(resolve=>setTimeout(resolve,350));if(dead)return;setCategories(cats);const u=session?.user||null;userRef.current=u;setUser(u);if(u)setFavorites(await loadWallzyFavorites(sb,u));const actual=cats.find(x=>x.toLowerCase()===category.toLowerCase())||category;
-      const pageCacheKey=`wallzy:category-page-cache:v1:${String(actual).toLowerCase()}`;
-      let page1:any[]=[];
-      try{
-        const raw=sessionStorage.getItem(pageCacheKey);
-        const parsed=raw?JSON.parse(raw):null;
-        if(Array.isArray(parsed?.items))page1=parsed.items;
-      }catch{}
-
-      if(page1.length>0){
-        setItems(page1);
-        setHasMore(Boolean(page1.length>=20));
-        setNextOffset(page1.length);
-      }else{
-        let cachedItems:any[]=[];
-        try{
-          const raw=sessionStorage.getItem("wallzy:home-category-cache:v1");
-          const parsed=raw?JSON.parse(raw):null;
-          const section=parsed?.sections?.find((x:any)=>String(x?.category||"").toLowerCase()===String(actual).toLowerCase());
-          if(Array.isArray(section?.items))cachedItems=section.items.slice(0,6);
-        }catch{}
-        const firstSix=cachedItems.length===6?cachedItems:[];
-        const extra=await loadCategoryWallzyWallpapers(sb,actual,14,firstSix.map((x:any)=>String(x.id)));
-        if(dead)return;
-        const initialItems=[...firstSix,...extra.images];
-        setItems(initialItems);
-        setHasMore(Boolean(extra.hasMore));
-        setNextOffset(initialItems.length);
-        try{sessionStorage.setItem(pageCacheKey,JSON.stringify({items:initialItems}))}catch{}
-      }}catch(e){console.error("[Wallzy] Category load failed:",e)}finally{if(!dead)setLoading(false)}})();return()=>{dead=true}},[category]);
+useEffect(()=>{let dead=false;(async()=>{try{const sb=getWallzySupabase();sbRef.current=sb;const[{data:{session}},cats]=await Promise.all([sb.auth.getSession(),loadWallzyCategories(sb)]);if(dead)return;await new Promise(resolve=>setTimeout(resolve,350));if(dead)return;setCategories(cats);const u=session?.user||null;userRef.current=u;setUser(u);if(u)setFavorites(await loadWallzyFavorites(sb,u));const actual=cats.find(x=>x.toLowerCase()===category.toLowerCase())||category;const page=await createWallzyLoader(sb,actual,{randomize:false,initialOffset:0,pageSize:20})();if(dead)return;setItems(page.images||[]);setHasMore(Boolean(page.hasMore));setNextOffset(Number(page.nextOffset||page.images?.length||0));}catch(e){console.error("[Wallzy] Category load failed:",e)}finally{if(!dead)setLoading(false)}})();return()=>{dead=true}},[category]);
 useEffect(()=>{if(!sbRef.current)return;const{data}=sbRef.current.auth.onAuthStateChange(async(_:any,s:any)=>{const u=s?.user||null;userRef.current=u;setUser(u);setFavorites(u?await loadWallzyFavorites(sbRef.current,u):[])});return()=>data.subscription.unsubscribe()},[]);
 const toggleFavorite=async(id:string)=>{const u=userRef.current;if(!u){setAuthModal(true);return}const w=items.find(x=>String(x.id)===String(id));if(!w)return;const next=favorites.some(x=>String(x.id)===String(id))?favorites.filter(x=>String(x.id)!==String(id)):[...favorites,w];setFavorites(next);try{await saveWallzyFavorites(sbRef.current,u,next)}catch{setFavorites(favorites)}};
-const loadMore=async()=>{
-  if(loadingMore||!hasMore)return;
-  setLoadingMore(true);
-  try{
-    const pageNumber=Math.floor(items.length/20)+1;
-    const cacheKey=`wallzy:category-page-cache:v1:${String(category).toLowerCase()}:page:${pageNumber}`;
-    let cached:any[]=[];
-    try{
-      const raw=sessionStorage.getItem(cacheKey);
-      const parsed=raw?JSON.parse(raw):null;
-      if(Array.isArray(parsed?.items))cached=parsed.items;
-    }catch{}
-    const page=cached.length?{images:cached,hasMore:cached.length>=20}:await loadCategoryWallzyWallpapers(sbRef.current,category,20,items.map((x:any)=>String(x.id)));
-    if(!cached.length)try{sessionStorage.setItem(cacheKey,JSON.stringify({items:page.images||[]}))}catch{}
-    setItems(v=>[...v,...(page.images||[])]);
-    setHasMore(Boolean(page.hasMore));
-    setNextOffset(v=>v+(page.images?.length||0));
-  }finally{setLoadingMore(false)}
-};
+const loadMore=async()=>{if(loadingMore||!hasMore)return;setLoadingMore(true);try{const page=await createWallzyLoader(sbRef.current,category,{randomize:false,initialOffset:nextOffset,pageSize:20})();setItems(v=>[...v,...(page.images||[])]);setHasMore(Boolean(page.hasMore));setNextOffset(Number(page.nextOffset||nextOffset))}finally{setLoadingMore(false)}};
 const view=useMemo(()=>({mode:"explore",items,favorites,displayedCount:items.length,hasMore,loading,loadingMore}),[items,favorites,hasMore,loading,loadingMore]);
 const login=async()=>{try{const{error}=await sbRef.current.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.origin+window.location.pathname}});if(error)throw error}catch(e){console.error(e)}};const logout=async()=>{await sbRef.current?.auth.signOut();setAuthModal(false)};
 return <><div className="w-full min-w-0 max-w-none h-[100dvh] shadow-2xl overflow-hidden flex flex-col relative bg-[#000000]"><main ref={mainRef} className="flex-1 pb-36 overflow-y-auto scrollbar-none bg-transparent"><Header title={category} user={user} onInstall={()=>setInstallModal(true)} onAuth={()=>setAuthModal(true)}/><button type="button" onClick={() => router.push("/search")} className="w-full px-5 pt-3 pb-1 bg-transparent text-left"><div className="relative flex items-center"><i className="fa-solid fa-magnifying-glass absolute left-3.5 text-gray-400 text-xs"/><div className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-2.5 pl-10 pr-9 text-[16px] sm:text-xs text-white/80 shadow-inner">Search keywords, categories, tags...</div></div></button><div className="sticky top-0 z-[35] bg-[#000000]/90 backdrop-blur-xl">{categories.length>0?<CategoryNav categories={categories} active={category}/>:<nav className="w-full min-w-0 px-5 py-2.5 flex flex-nowrap gap-2 overflow-hidden overscroll-x-contain scrollbar-none bg-transparent" aria-hidden="true">{[140,128,116,138,124,132].map((w,i)=><div key={i} style={{width:w}} className="relative h-9 shrink-0 overflow-hidden rounded-full border border-white/10 bg-[#0a0a0c]"><div className="absolute inset-0 skeleton-wave" /></div>)}</nav>}</div><div className="px-5"><Ad size="320x50"/></div><WallpaperGrid view={view} hideFavorite onNavigate={w=>{try{sessionStorage.setItem("wallzy:return-url",window.location.href);sessionStorage.setItem("wallzy:return-scroll",String(mainRef.current?.scrollTop||0))}catch{}router.push("/wallpaper/"+encodeURIComponent(String(w.id)))}} onToggleFavorite={toggleFavorite} onLoadMore={loadMore} onExplore={() => router.push("/") }/><Footer/><div className="px-5"><Ad size="300x250"/></div></main><BottomNav active="explore" /></div>{installModal&&<InstallModal onClose={()=>setInstallModal(false)}/>} {authModal&&<AuthModal user={user} onClose={()=>setAuthModal(false)} onLogin={login} onLogout={logout}/>}</>}
