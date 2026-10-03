@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { wallpaperPath } from "../../lib/wallpaper";
 
+export const revalidate = 3600;
 
 const BASE_URL = "https://www.wallzy.org";
 const PAGE_SIZE = 5000;

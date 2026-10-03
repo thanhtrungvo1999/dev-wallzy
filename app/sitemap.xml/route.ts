@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
+export const revalidate = 3600;
 
 const BASE_URL = "https://www.wallzy.org";
 const PAGE_SIZE = 5000;
